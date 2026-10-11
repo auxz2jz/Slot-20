@@ -3,7 +3,9 @@
 **Last milestone:** 2026-10-11 — Repository initialized for Codex/ChatGPT collaboration. No firmware source compiled. No camera interacted with. Work remains offline.
 
 ## Goal
-Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. Prioritize zones/tripwires, tracking and ALPR with external PC CodeProject.AI engine initially. The installed stock firmware remains operational throughout the research phase.
+Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
+
+**2026-10-11 priority update:** The user explicitly requires every *permanently installed* custom firmware to retain browser-accessible management, firmware update capability, and a proven independent rescue/rollback method. Details and evidence gates: `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`. No assumption is made that A/B partitions or restoring Reolink firmware are supported.
 
 ## Completed
 - User confirmed hardware and current version from Reolink app.
@@ -25,8 +27,9 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 2. Obtain the original `.pak` privately from the user; do **not** commit the proprietary binary. The previous toolkit ZIP/report is optional reference.
 3. Use the already-committed scripts in `tools/`; verify they run read-only (prefer WSL2/Linux for `liblzo2.so.2`), then build focused tests.
 4. Reproduce the 1,035-path filesystem inventory and compare against the existing report.
-5. Create a compact ABI/interface investigation plan for sensor/ISP/encoder, lens, AI/zones and RTSP service.
-6. Report current findings and stop; **no access to the actual camera**.
+5. Focus first on the bootloader's image loading/checking, flash layout, factory rescue possibilities, and feasibility of a management-enabled first custom image; do not prioritize AI/video yet.
+6. Produce an offline design for Ethernet + web UI + verified firmware updater and a *separate* independent rescue/recovery gate. Do not assert support without actual evidence.
+7. Report current findings and stop; **no access to the actual camera**.
 
 ## Recovery/checkpoint rule
 Keep last successful commit; after two repeated failures with the same hypothesis, log a short blocker and change approach. Before any future hardware testing, independently validate a full-device backup and demonstrated recovery on matching hardware.

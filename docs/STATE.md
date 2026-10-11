@@ -14,7 +14,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - This public repository holds **notes and independent code only**, never firmware update images or other proprietary material.
 
 ## Not done / uncertainties
-- Original offline scripts and full report exist as ChatGPT-generated toolkit files, but **they must still be copied into the Codex working tree**; verify file checksums/behavior before considering a fresh reimplementation equivalent.
+- The two original offline Python extraction scripts are now versioned under `tools/` and ready for Codex to inspect. The original proprietary firmware and raw prior report ZIP remain private/off-repository; the sanitized findings are summarized under `docs/HARDWARE.md`.
 - Vendor executable ABI / callbacks and AI formats are not yet mapped.
 - Exact sensor, flash chip, physical RAM, UART recovery and live AI support unverified.
 - No camera read-only query, live video test, backup, recovery or flashing performed.
@@ -22,8 +22,8 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 
 ## Next Codex task
 1. Clone this repository; read `AGENTS.md` and `docs/HARDWARE.md`.
-2. Privately obtain the original `.pak` and the `RLC811A_Offline_Reverse_Engineering_Toolkit.zip` from the user (do **not** commit proprietary binaries).
-3. Import the toolkit's Python scripts into `tools/` and sanitize documentation before commit; verify read-only usage with `--help` or static inspection.
+2. Obtain the original `.pak` privately from the user; do **not** commit the proprietary binary. The previous toolkit ZIP/report is optional reference.
+3. Use the already-committed scripts in `tools/`; verify they run read-only (prefer WSL2/Linux for `liblzo2.so.2`), then build focused tests.
 4. Reproduce the 1,035-path filesystem inventory and compare against the existing report.
 5. Create a compact ABI/interface investigation plan for sensor/ISP/encoder, lens, AI/zones and RTSP service.
 6. Report current findings and stop; **no access to the actual camera**.

@@ -51,3 +51,27 @@ A working web server alone is not enough: broken kernels, flash partitions, netw
 - [ ] Production camera remained untouched; any future install requires fresh user approval
 
 Do not label an item complete based on static analysis, emulation, or a build succeeding. Separate each evidence class.
+
+## Pre-install owner review and visual preview (mandatory)
+
+**Before asking the owner to upload any image to any camera**, prepare an easy-to-read preflight report and review it with the owner. Their questions are expected and must be answered; never treat a broad project instruction as installation consent. Include:
+
+1. Exact model/hardware revision, current stock version, target image identifier/hash, and how compatibility was independently checked.
+2. **How the first image is installed**, which storage regions it changes, and what Reolink/bootloader mechanisms it preserves.
+3. **How to install a second version** in practice: exact browser URL/port/authentication steps, upload/validation process, and what to do if the browser is unavailable; demonstrate a successful second upgrade on matching test hardware.
+4. **What happens on failure** at each stage (upload interruption, power cut, Linux not booting, network unreachable, application/web service failing). State the exact independently tested rescue steps, equipment needed, and likely need to open the camera.
+5. **What the rollback actually boots:** retained factory Reolink image, previously known-good custom image, protected rescue image, or an externally restored flash image. Explicitly state whether *automatic* rollback and restoration to original Reolink firmware have been demonstrated.
+6. Full backup status, reproducible recovery test evidence, remaining limitations and residual risk, including risk of permanent damage.
+7. **Real visual preview before flashing:** supply screenshots and preferably an interactive local browser demo of the *actual built UI*, showing the dashboard/status, firmware upload/validation, prior-version selection/rollback, progress/error messages and recovery instructions. If only a design mockup exists, label it **mockup / unimplemented**. A screenshot or offline preview does not prove it runs on the camera.
+8. **First-upgrade dress rehearsal:** verify the updater can receive, validate and switch to a subsequent image and restore a known-good image on a same-revision spare. Record objective results and clearly identify missing demonstrations.
+9. Collect separate, explicit owner approval for the exact planned physical operation **only after** the owner has reviewed the evidence and can ask follow-up questions. If any mandatory requirement is unverified or the owner is uncomfortable, **do not flash**.
+
+Do not describe a custom firmware web uploader as a safe recovery mechanism if it requires the broken OS to be up. Do not say that a factory reset button or stock firmware update file is proven to restore a bricked device. Document unverified options honestly.
+
+### Additional release checkboxes
+
+- [ ] Actual management UI demonstrated in a PC-hosted browser with screenshots (mockups distinguished clearly)
+- [ ] User-facing updated-version and rollback screens reviewed, with steps documented
+- [ ] Upload of *second* firmware version demonstrated on matching test camera, along with fallback or independent rescue
+- [ ] Owner was given a precise explanation of the recovery medium and what to expect if no Ethernet/web service starts
+- [ ] Owner reviewed all outstanding risks, asked questions, and gave separate explicit permission for the proposed flashing operation

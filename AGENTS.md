@@ -22,9 +22,12 @@ This project deliberately **does NOT automatically inherit** the Master Instruct
 - **Keep handoffs concise:** update `docs/STATE.md` with latest findings, exact next step, blocker, relevant hashes, and tested/untested status.
 - **Cost discipline:** avoid redundant scans, logs and massive output. Prefer focused tools, sampled inspection and existing artifacts; preserve enough evidence to reproduce findings.
 
+## Hard installation gate (user requirement)
+**Read `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md` before any firmware-image design or update work.** The **first permanently installed firmware** must include Ethernet connectivity, a secure browser-accessible management interface, a verified updater for supported new/previous versions, plus a demonstrated rescue/rollback path independent of the experimental Linux/web server. A firmware that merely boots is not eligible for persistent installation. Do not confuse the presence of an upload form with actual brick protection. No promises of dual-boot/stock restoration without proven hardware support.
+
 ## Development priorities
-1. Reproducible offline extraction and auditing of provided matching `.pak`.
-2. Call graph / ABI mapping for sensor, ISP, encoder, motor, detection event and streaming services.
-3. Design and test independent PC-side polygon/tripwire and ALPR prototype from normal RTSP input (camera access only after approval).
-4. Investigate minimal Linux replacement and Novatek vendor dependency constraints.
-5. Validate full-backup and recovery gates on appropriate test hardware **before** any live boot/flash experiment.
+1. Reproduce the offline firmware extraction and inspect bootloader/flash/image validation without accessing the camera.
+2. Analyze how to obtain a full backup, preserve factory data, and restore independently of the experimental operating system.
+3. Design and test offline a minimal bootable Linux system with Ethernet, authenticated web management, compatible-image validation, firmware upload/update, and rollback state machine.
+4. Establish and physically demonstrate recovery, updates, and bad-boot rollback **on matching spare hardware**, after explicit approval.
+5. Only once the installed-baseline and recovery gates are demonstrated, investigate video/sensor/ISP/zoom and later zones/ALPR.

@@ -45,7 +45,10 @@ def decode_volumes(raw):
             continue
         vol_id=struct.unpack_from('>I',vid,8)[0]
         lnum=struct.unpack_from('>I',vid,12)[0]
-        seq=struct.unpack_from('>I',vid,40)[0]
+        # ubi_vid_hdr stores sqnum as a big-endian 64-bit value at offset 36.
+        # Reading only the low 32 bits can select an older duplicate LEB after
+        # the sequence number crosses a 32-bit boundary.
+        seq=struct.unpack_from('>Q',vid,36)[0]
         if vol_id > 100 or lnum>100000:
             continue
         previous=volumes[vol_id].get(lnum)

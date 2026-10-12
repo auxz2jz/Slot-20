@@ -1,9 +1,13 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-11 — Matching package rechecked with the committed offline tools; parser tests and one correctness fix added; next static interface stage planned. No camera interacted with. Work remains offline.
+**Last milestone:** 2026-10-12 — Offline extraction verification and parser tests were integrated with the recovery-first project requirements; the video/AI/lens interface plan is preserved but deferred. No camera interacted with. Work remains offline.
 
 ## Goal
-Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. Prioritize zones/tripwires, tracking and ALPR with external PC CodeProject.AI engine initially. The installed stock firmware remains operational throughout the research phase.
+Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
+
+**Owner-facing release gate:** Before any flash, user expects a demonstrable management UI screenshot/local preview plus written evidence explaining the *next* firmware update, broken-boot recovery, and actual rollback target; no first install until these are reviewed and separately approved. See `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`.
+
+**2026-10-11 priority update:** The user explicitly requires every *permanently installed* custom firmware to retain browser-accessible management, firmware update capability, and a proven independent rescue/rollback method. Details and evidence gates: `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`. No assumption is made that A/B partitions or restoring Reolink firmware are supported.
 
 ## Completed
 - User confirmed hardware and current version from Reolink app.
@@ -28,8 +32,10 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 ## Next Codex task
 1. In Linux with `liblzo2.so.2`, rerun the matching package without `--write-files`; confirm the structural totals and prior 8-rootfs/2-app incomplete-file result.
 2. Cross-check UBI geometry and a sampled path/hash set with maintained `mtd-utils`/`ubireader`. Keep all outputs private and ignored.
-3. Follow `docs/INTERFACE_RE_PLAN.md` Stage B1: reconstruct privately, then record startup/module/process order and per-binary ELF/module metadata for the video, streaming, AI and lens candidates.
-4. Publish only a sanitized dependency/interface matrix and update this handoff. Stop before deep decompilation or any live-device work.
+3. Follow recovery-first Roadmap Phase A: inspect bootloader image loading/validation, U-Boot environment assumptions, flash layout, factory rescue leads and full-backup requirements. Do not prioritize video/AI/lens analysis yet.
+4. Produce an offline design for Ethernet, authenticated web management, compatible-image validation, updating/rollback state, plus a separate independent rescue path. Do not claim hardware support without evidence.
+5. Keep `docs/INTERFACE_RE_PLAN.md` as the deferred Phase F/G interface plan; resume it only after the maintenance and recovery gates are satisfied.
+6. Publish only sanitized findings, update this handoff, and stop before deep decompilation or any live-device work.
 
 ## Current reproducibility checkpoint
 

@@ -4,7 +4,7 @@
 
 ## Goal
 
-Build an independent Linux-based firmware for the Reolink RLC-811A, retaining functional video capture/encoding, networking, RTSP/ONVIF, recording, motorized 5× zoom/autofocus, audio, IR/spotlight and other supported hardware. Priority enhancements: user-drawn detection polygons and tripwires, object tracking, and AI license-plate recognition (ALPR). Start computationally intensive AI on a separate local PC through a replaceable engine interface (CodeProject.AI plus alternatives).
+Build an independent Linux-based firmware for the Reolink RLC-811A, retaining functional video capture/encoding, networking, RTSP/ONVIF, recording, motorized 5× zoom/autofocus, audio, IR/spotlight and other supported hardware. **First-install requirement:** Ethernet, secure browser-accessible maintenance interface, compatible new/previous firmware upload, and a *verified independent recovery/rollback method* before persistent installation. A Linux image that only boots is not sufficient. Future enhancements include user-drawn detection polygons, object tracking, and AI license-plate recognition (ALPR), potentially using a separate PC with CodeProject.AI or alternatives.
 
 ## Confirmed target
 
@@ -15,7 +15,7 @@ Build an independent Linux-based firmware for the Reolink RLC-811A, retaining fu
 - **Reference SHA-256:** `f62a68d21397da9bb2aadefc66edfdbe91f35270b2cc64857a9082ed17e6a2e9`
 - **Firmware Device Tree:** Novatek NA51055; Linux 4.19.91; 112 MiB Linux-visible memory and a 128 MiB NAND partition map (declared values, not live measurements).
 
-Read `AGENTS.md` first, then `docs/HARDWARE.md` and `docs/STATE.md` before modifying the project.
+Read `AGENTS.md` first, then `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`, `docs/HARDWARE.md` and `docs/STATE.md` before modifying the project.
 
 ## Safety boundary
 

@@ -4,7 +4,7 @@ This is a real GitHub repo, not an automatically synchronized conversation. **Cl
 
 ## First Codex task (offline only)
 
-1. Read `AGENTS.md`, `docs/STATE.md`, `docs/HARDWARE.md`, and `docs/ROADMAP.md`. Do **not** load the full Master Instruction Library.
+1. Read `AGENTS.md`, `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`, `docs/STATE.md`, `docs/HARDWARE.md`, and `docs/ROADMAP.md`. Do **not** load the full Master Instruction Library.
 2. Inspect the existing Python tools in `tools/`; these are copied from the previous offline extraction toolkit. Do not rewrite unless tests identify a specific defect.
 3. Keep the exact firmware matching installed hardware in an **ignored local directory** at `firmware_inputs/`. The file is user-supplied and intentionally **not** on public GitHub.
 4. For LZO decompression, run the scripts in **WSL2/Linux** (requires Python 3.9+ and `liblzo2.so.2`; on Ubuntu the package is normally `liblzo2-2`). Do not assume native Windows DLL compatibility.
@@ -20,7 +20,7 @@ python3 tools/unpack_reolink_offline.py \
 Do not pass `--write-files` by default; that option materializes proprietary files to your private machine. **Never commit any outputs of that extraction.**
 
 7. Check script assumptions with existing `mtd-utils`/`ubireader` or independent parsing where possible; the original script is a helpful static forensic parser, not a complete journal replay.
-8. Investigate static ABI/call relationships: `device`, `rtsp`, `recorder`, `alarmcenter`, `cgiserver.cgi`, motor driver and AI modules. Produce a *sanitized* findings summary and small testable milestones.
+8. Prioritize offline bootloader behavior, firmware image verification, NAND partition constraints, and potential independent recovery mechanisms. Draft the smallest Linux + Ethernet + authenticated web updater design, keeping the independent rescue gate distinct. Leave camera video/AI for later.
 9. Stop after the analysis/handoff and update `docs/STATE.md`, with no camera connection or firmware deployment.
 
 ## Availability

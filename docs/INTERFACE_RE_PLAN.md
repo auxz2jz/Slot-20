@@ -1,4 +1,9 @@
-# Static interface reverse-engineering plan
+# Deferred static interface reverse-engineering plan
+
+**Priority status:** preserve this plan for Roadmap Phases F/G. The current work
+is recovery-first: complete extraction, boot/update/recovery analysis, and the
+maintenance baseline in `BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`. Do not begin the
+video, AI, or lens stages below until those higher-priority gates are satisfied.
 
 Scope: offline analysis of the matching RLC-811A `IPC_523128M8MP` package. This
 plan does not authorize camera access, execution of recovered ARM programs, or
@@ -80,10 +85,10 @@ Test these contracts with synthetic metadata and prerecorded, non-personal
 fixtures. Keep vendor ABI compatibility research separate from independently
 written application logic.
 
-## Exact next checkpoint
+## Activation checkpoint
 
-Complete B0 on a Linux environment with LZO, then perform B1 only far enough to
-produce the ordered module/process map and a per-binary ELF metadata inventory.
-Stop and update `docs/STATE.md` before deeper decompilation. This creates a
-reviewable checkpoint and prevents simultaneous speculation across video, AI,
-and lens control.
+Complete B0 on a Linux environment with LZO as part of current offline package
+verification. Then pause this plan while the recovery-first roadmap advances.
+After the maintenance baseline and recovery gates are satisfied, begin B1 only
+far enough to produce the ordered module/process map and a per-binary ELF
+metadata inventory. Stop and update `docs/STATE.md` before deeper decompilation.

@@ -1,25 +1,19 @@
-# Lightweight firmware development roadmap
+# Recovery-first firmware development roadmap
 
-**End goal:** replace stock Reolink software, not just skin it. Maintain core hardware functionality and optional external AI processing.
+**Primary goal:** a safely installable, independent Linux firmware for RLC-811A `IPC_523128M8MP` that is **never stranded without an update or recovery path**. The first persistent firmware must provide reliable Ethernet, an authenticated browser management interface and firmware upload/update/rollback; see [BOOT_UPDATE_RECOVERY_REQUIREMENTS.md](BOOT_UPDATE_RECOVERY_REQUIREMENTS.md).
 
-| Phase | Work | Camera risk | Exit gate |
-|---|---|---|---|
-| A (current) | Offline identify partitions, file trees, boot sequence, hardware drivers | None | Reproducible extraction, documented unknowns |
-| B | Trace sensor/video encoder, zoom/focus, networking, AI model and events | None | Evidence-backed interface and dependency maps |
-| C | Build external local-PC proof of concept: RTSP → object detection → polygon/tripwire → snapshot → CodeProject.AI / fallback OCR → searchable event | Read-only connection only after separate approval | Demo on prerecorded clips first; camera untouched |
-| D | Assemble independent Buildroot/Linux userspace, RTSP/ONVIF and control APIs | None while built/tested offline | Reproducible cross-build and appropriate unit tests |
-| E | Verify hardware-specific full flash backup and recovery on matching spare | **High** | Backup restore and rescue tested, not inferred |
-| F | Explore verified RAM boot / hardware tests on spare only | **High** | Hardware peripherals and recovery validated |
-| G | Consider permanent install only after explicit approval and all recovery gates | **High** | Working standalone image and established rollback |
+**Research caveat:** a web interface only works if Linux/networking boot. Independent rescue and verified complete backup on matching spare hardware are required. Original Reolink system fallback and A/B partition capacity are unverified hypotheses, not established features.
 
-## Prioritized capabilities
-1. Reliable basic video pipeline, encoder, network access, recording, optical zoom/focus, IR/spotlight and audio.
-2. User-defined zone polygons, directional line-crossing and event API.
-3. Vehicle/person/object tracking and ALPR with modular inference backends.
-4. System security, updates, limited log export and recoverability.
+| Phase | Work | Release/test gate |
+|---|---|---|
+| A — Offline boot analysis (now) | Reproduce package extraction, boot sequence, U-Boot environment, NAND layout and image signature/validation logic | Evidence-backed boot and recovery hypotheses; no camera access |
+| B — Design independent rescue | Evaluate stock preservation, RAM boot, bootloader recovery, A/B or physical recovery; assess NAND capacity | No assumption that `download` partition is safe |
+| C — Minimal firmware prototype | Build custom Linux + Ethernet + simple authenticated local web admin + validated image upload/update + boot health/rollback logic | Reproducible offline image and tested update simulator |
+| D — Backup/recovery proof on spare | Verify full flash backup and actual rescue mechanism; run interrupted update, invalid image and failed-boot cases | Independent restore demonstrated on matching camera hardware |
+| E — Controlled first install | Only after all checks + explicit approval; observe successful access and subsequent update | First installed image is maintainable and recoverable |
+| F — Camera functionality | Capture/encode video, RTSP, recording, lens, autofocus, IR, spotlight and audio | Measured functional hardware tests |
+| G — Advanced features | Custom zones, tracking, modular AI/ALPR | Noncritical enhancement phase |
 
-## Constraints
-- The NA51055 platform likely cannot host the complete CodeProject.AI server; treat lightweight onboard inference as research.
-- No unrealistic promises of 4K60, local OCR performance or vendor-independent ISP support before measurement.
-- Never publish vendor firmware, credential material, unique identifiers or recovered proprietary binaries.
-- Minimize diagnostics: keep crash/boot logs, parser validations and concise test results only.
+**A minimal test image without web management may be built offline or potentially booted temporarily from RAM on a safely recoverable spare, but it must never be the first persistent firmware on the working camera.**
+
+Keep minimal actionable boot/updater logs and project checkpoints, not the complete Android diagnostics framework. Stock firmware update packages are not full-device backups. Do not store vendor binaries, flash dumps or device-specific secrets in the public repository.

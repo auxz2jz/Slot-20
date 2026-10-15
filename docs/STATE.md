@@ -1,6 +1,6 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-14 — Independent native-Linux UBI geometry, path counts and a 64-file hash sample now corroborate the custom offline extraction. Static boot/recovery analysis, the maintenance-firmware design, and mandatory usage-aware/model-recommendation rules are checkpointed. No camera interacted with; work remains offline.
+**Last milestone:** 2026-10-15 — Task R0 recovered and preserved the interrupted offline U-Boot investigation without replaying it. The local tracked tree was clean, two ignored private analysis helpers and the matching U-Boot artifact were retained, and the repository was safely fast-forwarded to the atomic-task checkpoint `f3e7d21`. No camera interacted with; work remains offline.
 
 ## Goal
 Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
@@ -26,6 +26,11 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Installed pinned `ubi-reader` 0.8.16 with `lzallright` 0.2.6 in an isolated WSL private venv; system `mtd-utils` is 2.2.0 and Python is 3.12.3. No system package was installed.
 - Independently extracted rootfs/app on the native Linux filesystem. Geometry matches the custom parser: 2,048-byte minimum I/O, 131,072-byte PEB, 126,976-byte LEB, 197 rootfs data blocks and 124 app data blocks, with no unknown blocks.
 - Independent path totals match exactly after excluding each extraction root: 760 rootfs paths and 275 app paths. Its 299/255 regular files exceed the custom parser's 291/253 hashes by exactly the recorded 8/2 incomplete reconstructions. A deterministic 32-file sample per volume matched all 64 SHA-256 values with no missing, mismatched or unsafe entries.
+- Task R0 inspected the interrupted workspace before synchronization: `main` was clean at `fd9945c`, no stash existed, and the only identified new work was safely ignored/private. After fetching, the branch was fast-forwarded without reset or overwrite to `f3e7d21`, which adds the bounded atomic-task workflow.
+- The interrupted session's bounded static analysis of the actual matching-package U-Boot was recovered. It identified a raw little-endian ARMv7 U-Boot 2019.04 image linked around `0x06000000`, reset target `0x06001000`, runtime region ending at `0x80000`, and 6,007 trailing `R_ARM_RELATIVE` records. Its normal traced path uses `nvt_boot`, reads an FDT from NAND offset `0x00040000`, loads Linux at `0x05800000`, optionally expands `BCL1` data to `0x01100000`, and invokes `bootm`. This is static package evidence, not a live boot result.
+- The recovered command table has 61 entries, including NAND/UBI, MMC/FAT, TFTP/DHCP, `bootm`, `nvt_update_all`, and `upgrade`. The compiled environment backend is `nowhere` and exposes no persistent `saveenv`; `bootdelay=0` makes the compiled Ctrl+C path only an immediate-poll lead. No DFU/UMS/fastboot, serial-transfer command, bootcount/bootlimit policy, A/B rollback, or demonstrated rescue path was found.
+- A recovered boot-time path associates GPIO 43 (`reset_key`) with a conditional erase at `0x03c00000..0x03efffff` and then attempts `upgrade all 0x1800000 0x4500000`; this ties the declared `download` area at `0x04500000` to a staged-update mechanism. Observed update checks include additive checksums, CRCs, legacy-uImage CRCs and post-write MD5, but neither authenticated image acceptance nor power-fail rollback is proved.
+- R0 reverified the preserved private U-Boot artifact at 572,344 bytes, SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`, and retained two bounded, read-only helpers under ignored `firmware_workspace/`. It did not rerun the bootloader investigation or execute recovered code.
 - Project-specific lightweight safety / checkpoint rules established; deliberately **no automatic import** of the entire master-instruction-library.
 - This public repository holds **notes and independent code only**, never firmware update images or other proprietary material.
 
@@ -35,14 +40,16 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - The original proprietary firmware, extracted sections/manifests and raw prior report ZIP remain private/off-repository; sanitized findings are summarized under `docs/HARDWARE.md`.
 - Vendor executable ABI / callbacks and AI formats are not yet mapped.
 - Exact sensor, flash chip, physical RAM, UART recovery and live AI support unverified.
+- BootROM/loader authentication, OTP/fuse state, actual UART pads/timing, Ethernet/TFTP/MMC readiness, NAND OOB/ECC/bad-block handling, GPIO 43's physical mapping, staged-update completeness/power-loss behavior, and recovery from a damaged loader/U-Boot remain unverified. Command presence is not proof that a recovery route works.
+- The interrupted findings are now durably summarized, but their exact offsets and per-claim reproduction steps have not yet been normalized into the planned A1–A5 public evidence records. Preserve and reuse the existing artifact/helper output; do not repeat broad extraction or disassembly.
 - No camera read-only query, live video test, backup, recovery or flashing performed.
 - No independent camera replacement image or hardware-validated build exists.
 
 ## Next Codex task
-1. Follow recovery-first Roadmap Phase A: statically inspect the matching package's actual U-Boot image loading/validation, environment assumptions, command surface, factory rescue leads and full-backup requirements. Do not execute recovered ARM code or prioritize video/AI/lens analysis.
-2. Define and test a host-only signed bundle schema plus file-backed update/boot-state simulator with bounded power-loss fault injection.
-3. Audit the BSP build dependencies/binary objects, pin a lawful toolchain, then build the maintenance-only Linux prototype offline. A build is not a boot or recovery claim.
-4. Keep `docs/INTERFACE_RE_PLAN.md` deferred until the maintenance and recovery gates are satisfied. Publish only sanitized findings and stop before any live-device work.
+1. **A1 only:** turn the recovered matching-package U-Boot inventory into a small sanitized evidence table covering exact size/hash, raw format, architecture, linked-base/reset-entry evidence and relocation-region geometry. Reuse the existing private artifact and bounded helper output; do not re-extract or broaden into A2/A3.
+2. After an A1 checkpoint, use the atomic plan for one task at a time; later A2–A5 should validate and publish the already recovered command, boot-flow and recovery leads without replaying the whole investigation.
+3. Define and test a host-only signed bundle schema plus file-backed update/boot-state simulator only after the Phase-A evidence handoff is adequately normalized.
+4. Keep all live-device work and `docs/INTERFACE_RE_PLAN.md` deferred until the maintenance and recovery gates are satisfied.
 
 ## Current reproducibility checkpoint
 
@@ -53,18 +60,20 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - `tests/test_compare_manifest_sample.py`: SHA-256 `efef7f146d3a2f5524e76639ccd50fe67a340871fb87bc5e0fdd6e2af123f276`
 - Private `rootfs.bin`: SHA-256 `57a4da9da4abc3ea1d65fa80653f3ab57879c962d8c39675f000f6c50476ae64`
 - Private `app.bin`: SHA-256 `f1d3511609aa2d8642e05bfbff4fb02c192a4faa032bdd6de4f6fd44da043531`
-- Tested here: saved Linux manifest identity, independent UBI geometry/path totals/64-file sample, focused generic Novatek config evidence, synthetic parser/sampler behavior.
-- Untested here: full all-file independent hash comparison, actual Reolink U-Boot behavior, Linux build/boot, recovery and all hardware behavior.
+- Private `uboot.bin`: 572,344 bytes; SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`
+- Tested here: R0 Git/worktree reconciliation, preservation and hashes of private helpers/artifact, saved Linux manifest identity, independent UBI geometry/path totals/64-file sample, focused generic Novatek config evidence, synthetic parser/sampler behavior.
+- Recovered but not rerun in R0: bounded strings, command-table and ARM disassembly observations summarized above.
+- Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux build/boot, independent recovery and all hardware behavior.
 
 ## Recovery/checkpoint rule
 Keep last successful commit; after two repeated failures with the same hypothesis, log a short blocker and change approach. Before any future hardware testing, independently validate a full-device backup and demonstrated recovery on matching hardware.
 
 ## Next-stage recommendation
 
-- **Completed:** independent UBI geometry and path totals match; all 64 sampled regular-file hashes match; the isolated analyzer versions and private input hashes are recorded.
-- **Checkpoint:** source/tooling milestone `25e1808` is pushed; this cross-check handoff is included in the current documentation commit. Private firmware, extracted trees and analyzer venv remain outside Git; no proprietary content is committed.
-- **Next task:** statically map the matching Reolink U-Boot binary's image-validation path, environment assumptions and available independent recovery command surface without executing it.
-- **Recommended model and reasoning:** **Ultra/highest capability**.
-- **Why:** this is difficult Novatek bootloader reverse engineering with hardware-specific recovery consequences, stripped ARM code and critical uncertainty about what the shipped binary actually enables.
-- **When to switch:** return to High once the boot/validation architecture is established and work becomes bounded implementation or ordinary debugging; use Medium for subsequent documentation/test maintenance.
-- **Usage preparation:** commit and push this sanitized cross-check checkpoint before beginning the expensive bootloader investigation; retain the current private section hashes and do not regenerate extraction artifacts unnecessarily.
+- **Completed:** Task R0 safely reconciled Git, preserved ignored/private interrupted work, reverified the U-Boot artifact and helper hashes, and durably separated recovered binary observations from remaining hardware/recovery unknowns. No reverse engineering was repeated.
+- **Checkpoint:** `main` was safely fast-forwarded to public checkpoint `f3e7d21`; the R0 documentation checkpoint containing this state/handoff is pushed separately. Private firmware, helpers, extracted trees and analyzer venv remain outside Git; no proprietary bytes are committed and no tracked WIP remains.
+- **Next task:** **A1** — publish a bounded evidence table for the actual packaged U-Boot's hash/size, raw format, architecture, linked base/reset entry and relocation geometry using the preserved artifact/output only.
+- **Recommended model and reasoning:** **High**.
+- **Why:** exact evidence from a stripped raw ARM image requires careful offset/architecture validation, but the artifact and recovered leads make this a bounded task rather than a new open-ended investigation.
+- **When to switch:** use Medium if only documentation remains; consider Ultra only after another checkpoint for a single unresolved BootROM/loader-authentication, fuse, or independent-recovery control-flow question.
+- **Usage preparation:** R0 itself is the required checkpoint before A1. A reliable snapshot at 2026-10-15 03:05 PDT showed 57% five-hour and 93% weekly usage remaining, but the user explicitly requested stopping after R0; recheck usage before any later expensive task.

@@ -1,6 +1,6 @@
 # Offline boot, update and recovery analysis
 
-**Checkpoint:** 2026-10-13. **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
+**Checkpoint:** 2026-10-15 (atomic task A1). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
 
 This document keeps observations from the matching Reolink package separate from capabilities found in generic Novatek source code. A generic BSP feature is not proof that the shipped RLC-811A binary enables it or that the board exposes the required pins, port or recovery trigger.
 
@@ -12,6 +12,59 @@ This document keeps observations from the matching Reolink package separate from
 - The package FDT declares a 128 MiB NAND map and the partition table recorded in `docs/HARDWARE.md`. Those values are static firmware declarations, not live chip measurements.
 - `rootfs` and `app` are UBI/UBIFS images. The package's kernel identifies itself as Linux 4.19.91 and its FDT is compatible with `novatek,na51055`.
 - Nothing in the package establishes a working A/B layout, a factory fallback image, a rescue button, or a safe use for the 59 MiB `download` partition.
+
+### A1 — actual packaged U-Boot inventory
+
+The input is the preserved private `firmware_workspace/analysis/sections/uboot.bin` extracted from the matching package. It remains ignored and is not committed. The table records only bounded metadata and structure checks; it does not claim that the installed camera contains identical bytes or that any recovery mechanism works.
+
+| Item | Verified evidence | Classification / limit |
+|---|---|---|
+| Artifact identity | Size 572,344 bytes (`0x8bbb8`); SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b` | Direct file metadata/hash from the private section |
+| Format | File offset `0x0` is little-endian word `0xea0003fe`, not ELF magic or legacy-uImage magic; it decodes as an ARM branch | Flat/raw executable section at its start; absence of a wrapper at offset zero does not describe every embedded data structure |
+| Architecture | ARM-mode little-endian decoding yields a coherent vector table; compiled strings `arch=arm` and `cpu=armv7` occur at file offsets `0x6c1df` and `0x6c1e8`. The U-Boot 2019.04 version string begins at `0x7abeb` | Direct static decode plus binary self-identification; not a live CPU query |
+| Linked base and reset entry | With linked base `0x06000000`, the first instruction branches to `0x06001000`. Vector literals at file offsets `0x20..0x38` contain addresses `0x06000060..0x060002a0`, and relocation offsets occupy the same `0x06000000` address window | Strongly corroborated static link-address inference; not proof of the Boot ROM's runtime load action |
+| Runtime-image region | File offsets `0x00000..0x7ffff`, length `0x80000` (524,288 bytes) | Strong structural boundary inference from the relocation-shaped tail and its address coverage; the raw file has no section headers |
+| Relocation region | File offsets `0x80000..0x8bbb7`, length `0xbbb8` (48,056 bytes), exactly 6,007 eight-byte `<r_offset,r_info>` records. `r_offset` is monotonic from `0x06000020` through `0x0607ffb4`; every `r_info` is `0x17` (ARM relocation type 23, `R_ARM_RELATIVE`) | Direct structural parse; naming it the stripped `.rel.dyn` content is an ARM ABI/U-Boot layout inference because this raw file has no ELF section headers |
+
+Bounded verification commands used for A1 (run from the repository root; they read only the private section and never execute target code):
+
+```powershell
+$image = 'firmware_workspace\analysis\sections\uboot.bin'
+Get-Item -LiteralPath $image | Select-Object Length
+Get-FileHash -Algorithm SHA256 -LiteralPath $image
+```
+
+```bash
+# From WSL at the repository root; the helper caps the image at 8 MiB and this request at 64 bytes.
+ANALYZER_PY=/home/firmware-analysis/slot20_private/venv-capstone-5.0.9/bin/python
+IMAGE=firmware_workspace/analysis/sections/uboot.bin
+"$ANALYZER_PY" firmware_workspace/disasm_arm_ranges.py "$IMAGE" 0x06000000 --bytes 0x40
+```
+
+```bash
+ANALYZER_PY=/home/firmware-analysis/slot20_private/venv-capstone-5.0.9/bin/python
+IMAGE=firmware_workspace/analysis/sections/uboot.bin
+"$ANALYZER_PY" -c '
+from pathlib import Path
+import hashlib, struct, sys
+p = Path(sys.argv[1])
+assert p.stat().st_size <= 8 * 1024 * 1024
+b = p.read_bytes()
+w = struct.unpack_from("<I", b, 0)[0]
+imm = w & 0xffffff
+if imm & (1 << 23):
+    imm -= 1 << 24
+tail = b[0x80000:]
+assert len(tail) % 8 == 0
+records = [struct.unpack_from("<II", tail, i) for i in range(0, len(tail), 8)]
+print(len(b), hashlib.sha256(b).hexdigest(), hex(w), hex(0x06000008 + (imm << 2)))
+print(hex(b.find(b"arch=arm")), hex(b.find(b"cpu=armv7")), hex(b.find(b"U-Boot 2019.04")))
+print(hex(len(tail)), len(records), hex(records[0][0]), hex(records[-1][0]))
+print(sorted({info for _, info in records}), all(records[i][0] <= records[i+1][0] for i in range(len(records)-1)))
+' "$IMAGE"
+```
+
+The structural command caps input at 8 MiB, decodes only the first branch, locates three fixed identity strings, reads the `0xbbb8`-byte tail as little-endian pairs, asserts an 8-byte record boundary, counts records, checks monotonic offsets, and prints the complete `r_info` set. These focused checks replace no broader bootloader analysis and disclose no proprietary payload bytes.
 
 ## Confirmed from official Novatek source
 

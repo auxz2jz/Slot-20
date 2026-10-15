@@ -1,32 +1,35 @@
 # Slot-20 — Current task handoff
 
-**Status:** Task R0 COMPLETE — the interrupted offline bootloader session was recovered without restarting its analysis. The local tracked tree was clean, private ignored work was preserved, and `main` was safely fast-forwarded from `fd9945c` to the fetched atomic-task checkpoint `f3e7d21` before this handoff was written.
+**Status:** Task A1 COMPLETE — the actual matching-package U-Boot section now has a concise, reproducible public evidence table covering identity, raw ARM layout, linked-base/reset evidence, and relocation geometry. No broader bootloader analysis was repeated.
 
-**LAST TASK ID / STATUS:** R0 local-work recovery — **VERIFIED COMPLETE**. The interrupted bootloader investigation produced useful matching-binary evidence, but its results remain a recovered partial analysis until each planned A-task publishes a bounded evidence record. No recovered ARM binary was executed.
+**LAST TASK ID / STATUS:** A1 packaged U-Boot inventory — **VERIFIED COMPLETE**. The source artifact remained private and ignored; only sanitized metadata, offsets, classifications, and bounded commands were documented.
 
 **EVIDENCE AND TESTS:**
 
-- **Verified during R0:** `git status --short --branch` was clean on `main`; `git stash list` was empty; `f3e7d21` was a strict fast-forward of local `fd9945c`. The incoming changes touched only `AGENTS.md`, `docs/ATOMIC_TASK_PLAN.md`, and this handoff.
-- **Verified during R0:** private `firmware_workspace/analysis/sections/uboot.bin` remains present at 572,344 bytes with SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`.
-- **Preserved private helpers:** ignored `firmware_workspace/probe_uboot_tables.py` (SHA-256 `35e858dc8cb3bc6e1bd8b1ceec87c968a25cc685adf39991f12f94024a10cc2c`) and `firmware_workspace/disasm_arm_ranges.py` (SHA-256 `9b0ec2393c996d5f076d2aba26d848b35ccbdf26fe1b8b5d427680d29477ef91`) were inspected and remain outside Git. The private WSL environment reports Capstone package 5.0.9; no system package was changed.
-- **Recovered direct static-analysis findings:** the file is a raw little-endian ARMv7 U-Boot 2019.04 image linked around `0x06000000`; the reset branch targets `0x06001000`; its first `0x80000` bytes are runtime code/data followed by 6,007 `R_ARM_RELATIVE` records. Compiled defaults select `nvt_boot`, `bootdelay=0`, UART 115200, UBIFS root, and an environment backend named `nowhere` with no `saveenv` command. The traced normal path reads the FDT from NAND offset `0x00040000`, loads Linux to `0x05800000`, optionally expands `BCL1` content to `0x01100000`, and invokes `bootm`; these are package-binary observations, not hardware proof.
-- **Recovered command/update findings:** 61 registered commands include NAND/UBI, MMC/FAT, TFTP/DHCP, `bootm`, `nvt_update_all`, and `upgrade`; no DFU/UMS/fastboot, serial-transfer, persistent environment-save, or demonstrated A/B rollback command was found. A boot-time path labels GPIO 43 `reset_key`, conditionally erases `0x03c00000..0x03efffff`, and attempts `upgrade all 0x1800000 0x4500000`, linking the static `download` area at `0x04500000` to staged updates. Checks observed in traced paths include additive checksums, CRCs, legacy-uImage CRCs, and post-write MD5; authenticated acceptance and rollback were **not** proved.
-- **Verification boundary:** those boot-flow findings came from the interrupted session's bounded strings/table/disassembly work. R0 rechecked preservation, hashes, Git state, and tool metadata only; it deliberately did not repeat the reverse engineering. No camera or camera network was accessed, and no recovered executable was run.
+- Private `firmware_workspace/analysis/sections/uboot.bin` is 572,344 bytes (`0x8bbb8`), SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`.
+- File offset `0x0` is little-endian ARM word `0xea0003fe`, not ELF or legacy-uImage magic. A bounded 64-byte ARM-mode disassembly resolves it from linked base `0x06000000` to reset target `0x06001000`; vector literals at `0x20..0x38` point into the same address window.
+- Compiled strings `arch=arm`, `cpu=armv7`, and `U-Boot 2019.04` begin at file offsets `0x6c1df`, `0x6c1e8`, and `0x7abeb` respectively.
+- File offsets `0x80000..0x8bbb7` form a `0xbbb8`-byte tail: 6,007 eight-byte little-endian pairs. Relocation offsets are monotonic from `0x06000020` through `0x0607ffb4`, and every full `r_info` word is `0x17` (ARM type 23, `R_ARM_RELATIVE`). Calling this stripped `.rel.dyn` content is an ABI/layout inference because the raw file has no ELF section headers.
+- Focused verification consisted of the size/hash check, capped metadata/string lookup, 64-byte disassembly, relocation record-boundary/count/type/monotonicity checks, `git diff --check`, and a tracked-file scope check. No recovered firmware was executed.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; public checkpoint before R0 edits is `f3e7d21`. The R0 recovery checkpoint is the commit containing this file (parent `f3e7d21`) and is pushed to `origin/main` after the focused verification recorded below; use `git log -1 --oneline` for its immutable ID.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; parent checkpoint `65a55f8`. The A1 checkpoint is the commit containing this file and is pushed to `origin/main` after the focused verification; use `git log -1 --oneline` for its immutable ID.
 
-**LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):** the two ignored helper scripts, proprietary `uboot.bin`, prior extracted firmware, and isolated WSL analyzer environments remain local/private and are not Git-backed. The helpers are useful but not public project tooling yet. No stash or tracked WIP exists. Do not delete or upload `firmware_workspace/` or `/home/firmware-analysis/slot20_private/`.
+**LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):** proprietary `uboot.bin`, the two ignored bounded helper scripts, prior extracted firmware, and isolated WSL analyzer environments remain local/private and are not Git-backed. Do not delete or upload `firmware_workspace/` or `/home/firmware-analysis/slot20_private/`.
 
-**WHAT REMAINS UNFINISHED:** convert recovered claims into small public evidence tables with reproducible offsets; independently spot-check each bounded A-task; determine BootROM/loader authentication and fuse state; establish actual UART pads/timing, Ethernet/TFTP/MMC usability, NAND/OOB/ECC geometry, GPIO 43's physical role, staged-update format and power-loss behavior; and prove an independent recovery route on matching spare hardware. None of those hardware/recovery questions is established by command strings.
+**WHAT REMAINS UNFINISHED:** command availability/usability (A2), boot selection and validation control flow (A3), environment/partition ownership (A4), and independent-rescue evidence (A5). Installed-camera byte identity, BootROM/loader authentication, fuse state, physical interfaces, NAND/OOB/ECC behavior, and all recovery claims remain unverified.
 
-**NEXT SINGLE TASK ID + INPUT:** **A1** — using the existing private `uboot.bin`, its recorded hash, and the preserved helper output, publish only the actual packaged U-Boot inventory: exact size/hash, raw format, architecture, linked-base/reset-entry evidence, and relocation-region geometry. Do not re-extract firmware or broaden into A2/A3.
+**NEXT SINGLE TASK ID + INPUT:** **A2** — reuse the preserved command-table output and bounded strings to publish an actual-binary table for boot, UART, network-recovery and flash operations. Classify each item as present, absent in the inspected table/region, or uncertain; cite offsets/references and do not infer hardware usability.
 
-**PASS CRITERION FOR NEXT TASK:** a small sanitized evidence table distinguishes direct bytes/disassembly from inference, gives reproducible bounded offsets/commands, confirms no proprietary bytes are committed, and passes the smallest relevant documentation/tool check.
+**PASS CRITERION FOR NEXT TASK:** one sanitized table covers only the scoped command/string categories with direct matching-binary evidence and explicit limits; no generic Novatek feature is presented as shipped-camera behavior, no target code is executed, and focused documentation checks pass.
 
-**RECOMMENDED REASONING + WHY:** **High** for A1 because exact claims from a stripped raw ARM image require careful offset and architecture validation even though the artifact and recovered leads already exist. Use Medium if the task becomes documentation-only; use Ultra only after a new checkpoint for one narrowly stated unresolved loader/BootROM, fuse, or recovery-control-flow question.
+**RECOMMENDED REASONING + WHY:** **High** for A2 because exact command-table/string mapping in a stripped binary and careful present/absent/uncertain classification require firmware-analysis judgment, while the preserved output keeps the task bounded.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable Codex account telemetry at 2026-10-15 03:05 PDT reported 43% used in the five-hour window and 7% used in the weekly window (57% and 93% remaining respectively). This is a timestamped snapshot, not continuous monitoring.
+**WHEN TO SWITCH:** use Medium if A2 reduces to documentation-only editing. Use Ultra only after another checkpoint for one narrowly stated unresolved A3+ control-flow, BootROM-authentication, fuse, or independent-recovery question.
 
-**CONTINUE OR STOP + REASON:** **STOP after R0**, as explicitly requested. Do not launch A1 from this checkpoint even though the usage snapshot would otherwise permit a bounded task.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable Codex telemetry at 2026-10-15 14:27 PDT reported 12% used in the five-hour window and 18% used in the weekly window (88% and 82% remaining respectively). This is a timestamped snapshot, not continuous monitoring.
+
+**USAGE PREPARATION:** A1 is committed and pushed before any A2 work. Recheck usage at the next task boundary; do not use this snapshot as a live meter.
+
+**CONTINUE OR STOP + REASON:** **STOP after A1**, as explicitly requested. Do not start A2 automatically.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification, or flash was performed or authorized.

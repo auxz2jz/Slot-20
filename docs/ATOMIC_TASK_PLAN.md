@@ -1,0 +1,66 @@
+# Slot-20 — Small-task execution plan and interruption-safe handoff
+
+**Status:** planned tasks, NOT evidence of implementation. **Scope:** Reolink RLC-811A `IPC_523128M8MP`. This file complements `AGENTS.md`, `docs/STATE.md`, `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`, and the recovery-first roadmap. It does **not** import all Master Instruction Library frameworks.
+
+## Intent
+
+Replace open-ended "analyze the bootloader" or "build the firmware" runs with **one narrow deliverable at a time**. Each task must be independently verifiable, resumable, and small enough to finish and checkpoint before launching another substantial operation. For demanding/research-heavy work, aim for a **2–5 minute logical slice** or a single bounded investigation, not a guaranteed execution time or token quota. If a step proves larger, split it again *before* running a long tool operation. Do not break up an atomic flash/file write in progress; **no camera writes are currently authorized**.
+
+**The user stopped an Ultra session after reported remaining usage fell from ~73% to ~3%.** Its local changes are UNKNOWN until checked on the Windows computer. **Task R0 is required first**, without replaying the interrupted analysis.
+
+## Task sequencing and acceptance criteria
+
+One task should have a specific input, one main output, and a verification criterion. Later tasks are provisional; revise based on real evidence rather than assuming generic Novatek bootloader capabilities.
+
+| ID | Next small task | Deliverable and completion check | Suggested reasoning |
+| --- | --- | --- | --- |
+| **R0 (FIRST)** | Recover interrupted Ultra session from local Git/files and existing output | Identify tracked/untracked changes, preserve useful findings safely, record exact next action, and push sanitized, **verified** content; do not re-run bootloader analysis | **Medium** |
+| A1 | Inventory **actual packaged Reolink** U-Boot section and its verified offsets, size, hashes, architecture and entry-point clues | Small evidence table with exact artifact hash and bounded commands; no execution of recovered firmware | High |
+| A2 | Inspect only bounded U-Boot strings/command table candidates for boot, UART, network recovery and flash operations | Evidence-backed list: present / absent in inspected region / uncertain, with offsets or references; no inference that exposed commands are usable | High |
+| A3 | Trace the actual boot image selection and validation code along ONE focused path | Narrow static-analysis report with cited binary offsets/disassembly and verified vs hypothesized steps; split again if needed | High; Ultra only for a **specific unresolved control-flow question** |
+| A4 | Analyze actual environment location/boot arguments relative to package FDT and generic BSP | Explicit mismatch/partition ownership report; never copy generic U-Boot offsets into camera instructions | High |
+| A5 | Review possible independent rescue routes and identify minimum missing evidence | Recovery candidate matrix and specific test-hardware requirements; **not** proof of working UART/TFTP/ROM/programmer | High; Ultra only for a narrowly scoped hard question |
+| B1 | Define a **host-only** compatible signed update-bundle format | Minimal schema with board ID, size bounds, versions, signature and hashes; security assumptions stated | Medium–High |
+| B2 | Implement **host-only** bundle verification and negative unit tests | Reject bad signatures, truncated payloads, mismatched hardware and over-limit sizes without writing flash | High |
+| B3 | Implement small file-backed boot/update-state simulator | Deterministic state transitions and basic tests; no real NAND or camera access | High |
+| B4 | Add bounded interrupted-write/power-loss fault tests to simulator | Recorded pass/fail evidence for selected transitions; simulator results explicitly not hardware proof | High |
+| C1 | Audit required Novatek BSP build inputs, shipped binary objects, licensing and cross-compiler ABI | Dependency/toolchain decision with licensing and reproducibility caveats | High |
+| C2 | Produce a **minimal offline** Buildroot/kernel/rootfs prototype in separate verifiable steps | Reproducible host-side build artifacts; no claim of device boot, flashing or recovery | High |
+| C3 | Implement and demonstrate local browser management UI **against simulator only** | PC-hosted screenshots for status, firmware validation/update, rollback/errors and recovery explanation; label offline demo | Medium–High |
+| D1+ (BLOCKED) | Obtain matching spare and plan safe full per-device backup + independent recovery tests | **Explicit fresh user approval**, independent matching-hardware proof, and required backups **before** any physical experiments or flashing | High/Ultra for specific questions |
+
+**Not yet authorized / not eligible for a persistent camera image:** video/ISP/zoom/ALPR features; modifying production camera; altering bootloader/calibration/factory data; claiming A/B, TFTP or factory fallback as proven. All physical work remains behind documented consent and recovery gates.
+
+## Execution contract for each small task
+
+1. Inspect only `AGENTS.md`, the compact current handoff, `docs/STATE.md` sections relevant to this task, and `git status --short`/`git log -1`. If working tree is dirty, reconcile and preserve first. Avoid reading all prior chats.
+2. Select **one** task ID. State the exact output and minimal pass criterion. Treat stored artifacts and previous tests as reusable evidence. Before expensive binary analysis or build, create a quick safe checkpoint.
+3. Perform focused work; bound output and avoid broad recursive searches, parallel agents or repeating extraction. Stop after two equivalent failures and log blocker.
+4. Perform the smallest meaningful verification. Clearly label VERIFIED / PARTIAL / UNVERIFIED, including when hardware is **never tested**.
+5. Update the project handoff file `docs/NEXT_TASK_HANDOFF.md` (and `docs/STATE.md` only for significant new facts), preserve meaningful verified code/docs with a safe Git checkpoint/push, and record any untracked/private items requiring a separate protected backup. Do not commit proprietary binaries, secrets or full flash dumps.
+6. Give a **brief output**: completed task ID; result/tests; Git commit + push status; exact next task ID; recommended reasoning; and continue/stop decision. No long transcript.
+
+## Reliable-usage gate before launching another task
+
+- **If an actual current remaining account-usage percentage is reliably visible to the agent:** above 50% = small tasks may continue sequentially after verified checkpoint; 30–50% = prefer routine/High tasks, with a saved checkpoint before each; 15–30% = finish current safe operation, checkpoint, then **do not launch a substantial new task**; under 15% = **checkpoint and stop**. Never auto-start another Ultra task when usage is at or below 50%.
+- **If usage cannot be observed reliably (common):** do **not** invent an estimate based on time, token count, context-window size, number of turns, or the user's earlier percentage. Treat usage as UNKNOWN. **Stop after one costly analysis/build/Ultra-sized task**, or after at most two genuinely small Medium/High tasks, saving a checkpoint first. Ask the user to check the usage meter before further expensive work. A user-provided percentage is a snapshot, not live telemetry.
+- **Before any Ultra task:** require a narrowly scoped question, a prior checkpoint, and explicit user selection of that reasoning level; never open an unlimited investigation and assume an instruction can enforce a time/token cap. Prefer High for initial focused static analysis.
+- **If the limit is reached mid-task:** no fake success, no retries, no automatic scheduled continuation claim. Next session starts with handoff + real Git status, preserving any partial work.
+- These thresholds are conservative **workflow decisions, not platform-enforced usage controls**; one heavy operation may still consume substantial allowance before it can be stopped.
+
+## Handoff format (write to docs/NEXT_TASK_HANDOFF.md; update, do not append forever)
+
+```text
+LAST TASK ID / STATUS:
+EVIDENCE AND TESTS:
+GIT BRANCH / COMMIT / PUSHED?:
+LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):
+NEXT SINGLE TASK ID + INPUT:
+PASS CRITERION FOR NEXT TASK:
+RECOMMENDED REASONING + WHY:
+USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:
+CONTINUE OR STOP + REASON:
+CAMERA CONTACT/FLASH: NONE (unless separately approved and accurately recorded)
+```
+
+**Hand off, not handshake:** a durable, minimal written record telling the next agent exactly where to resume. When restarting, compare that note to actual Git/local evidence; it may be stale if a quota interruption happened before the final save. Updating this plan never retroactively certifies unpublished work done by the interrupted Ultra session.

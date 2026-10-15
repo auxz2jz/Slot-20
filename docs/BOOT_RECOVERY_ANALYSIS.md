@@ -1,6 +1,6 @@
 # Offline boot, update and recovery analysis
 
-**Checkpoint:** 2026-10-15 (atomic task A1). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
+**Checkpoint:** 2026-10-15 (atomic tasks A1–A2). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
 
 This document keeps observations from the matching Reolink package separate from capabilities found in generic Novatek source code. A generic BSP feature is not proof that the shipped RLC-811A binary enables it or that the board exposes the required pins, port or recovery trigger.
 
@@ -66,6 +66,48 @@ print(sorted({info for _, info in records}), all(records[i][0] <= records[i+1][0
 
 The structural command caps input at 8 MiB, decodes only the first branch, locates three fixed identity strings, reads the `0xbbb8`-byte tail as little-endian pairs, asserts an 8-byte record boundary, counts records, checks monotonic offsets, and prints the complete `r_info` set. These focused checks replace no broader bootloader analysis and disclose no proprietary payload bytes.
 
+### A2 — actual command and recovery surface
+
+The preserved command-table probe found one contiguous 61-entry run at file offsets `0x7f5ac..0x7fc57` (end-exclusive `0x7fc58`), with 28-byte entries. Entry offsets and handler addresses below come directly from that run. “Present” means a named handler is compiled and registered in this package binary; it does **not** prove the production board exposes the interface, initializes the required hardware, accepts an image, or can recover from a broken bootloader.
+
+| Area | Classification | Matching-binary evidence | Limit / unresolved point |
+|---|---|---|---|
+| Normal booting | **Present (compiled); runtime uncertain** | `bootm` entry `0x7f600`, handler `0x0600efb4`; `nboot` `0x7f910` / `0x060147a0`; `nvt_boot` `0x7f948` / `0x0600d600`. Exact strings: `bootcmd=nvt_boot` at `0x6c14a`, `bootdelay=0` at `0x6c15b` | Establishes commands/default strings only. A3 must document the normal boot control flow; no live boot was observed |
+| UART / serial console | **Present clues; serial loaders absent; hardware uncertain** | Exact strings `console=ttyS0,115200` at `0x6c0cd`, `baudrate=115200` at `0x6c167`, and `Hit ctrl + c` at `0x6b4ce`; registered `nvt_uart_disable` at `0x7fa44`, handler `0x0600ef34`. No registered `serial`, `loadx`, `loady`, or `loads` command | Does not establish pinout, voltage, pad mux, fuse state, readable output, or a usable interrupt window. Never invoke the UART-disable command |
+| Ethernet / DHCP / TFTP | **Present (compiled); hardware uncertain** | `bootp` `0x7f61c` / `0x06014c84`; `dhcp` `0x7f6a8` / `0x06014c90`; `ping` `0x7fa98` / `0x06014cdc`; `tftpboot` `0x7fb5c` / `0x06014c9c`. No separate registered `eth` diagnostic command | Network stack commands are present, but MAC/PHY initialization, link, board wiring, RAM destinations, and image acceptance are untested |
+| NAND / UBI | **Present (compiled); device geometry uncertain** | `chpart` at `0x7f638`; `mtdparts` `0x7f8bc`; `nand` `0x7f8f4`; `nboot` `0x7f910`; `ubi` `0x7fb94`; `ubifsload`, `ubifsls`, `ubifsmount`, `ubifsumount` at `0x7fbb0..0x7fc04` | Command presence does not identify the physical NAND, ECC/OOB scheme, bad blocks, safe partition bounds, or restore correctness |
+| Firmware updating | **Present (compiled); authentication and rollback uncertain** | `crc32` at `0x7f68c`; `md5sum` `0x7f84c`; `nvt_update_all` `0x7fa60`, handler `0x0600d9a0`; `upgrade` `0x7fc20`, handler `0x0601ebe8`. Security/OTP-related commands include `nvt_encrypt` at `0x7f964`, `nvt_secure_en` at `0x7fa28`, and `nvt_write_key` at `0x7fa7c` | Checksums and security-command presence do not prove signed-update enforcement, fuse state, power-fail safety, or rollback. OTP/security commands are dangerous and must not be invoked |
+| Alternate-load recovery candidates | **Present as commands; recovery unverified** | MMC/FAT surface includes `fatinfo`/`fatload` through `fatwrite` at `0x7f718..0x7f7c0`, plus `mmc` `0x7f884` and `mmcinfo` `0x7f8a0`. Network-load commands plus `bootm` could form a RAM-boot path | SD/MMC slot wiring, boot-source straps, Ethernet readiness, safe RAM layout, console control, and secure-boot policy are unknown. These are leads, not recovery methods |
+| USB / serial-download recovery | **Absent in the inspected command table** | No registered `usb`, `dfu`, `ums`, `fastboot`, `loadx`, `loady`, or `loads` command among all 61 entries | This excludes those command names from the parsed table, not all dormant code or SoC Boot ROM capabilities |
+| Automatic rollback / named rescue | **Absent as inspected names/strings; overall capability uncertain** | No registered `saveenv`; exact lower-case ASCII searches over the complete bounded image found no `bootcount`, `bootlimit`, `altbootcmd`, `upgrade_available`, `rollback`, `fallback`, `rescue`, `recovery`, or `fdt.restore` token | Absence of these names is not formal proof that no unnamed state machine exists. No A/B or independent recovery path is demonstrated |
+
+Bounded A2 verification commands (run from WSL at the repository root; neither executes target code):
+
+```bash
+ANALYZER_PY=/home/firmware-analysis/slot20_private/venv-capstone-5.0.9/bin/python
+IMAGE=firmware_workspace/analysis/sections/uboot.bin
+"$ANALYZER_PY" firmware_workspace/probe_uboot_tables.py "$IMAGE" --base 0x06000000
+```
+
+```bash
+ANALYZER_PY=/home/firmware-analysis/slot20_private/venv-capstone-5.0.9/bin/python
+IMAGE=firmware_workspace/analysis/sections/uboot.bin
+"$ANALYZER_PY" -c '
+from pathlib import Path
+import sys
+p = Path(sys.argv[1])
+assert p.stat().st_size <= 8 * 1024 * 1024
+b = p.read_bytes()
+present = (b"bootcmd=nvt_boot", b"bootdelay=0", b"baudrate=115200", b"console=ttyS0,115200", b"Hit ctrl + c")
+absent = (b"bootcount", b"bootlimit", b"altbootcmd", b"upgrade_available", b"rollback", b"fallback", b"rescue", b"recovery", b"fdt.restore")
+for value in present + absent:
+    offset = b.find(value)
+    print(value.decode(), hex(offset) if offset >= 0 else -1)
+' "$IMAGE"
+```
+
+The probe caps input at 8 MiB and reports only plausible command records whose pointers remain inside the image. The targeted string command scans the known 572,344-byte input for the listed exact tokens; `-1` supports only “absent as that exact string,” not absence of all equivalent code.
+
 ## Confirmed from official Novatek source
 
 Novatek's public repositories contain branches matching the versions observed in the package:
@@ -101,7 +143,7 @@ The generic U-Boot header conditionally places a NAND environment at `0x002c0000
 ## Recovery candidates, not proven mechanisms
 
 1. **SoC Boot ROM or external NAND programmer.** Potentially independent of Linux and U-Boot, but no RLC-811A pinout, electrical procedure, compatible tool or spare-hardware restore has been demonstrated.
-2. **Preserved shipped U-Boot with UART and/or TFTP.** The generic BSP supports TFTP, but console access, interruption, Ethernet initialization and usable commands in the Reolink build are not proven.
+2. **Preserved shipped U-Boot with UART and/or TFTP.** The matching binary registers console/network clues and TFTP-related commands, but physical console access, reliable interruption, Ethernet initialization and actual command usability are not proven.
 3. **Protected recovery Linux selected by the bootloader.** Plausible only if immutable selection logic, protected storage, watchdog/reset handling and a power-fail-safe boot-state store can be demonstrated.
 4. **A/B kernel and root filesystem.** Desirable, but space, partition ownership, boot selection and health marking are unresolved. The `download` partition cannot be assigned to this design until its factory role is understood.
 5. **Vendor web update or reset button.** Neither is independent recovery from an unbootable system and neither counts toward the recovery gate.
@@ -109,7 +151,7 @@ The generic U-Boot header conditionally places a NAND environment at `0x002c0000
 ## Evidence still required before hardware work
 
 - Identify the physical NAND part, page/OOB/erase geometry, ECC scheme and bad-block behavior.
-- Determine the real boot sequence, actual U-Boot command set/environment, boot interruption method, watchdog/reset reason handling and whether secure boot/eFuses are active.
+- Determine the real boot sequence, environment persistence/partition ownership, practical boot interruption, watchdog/reset-reason handling and whether secure boot/eFuses are active. The compiled command set is now inventoried, but hardware usability remains unverified.
 - Determine whether a ROM downloader, UART recovery, USB device recovery, TFTP recovery or programmer can restore every required region on matching spare hardware.
 - Acquire and verify a complete per-device backup including OOB/bad-block information and unique factory/calibration/identity regions.
 - Explain the purpose and restore semantics of `fdt.restore`, `uenv`, `para`, `sp`, `ext_para` and `download` without repurposing them.

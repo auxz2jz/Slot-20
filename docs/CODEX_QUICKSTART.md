@@ -19,7 +19,16 @@ python3 tools/unpack_reolink_offline.py \
 
 Do not pass `--write-files` by default; that option materializes proprietary files to your private machine. **Never commit any outputs of that extraction.**
 
-7. Check script assumptions with existing `mtd-utils`/`ubireader` or independent parsing where possible; the original script is a helpful static forensic parser, not a complete journal replay.
+7. Check script assumptions with existing `mtd-utils`/`ubireader` or independent parsing where possible; the original script is a helpful static forensic parser, not a complete journal replay. When an independent extracted tree is available, compare a bounded deterministic sample without printing file paths or contents:
+
+```bash
+python3 tools/compare_manifest_sample.py \
+  /private/path/volume_0_manifest.json \
+  /private/path/independent-tree \
+  --sample-count 32
+```
+
+The tree root must use the same relative paths as the manifest. Keep the manifest and extracted tree private and ignored.
 8. Prioritize offline bootloader behavior, firmware image verification, NAND partition constraints, and potential independent recovery mechanisms. Draft the smallest Linux + Ethernet + authenticated web updater design, keeping the independent rescue gate distinct. Leave camera video/AI for later.
 9. Stop after the analysis/handoff and update `docs/STATE.md`, with no camera connection or firmware deployment.
 

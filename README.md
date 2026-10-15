@@ -31,4 +31,4 @@ Do not log into, probe, reboot, reconfigure, move the lens on, or flash the work
 - Avoid full Android diagnostics/guided-testing standards; only include features that help firmware reliability, recovery, or testing.
 - Keep `docs/STATE.md` current for handoffs.
 
-See `docs/ROADMAP.md` for milestones.
+See `docs/ROADMAP.md` for milestones, `docs/BOOT_RECOVERY_ANALYSIS.md` for the current static boot/recovery evidence, and `docs/MINIMAL_MAINTENANCE_FIRMWARE.md` for the offline maintenance-baseline design.

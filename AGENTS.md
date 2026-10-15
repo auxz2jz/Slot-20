@@ -33,6 +33,20 @@ This project deliberately **does NOT automatically inherit** the Master Instruct
 - **After a limit/error/context interruption:** use existing saved state and Git refs; inspect untracked files before changes. Resume the last incomplete step, not the entire investigation. If two substantially similar attempts fail, document the error and switch approach or ask for a decision.
 - **No false safety shortcut:** backups/checkpoints of development files do not replace a **verified per-device flash backup and independent recovery** required before any camera firmware installation.
 
+### Next-stage recommendation at every checkpoint
+
+At the completion of every meaningful task, milestone, backup or development checkpoint, include a concise recommendation in the completion report and `docs/STATE.md`:
+
+1. **Completed:** what was accomplished and verified.
+2. **Checkpoint:** commit or backup status, including unfinished work.
+3. **Next task:** the next specific development objective.
+4. **Recommended model and reasoning:** the least expensive available setting that can reliably complete that task.
+5. **Why:** the relevant technical complexity.
+6. **When to switch:** when higher or lower reasoning would be appropriate.
+7. **Usage preparation:** whether to checkpoint before the next expensive operation.
+
+Initial guidance: use **Medium** for routine code changes, documentation, maintenance and straightforward tests; **High** for firmware extraction, implementation, Linux builds and ordinary debugging; and **Ultra/highest capability** for difficult Novatek bootloader reverse engineering, recovery architecture, critical hardware uncertainty or unusually complex persistent failures. These are guidelines, not fixed requirements. Continue under the current setting when it is sufficient; if Ultra is genuinely needed, explain why and recommend switching before the expensive investigation. Do not claim to switch models automatically unless the application actually supports it, and do not repeat completed analysis merely to choose a setting.
+
 ## Hard installation gate (user requirement)
 **Read `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md` before any firmware-image design or update work.** The **first permanently installed firmware** must include Ethernet connectivity, a secure browser-accessible management interface, a verified updater for supported new/previous versions, plus a demonstrated rescue/rollback path independent of the experimental Linux/web server. A firmware that merely boots is not eligible for persistent installation. Do not confuse the presence of an upload form with actual brick protection. No promises of dual-boot/stock restoration without proven hardware support. **No installation approval may be requested until a concrete pre-install review with the user includes actual UI screenshots or a labeled mockup, demonstrated subsequent-version updating on a matching spare, exact independent recovery/rollback steps, and remaining risks; see the owner-review section of that document.**
 

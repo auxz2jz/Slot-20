@@ -37,6 +37,8 @@ The update file is **not** a full flash backup. Preserve user/device-specific pa
 - Rootfs: 760 discovered paths, 13,513 CRC-validated UBIFS nodes, 8 incomplete files.
 - App: 275 discovered paths, 7,707 CRC-validated UBIFS nodes, 2 incomplete files.
 - A custom offline parser recovered 1,035 directory entries overall; it is *not* a complete journal-replayed forensic mount or verified flash image.
+- Independent native-Linux inspection with `ubi-reader` 0.8.16 reports 2,048-byte minimum I/O, 131,072-byte PEBs and 126,976-byte LEBs. It found 197 rootfs and 124 app data blocks with no unknown blocks, matching the custom parser.
+- The independent trees contain exactly the same 760 rootfs and 275 app paths after excluding each extraction root. `ubi-reader` recovered 299 rootfs and 255 app regular files; the custom parser hashed 291 and 253, so the 8/2 difference exactly matches its recorded incomplete reconstructions. A deterministic sample of 32 regular files per volume matched SHA-256 in all 64 cases.
 - Startup: `/init`, `/etc/inittab`, `/etc/init.d/rcS`, `S10_SysInit2`, `start_app`; exact `start_app` invocation pathway remains to be confirmed.
 - Main discovered applications: `device`, `rtsp`, `recorder`, `alarmcenter`, `onvif`, `nginx`, `cgiserver.cgi`, `upgrade`.
 - Main `device` ELF: 32-bit little-endian ARM EABI5 hard-float.

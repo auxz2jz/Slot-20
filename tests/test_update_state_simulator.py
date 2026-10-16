@@ -284,6 +284,7 @@ class SimulatorTestCase(unittest.TestCase):
         simulator = self.create()
         record = simulator.snapshot
         record["generation"] = state.MAX_SAFE_INTEGER
+        state._seal_record(record)
         self.path.write_bytes(state._encode_record(record))
         simulator = state.UpdateStateSimulator.load(self.path)
 

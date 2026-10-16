@@ -1,6 +1,6 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-16 — Atomic task B3 implemented and tested a deterministic, host-only, file-backed update/boot-state simulator. It keeps B2 verification separate from simulation-only install authorization, preserves a known-good release, rejects invalid transitions and validates one bounded canonical state record. Logical candidate-write, rollback and recovery states make no claim about camera storage or recovery. No camera interacted with.
+**Last milestone:** 2026-10-16 — Atomic task B4 added deterministic host-filesystem interruption and state-corruption fault tests to the B3 simulator. The v2 record now detects accidental corruption with a domain-separated SHA-256 checksum and can reject stale records against an externally trusted generation floor. Tests classify recoverable old/new complete-record outcomes separately from missing, partial, corrupt or unanchored-stale cases requiring external state recovery. These are simulator results, not hardware recovery proof. No camera interacted with.
 
 ## Goal
 Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
@@ -39,6 +39,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Atomic task B1 added `docs/UPDATE_BUNDLE_SPEC.md`. The host-only version-1 container caps the manifest at 64 KiB, components at 64 MiB each, 16 components and the total payload at 128 MiB; these are parser limits, not writable-space claims. It requires an exact `reolink.rlc-811a.ipc_523128m8mp` profile, canonical JCS metadata, deterministic Ed25519 signing, signed SHA-256 component hashes, external trusted-key/release policy, explicit downgrade authorization and strict malformed-input rejection. It deliberately defines no NAND target or updater.
 - Atomic task B2 added `tools/verify_update_bundle.py`, pinned `cryptography==50.0.2`, and 22 synthetic verifier tests. The implementation uses one regular-file handle, a 64 KiB manifest cap and 1 MiB streaming chunks; rejects malformed framing/JSON/metadata, truncation/trailing data, profile/key mismatches and tampering; validates trusted release-catalog/version policy separately; and has no extraction, network, device or flash-write path. Temporary Ed25519 private keys exist only in test memory.
 - Atomic task B3 added `tools/update_state_simulator.py`, `docs/UPDATE_STATE_SIMULATOR.md` and 15 deterministic tests. The state path covers receiving, verification, separate host-simulation authorization, staging, symbolic candidate writing, pending boot, healthy commit, rejected verification, known-good selection and unresolved external recovery. The known-good identity changes only after a healthy commit; the former identity is retained. Canonical JSON is capped at 16 KiB, has exact fields and bounded strings, and is synchronously replaced after full invariant validation. B3 has no network, camera, device-node, partition, flash or interruption-injection interface.
+- Atomic task B4 added 11 deterministic fault tests covering interruption before temporary-file sync, before replacement and immediately after replacement; ordinary replacement failure; orphan temporary files; partial, missing, checksum-corrupt and invariant-invalid primaries; and stale generation replay. The old primary remains loadable before replacement, while a complete new primary is loadable after replacement. Missing/partial/corrupt primaries fail closed. A stale valid record requires a separately trusted generation floor for detection. The unkeyed checksum detects accidental corruption only and does not authenticate hostile rewrites.
 - Project-specific lightweight safety / checkpoint rules established; deliberately **no automatic import** of the entire master-instruction-library.
 - This public repository holds **notes and independent code only**, never firmware update images or other proprietary material.
 
@@ -50,14 +51,14 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Exact sensor, flash chip, physical RAM, UART recovery and live AI support unverified.
 - BootROM/loader authentication, OTP/fuse state, actual UART pads/timing, Ethernet/TFTP/MMC readiness, NAND OOB/ECC/bad-block handling, GPIO 43's physical mapping, staged-update completeness/power-loss behavior, and recovery from a damaged loader/U-Boot remain unverified. Command presence is not proof that a recovery route works.
 - A1–A5 now normalize artifact/layout, command/string, normal-boot, environment/partition ownership and independent-recovery candidate evidence. Preserve and reuse the existing artifact/helper output; do not repeat broad extraction or disassembly.
-- B2 verifies host files against caller-supplied in-memory trust/policy objects only, and B3 persists only a host simulation record. No production bundle builder/key, signed trust-policy format, durable device trust store/release catalog/anti-rollback state, component installation mapping, real boot selector or camera-side integration has been implemented or validated. B3's normal atomic file replacement is not a power-loss guarantee; B4 interruption/fault testing remains undone.
+- B2 verifies host files against caller-supplied in-memory trust/policy objects only, and B3/B4 persist and fault-test only a host simulation record. No production bundle builder/key, signed trust-policy format, durable device trust store/release catalog/anti-rollback anchor, component installation mapping, real boot selector or camera-side integration has been implemented or validated. Host `fsync`/replacement behavior is not a NAND or camera power-loss guarantee; missing or corrupt single-record state still requires an external trusted copy/recovery process.
 - No camera read-only query, live video test, backup, recovery or flashing performed.
 - No independent camera replacement image or hardware-validated build exists.
 
 ## Next Codex task
-1. **B4 only:** add bounded interrupted-write/power-loss fault tests to the host simulator, with results explicitly labeled as simulation rather than hardware proof.
-2. Exercise selected persistence boundaries without adding real NAND addresses, device nodes, camera access or an assumed A/B/recovery mechanism.
-3. Preserve B3's verification/authorization separation, last-known-good invariant and deterministic normal-transition baseline.
+1. **C1 only, in a future explicitly started session:** audit required Novatek BSP build inputs, shipped binary objects, licensing and cross-compiler ABI; do not begin C1 automatically after B4.
+2. Produce a dependency/toolchain decision with reproducibility and licensing caveats, without building an installable or flashable image.
+3. Reuse existing pinned BSP evidence and avoid repeating firmware extraction or bootloader analysis.
 4. Keep all live-device work and `docs/INTERFACE_RE_PLAN.md` deferred until the maintenance and recovery gates are satisfied.
 
 ## Current reproducibility checkpoint
@@ -69,14 +70,15 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - `tests/test_compare_manifest_sample.py`: SHA-256 `efef7f146d3a2f5524e76639ccd50fe67a340871fb87bc5e0fdd6e2af123f276`
 - `tools/verify_update_bundle.py`: SHA-256 `bee34926b35b282f76e1bf97fc1f2ea5e57ef5797cd1c8c4a154a2f31e73f893`
 - `tests/test_verify_update_bundle.py`: SHA-256 `60277fa98096027c9d96d546bd6abb0057c6bde0e6da7fe4f70a7b5e29d5fcc8`
-- `tools/update_state_simulator.py`: SHA-256 `41dc44c805ff7e58b61b5bc761cf82791bf7575ac2336ef19f60f9ddf2566c59`
-- `tests/test_update_state_simulator.py`: SHA-256 `6b528788f2c27cd9d9e36b1847fcd34c8e1c2ae961f99816901100713361b260`
+- `tools/update_state_simulator.py`: SHA-256 `6eb2c7225965a9ad2a8dd292d6ee0bb7c530a0001a5c1b15f81c3a7e0fb969c7`
+- `tests/test_update_state_simulator.py`: SHA-256 `9e7a24ea78e52d847727b56cab269d2a11e6360932152214bc4c1f7d0dc7ac4f`
+- `tests/test_update_state_faults.py`: SHA-256 `401c5c6769b2639ff38bc366295593af9e63b75c627fdad812ccf90b8cce892f`
 - `requirements.txt`: SHA-256 `8b5c18678b29b5e8e0fb586a35ac1dce3ccd9da321e8f12ace0e118350b4e568`
 - Private `rootfs.bin`: SHA-256 `57a4da9da4abc3ea1d65fa80653f3ab57879c962d8c39675f000f6c50476ae64`
 - Private `app.bin`: SHA-256 `f1d3511609aa2d8642e05bfbff4fb02c192a4faa032bdd6de4f6fd44da043531`
 - Private `fdt.bin`: 17,399 bytes; SHA-256 `62a2b0f96262702f7ec97c6df2423a4abc8ed47e881db1248ceab66e763c9a8c`
 - Private `uboot.bin`: 572,344 bytes; SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`
-- Tested here: Python 3.12.14 with `cryptography` 50.0.2; 53 tests ran, with 51 passing and two Windows symlink cases skipped because the account lacks symlink privilege. The 15 B3 tests cover deterministic normal success, verification rejection, separate simulation authorization, forbidden transitions, known-good preservation, rollback/recovery outcomes, reload/continuation, bounded canonical persistence and generation exhaustion. All B2 and prior extraction/sampler tests remain passing.
+- Tested here: Python 3.12.14 with `cryptography` 50.0.2; 64 tests ran, with 62 passing and two Windows symlink cases skipped because the account lacks symlink privilege. The 15 B3 normal-transition tests and 11 B4 deterministic interruption/corruption tests all pass. All B2 and prior extraction/sampler tests remain passing.
 - Recovered static boot/update/recovery observations are normalized through A5; no hardware route was exercised.
 - Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux build/boot, independent recovery and all hardware behavior.
 
@@ -85,10 +87,10 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 
 ## Next-stage recommendation
 
-- **Completed:** Task B3 implemented the bounded host-only update/boot-state simulator, B2-result boundary, separate simulation-only authorization, known-good preservation, fail-closed transitions and deterministic persistence tests. The full suite ran 53 tests: 51 passed and two permission-based symlink cases were skipped; no camera, device, network, partition or flash interface was introduced.
-- **Checkpoint:** the B3 implementation commit containing source, tests, simulator notes, this state and the current handoff is pushed after final verification. Private artifacts remain outside Git; no proprietary payload or camera data was used and no unrelated tracked WIP remains.
-- **Next task:** **B4** — add bounded interrupted-write/power-loss fault tests to the host simulator, explicitly treating outcomes as simulation evidence rather than hardware proof.
+- **Completed:** Task B4 implemented deterministic host-file interruption, stale/missing/partial/corrupt-record tests, accidental-corruption checksumming and optional external generation-floor enforcement. The full suite ran 64 tests: 62 passed and two permission-based symlink cases were skipped; no camera, device, network, partition, NAND or flash interface was introduced.
+- **Checkpoint:** the B4 implementation commit containing source, tests, fault matrix, this state and the current handoff is pushed after final verification. Private artifacts remain outside Git; no proprietary payload or camera data was used and no unrelated tracked WIP remains.
+- **Next task:** **C1** — audit Novatek BSP build inputs, shipped binary objects, licensing and cross-compiler ABI in a future explicitly started session; do not begin Phase C automatically.
 - **Recommended model and reasoning:** **High**.
-- **Why:** B4 must reason precisely about interrupted persistence boundaries, stale/corrupt records and recoverable invariants without overstating host simulation as hardware behavior.
-- **When to switch:** Medium is appropriate after the fault matrix and invariant cases are established and only routine test/document maintenance remains. Ultra is not indicated unless two materially different bounded approaches expose an unresolved recovery-state ambiguity.
-- **Usage preparation:** Commit and push B3 before starting B4's broader fault matrix. Reliable telemetry at 2026-10-16 13:07 PDT showed 78% five-hour and 63% weekly usage remaining. This is a timestamped snapshot, not continuous monitoring; recheck at the B4 boundary and preserve a checkpoint before expanding fault cases.
+- **Why:** C1 requires careful toolchain/ABI and licensing analysis across BSP sources and shipped binary dependencies, but no difficult bootloader control-flow work is expected.
+- **When to switch:** Medium is sufficient once the dependency and license inventory is established and only routine documentation remains. Consider Ultra only if a specific opaque binary ABI question remains unresolved after two materially different bounded approaches.
+- **Usage preparation:** Commit and push B4 before any Phase C work. Reliable telemetry at 2026-10-16 13:25 PDT showed 62% five-hour and 60% weekly usage remaining. This is a timestamped snapshot, not continuous monitoring; recheck at the C1 boundary and checkpoint before any expensive toolchain/build probe.

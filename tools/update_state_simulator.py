@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import copy
 from dataclasses import dataclass
+import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -29,7 +31,8 @@ from verify_update_bundle import (
 )
 
 
-STATE_SCHEMA = "slot20.update-state.v1"
+STATE_SCHEMA = "slot20.update-state.v2"
+STATE_CHECKSUM_DOMAIN = b"SLOT20-UPDATE-STATE-V2\x00"
 SIMULATION_AUTHORIZATION_SCOPE = "host-simulation-only"
 MAX_STATE_FILE_BYTES = 16_384
 MAX_RELEASE_VERSION_BYTES = 64
@@ -48,6 +51,7 @@ STATE_FIELDS = frozenset(
         "simulation_install_authorized",
         "authorization_id",
         "failure",
+        "record_sha256",
     }
 )
 VERSION_FIELDS = frozenset(
@@ -199,14 +203,26 @@ class UpdateStateSimulator:
             "simulation_install_authorized": False,
             "authorization_id": None,
             "failure": None,
+            "record_sha256": "",
         }
+        _seal_record(record)
         _validate_record(record)
         _write_record(state_path, record, require_absent=True)
         return cls(state_path, record)
 
     @classmethod
-    def load(cls, path: str | os.PathLike[str]):
+    def load(
+        cls,
+        path: str | os.PathLike[str],
+        *,
+        minimum_generation: int | None = None,
+    ):
         state_path = Path(path)
+        if minimum_generation is not None:
+            try:
+                _validate_counter("minimum_generation", minimum_generation)
+            except ValueError as exc:
+                raise StateFormatError(str(exc)) from exc
         data = _read_bounded_regular_file(state_path)
         try:
             record = json.loads(data, object_pairs_hook=_reject_duplicate_keys)
@@ -215,6 +231,11 @@ class UpdateStateSimulator:
         _validate_record(record)
         if data != _encode_record(record):
             raise StateFormatError("state is not canonical JSON")
+        if (
+            minimum_generation is not None
+            and record["generation"] < minimum_generation
+        ):
+            raise StateFormatError("state generation is below the trusted minimum")
         return cls(state_path, record)
 
     @property
@@ -386,6 +407,7 @@ class UpdateStateSimulator:
         if generation >= MAX_SAFE_INTEGER:
             raise StateTransitionError("state generation is exhausted")
         next_record["generation"] = generation + 1
+        _seal_record(next_record)
         _validate_record(next_record)
         _write_record(self._path, next_record, require_absent=False)
         self._record = next_record
@@ -401,6 +423,13 @@ def _validate_record(record: Any) -> None:
         raise StateFormatError("state record has unexpected fields")
     if record["schema"] != STATE_SCHEMA:
         raise StateFormatError("unsupported state schema")
+    record_sha256 = record["record_sha256"]
+    if not isinstance(record_sha256, str) or LOWER_SHA256_RE.fullmatch(
+        record_sha256
+    ) is None:
+        raise StateFormatError("record checksum is invalid")
+    if not hmac.compare_digest(record_sha256, _calculate_record_sha256(record)):
+        raise StateFormatError("record checksum mismatch")
     try:
         _validate_counter("generation", record["generation"])
     except ValueError as exc:
@@ -487,10 +516,10 @@ def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def _encode_record(record: dict[str, Any]) -> bytes:
+def _canonical_json(value: Any) -> bytes:
     try:
-        data = json.dumps(
-            record,
+        return json.dumps(
+            value,
             ensure_ascii=False,
             allow_nan=False,
             sort_keys=True,
@@ -498,6 +527,20 @@ def _encode_record(record: dict[str, Any]) -> bytes:
         ).encode("utf-8")
     except (TypeError, ValueError) as exc:
         raise StateFormatError("state cannot be encoded") from exc
+
+
+def _calculate_record_sha256(record: Mapping[str, Any]) -> str:
+    unsigned = {key: value for key, value in record.items() if key != "record_sha256"}
+    payload = STATE_CHECKSUM_DOMAIN + _canonical_json(unsigned)
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _seal_record(record: dict[str, Any]) -> None:
+    record["record_sha256"] = _calculate_record_sha256(record)
+
+
+def _encode_record(record: dict[str, Any]) -> bytes:
+    data = _canonical_json(record)
     if len(data) > MAX_STATE_FILE_BYTES:
         raise StateFormatError("state exceeds the bounded file size")
     return data

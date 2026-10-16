@@ -1,41 +1,41 @@
 # Slot-20 — Current task handoff
 
-**Status:** Task B1 COMPLETE — `docs/UPDATE_BUNDLE_SPEC.md` defines a deterministic, bounded host-only signed bundle. It is a format/security specification only and supplies no flash mapping or installation authority.
+**Status:** Task B2 COMPLETE — the version-1 signed-bundle format now has a bounded host-only parser/verifier and synthetic adversarial tests. Verification remains separate from installation: every result sets `installation_authorized=False`.
 
-**LAST TASK ID / STATUS:** B1 host-only signed update-bundle specification — **VERIFIED COMPLETE (documentation only)**. No B2 parser/verifier, flashable image, production key, target execution or camera access was created.
+**LAST TASK ID / STATUS:** B2 host-only signed firmware-bundle parser/verifier — **VERIFIED COMPLETE (host software only)**. No B3 simulator, production bundle/key, firmware image, device integration or camera access was created.
 
 **EVIDENCE AND TESTS:**
 
-- Container: 32-byte big-endian fixed header, bounded canonical manifest, uncompressed path-free component concatenation and one raw 64-byte Ed25519 signature. Exact EOF is mandatory.
-- Bounds: 64 KiB manifest, 16 components, 64 MiB per component and 128 MiB aggregate payload. These are parser safety caps, not available-NAND claims.
-- Compatibility: exact deny-by-default profile `reolink.rlc-811a.ipc_523128m8mp`; no alias, wildcard or cross-revision list. The trusted profile, not the bundle, must eventually define allowed component types and targets.
-- Manifest: strict UTF-8 I-JSON whose original bytes must equal RFC 8785 serialization. Unknown/duplicate/missing fields, floats and out-of-range integers are rejected.
-- Versions: Semantic Versioning is display/audit metadata; `(security_epoch, release_sequence)` plus external trusted policy controls upgrade/reinstall/downgrade. A bundle cannot authorize its own downgrade.
-- Authentication: signed SHA-256 component lengths/digests bind ordered payload bytes. Pure Ed25519 signs the exact domain-separated header-plus-canonical-manifest transcript. Full-bundle SHA-256 is the external artifact identity.
-- Trust: public keys come only from an independently authenticated, hardware-scoped trust store; private keys never enter the repository/bundle. Rotation requires prior authenticated provisioning and overlap. The single-signature v1 does not silently add multi-signature semantics.
-- Rejection/security sections specify checked arithmetic, exact file length, strict schema/canonicalization, trust scope, streaming payload hashes, release-policy separation and adversarial cases for B2.
-- Focused checks validate header field widths/offsets, cap arithmetic, required topics/standards, matrix/table structure, internal terminology, whitespace, tracked-file scope and absence of private/key material before checkpointing.
+- `tools/verify_update_bundle.py` validates the exact 32-byte header, file/manifest/payload/component caps, exact EOF, strict schema and canonical JSON bytes before trust decisions.
+- Accepted JSON is deliberately restricted to B1's fixed ASCII/integer schema. Duplicate names, floats, Unicode values, unknown/missing fields, noncanonical bytes, malformed SemVer/IDs/hashes and inconsistent counts/lengths fail closed.
+- Maintained `cryptography` 50.0.2 verifies pure Ed25519 over the exact domain-separated header/manifest transcript. SHA-256 component hashes are streamed in at most 1 MiB chunks from the same regular-file handle; no extraction occurs.
+- Public keys come from an immutable caller-supplied trust store keyed by the SHA-256 of raw Ed25519 public bytes. Status, exact profile scope and security-epoch bounds are enforced; rotation overlap with a second pretrusted key is tested.
+- Exact `reolink.rlc-811a.ipc_523128m8mp` compatibility is reported separately from structure and authenticity. Unauthenticated manifest data is not returned on signature/hash/trust failure.
+- Release policy requires a full-bundle SHA-256 match in the trusted release catalog. Security floor, upgrade, reinstall, same-epoch downgrade, explicit intent and recovery-ready decisions are separately reported; cross-epoch downgrade is denied.
+- `tests/test_verify_update_bundle.py` creates only temporary in-memory Ed25519 private keys and synthetic bytes. No private key or generated bundle is serialized or committed.
+- Final command: bundled Python 3.12.14, `python -m unittest discover -s tests -v` — **38 tests ran: 36 passed, 2 skipped**. Both skips are existing/new Windows symlink cases requiring a privilege unavailable to this account; all other B2 and prior tests passed.
+- Focused safety review found no network, camera, extraction or flash-write API. `requirements.txt` pins the tested `cryptography==50.0.2` dependency.
 
-**IMPORTANT LIMITS:** B1 proves no software behavior. There is no trusted component-to-partition map, updater, persistent trust/version state, inactive slot, health/rollback protocol, full backup or demonstrated recovery. A valid bundle is not an installable or flashable image.
+**IMPORTANT LIMITS:** B2 validates host files only. It does not build production bundles, authenticate trust-policy updates, persist device state, map components to storage, stage/write firmware, select boot slots, mark health, roll back or recover hardware. Passing B2 does not make a bundle installable.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; parent checkpoint `7c63b0e`. The B1 checkpoint is the commit containing this file and is pushed to `origin/main` after focused verification; use `git log -1 --oneline` for its immutable ID.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; parent checkpoint `5802e90`. The B2 checkpoint is the commit containing this file and is pushed to `origin/main` after focused verification; use `git log -1 --oneline` for its immutable ID.
 
-**LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):** proprietary firmware/FDT/U-Boot, bounded helpers, extracted trees and isolated WSL analyzer/upstream environments remain local/private and are not Git-backed. No signing private key exists in this work. Do not delete or upload private artifacts.
+**LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):** proprietary firmware/FDT/U-Boot, bounded helpers, extracted trees and isolated WSL analyzer/upstream environments remain local/private and are not Git-backed. Test keys/bundles were temporary and are gone. Do not delete or upload private artifacts.
 
-**WHAT REMAINS UNFINISHED:** B2 implementation/tests; a signed trust-policy format; production key custody; trusted release-catalog persistence; device-side hardware identity; component installation mapping; atomic staging/writes; durable version/health state; rollback; full device backup; and every matching-spare recovery demonstration.
+**WHAT REMAINS UNFINISHED:** B3/B4 state simulation and fault injection; production builder/key custody; signed trust-policy format; durable device trust store/release catalog/security floor; component installation mapping; atomic staging/writes; boot health and rollback; full device backup; and every matching-spare recovery demonstration.
 
-**NEXT SINGLE TASK ID + INPUT:** **B2** — implement a host-only parser/verifier for `docs/UPDATE_BUNDLE_SPEC.md` and bounded synthetic positive/negative tests. Use synthetic payloads and test-only keys; perform no extraction, flash logic or device access. Do not begin B3.
+**NEXT SINGLE TASK ID + INPUT:** **B3** — implement a small host-only file-backed boot/update-state simulator with deterministic normal transitions and basic invariant tests. Reuse B2's separated verification outcome as an input boundary; do not model real flash addresses, inject B4 power failures or access hardware.
 
-**PASS CRITERION FOR NEXT TASK:** the verifier separately reports structure, signature/hash, exact-profile compatibility and version-policy results; reads with bounded memory; rejects the specified malformed/truncated/oversized/mismatched/tampered/downgrade cases; passes focused tests; and contains no production key, proprietary payload, camera code or flash-write path.
+**PASS CRITERION FOR NEXT TASK:** deterministic tests cover allowed and forbidden normal transitions through receiving, verified, staged, writing-inactive, pending-boot, healthy/committed and failed/unconfirmed rollback-or-recovery outcomes; persisted records are bounded and validated; a verified bundle alone cannot authorize installation; no NAND/camera code or B4 interruption matrix is added.
 
-**RECOMMENDED REASONING + WHY:** **High** for B2. It is security-sensitive untrusted-input parsing and cryptographic verification with adversarial boundary cases; implementation and negative-test review warrant High.
+**RECOMMENDED REASONING + WHY:** **High** for B3. Persistent state-machine invariants and rollback boundaries can become safety-critical later even though this task remains a bounded host-only simulator.
 
-**WHEN TO SWITCH:** Medium is sufficient once core parsing, signature verification and adversarial tests pass and only routine documentation remains. Consider Ultra only for a narrowly scoped security failure that persists after two materially different hypotheses; none is currently known.
+**WHEN TO SWITCH:** Medium is sufficient after normal transitions and invariants pass and only routine documentation remains. Stay at High for B4 power-loss/interruption fault injection; Ultra is not indicated unless a narrowly scoped recovery-state ambiguity persists after two materially different approaches.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable Codex telemetry at 2026-10-16 03:11 PDT reported 12% used in the five-hour window and 34% used in the weekly window (88% and 66% remaining respectively). This is a timestamped snapshot, not continuous monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable Codex telemetry at 2026-10-16 12:29 PDT reported 13% used in the five-hour window and 36% used in the weekly window (87% and 64% remaining respectively). This is a timestamped snapshot, not continuous monitoring.
 
-**USAGE PREPARATION:** B1 is committed and pushed before B2. Recheck telemetry at the next task boundary and checkpoint before adding a cryptographic dependency or generated fixtures; test keys must be explicitly non-production.
+**USAGE PREPARATION:** B2 is committed and pushed before B3. Recheck telemetry at the next task boundary; start B3 from this clean checkpoint and checkpoint again before B4's larger fault-injection matrix.
 
-**CONTINUE OR STOP + REASON:** **STOP after B1**, as explicitly requested. Do not start B2 automatically.
+**CONTINUE OR STOP + REASON:** **STOP after B2**, as explicitly requested. Do not start B3 automatically.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification or flash was performed or authorized.

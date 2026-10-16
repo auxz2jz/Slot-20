@@ -1,6 +1,6 @@
 # Slot-20 host-only signed update-bundle specification
 
-**Status:** B1 design specification, version 1. No builder, verifier, updater, flash layout or camera-side implementation exists yet. Conformance to this document can establish only host-side bundle validity; it does not establish installability, rollback safety or recovery.
+**Status:** B1 design specification, version 1. B2 implements a host-only verifier and synthetic tests; no production builder, updater, flash layout or camera-side implementation exists. Conformance to this document can establish only host-side bundle validity; it does not establish installability, rollback safety or recovery.
 
 ## Scope and non-goals
 
@@ -187,4 +187,12 @@ The following remain explicitly unresolved after B1:
 - UART/TFTP/MMC, Boot ROM, external programmer and staged-reset recovery remain unverified on a matching spare; and
 - installation, interrupted-write recovery and rollback still require matching-spare demonstration and fresh explicit approval.
 
-Consequently, B1 is eligible only as input to B2's host-side parser/verifier tests. It does not satisfy any physical recovery gate and authorizes no camera access or flash operation.
+Consequently, this format and its B2 verifier are eligible only for host-side validation. They do not satisfy any physical recovery gate and authorize no camera access or flash operation.
+
+## B2 reference verifier
+
+`tools/verify_update_bundle.py` implements this format as a read-only Python API. It uses the maintained `cryptography` package for Ed25519, reads one regular file handle, holds at most the bounded manifest plus a 1 MiB payload chunk, and returns separate structure, authenticity, hardware-compatibility and version-policy results. Its `installation_authorized` result is always false.
+
+The accepted manifest schema contains only fixed ASCII object names, bounded ASCII values, arrays and non-negative integers. For that deliberately narrow domain, the verifier's sorted, separator-free UTF-8 JSON serialization is byte-equivalent to RFC 8785; all other JSON shapes, duplicate names, floats, Unicode field values and noncanonical encodings are rejected. This is not a general-purpose JCS implementation.
+
+`tests/test_verify_update_bundle.py` creates temporary in-memory Ed25519 keys and synthetic payloads only. It does not serialize a private key or retain a generated bundle. The tests cover valid upgrades and rotation overlap plus malformed framing/JSON/metadata, truncation/trailing data, size limits, profile/key scope, signature and payload tampering, release-catalog binding, security floors, reinstall and downgrade policy. `requirements.txt` pins the tested cryptographic dependency; no network, extraction, device or flash API is present.

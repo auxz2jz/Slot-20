@@ -1,6 +1,6 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-16 — Atomic task B1 specified a host-only deterministic signed update bundle. The version-1 format uses fixed bounded framing, a strict RFC 8785 manifest, SHA-256 component hashes and an Ed25519 signature, while keeping hardware compatibility, version policy and trust outside untrusted payload claims. It contains no flash mapping and is not installable firmware. No camera interacted with.
+**Last milestone:** 2026-10-16 — Atomic task B2 implemented and tested the host-only signed-bundle parser/verifier. It performs bounded fail-closed structure/canonical-manifest parsing, Ed25519/SHA-256 verification, exact hardware matching and external release-policy decisions while always withholding installation authorization. No camera interacted with.
 
 ## Goal
 Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
@@ -37,6 +37,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Atomic task A4 verified that the actual U-Boot environment linker list has only the `nowhere` driver with null load/save slots and a defaults-only initializer. The 391-byte default blob supplies the UBIFS bootargs, `nvt_boot`, zero delay and 115200 baud; early boot then derives volatile `mtdids`, `mtdparts` and `ubi.mtd=6 ro` from the package FDT before A3's runtime arguments. The FDT declares `uenv` at `0x00240000`, but current U-Boot does not use it for persistence. The generic optional NAND environment range `0x002c0000..0x002fffff` would overlap the matching FDT's kernel partition and must never be copied to this target.
 - Atomic task A5 added the independent-recovery evidence matrix. Preserved U-Boot plus UART/TFTP or MMC/FAT are plausible Linux-independent leads but remain U-Boot-dependent and physically unverified. Boot ROM and external raw NAND access could reach below U-Boot but have the largest protocol/electrical/raw-geometry gaps. The GPIO 43/`download` staged-update path is not proven atomic or restorative, and no protected rescue/A-B design or automatic rollback currently exists. No candidate satisfies the recovery gate.
 - Atomic task B1 added `docs/UPDATE_BUNDLE_SPEC.md`. The host-only version-1 container caps the manifest at 64 KiB, components at 64 MiB each, 16 components and the total payload at 128 MiB; these are parser limits, not writable-space claims. It requires an exact `reolink.rlc-811a.ipc_523128m8mp` profile, canonical JCS metadata, deterministic Ed25519 signing, signed SHA-256 component hashes, external trusted-key/release policy, explicit downgrade authorization and strict malformed-input rejection. It deliberately defines no NAND target or updater.
+- Atomic task B2 added `tools/verify_update_bundle.py`, pinned `cryptography==50.0.2`, and 22 synthetic verifier tests. The implementation uses one regular-file handle, a 64 KiB manifest cap and 1 MiB streaming chunks; rejects malformed framing/JSON/metadata, truncation/trailing data, profile/key mismatches and tampering; validates trusted release-catalog/version policy separately; and has no extraction, network, device or flash-write path. Temporary Ed25519 private keys exist only in test memory.
 - Project-specific lightweight safety / checkpoint rules established; deliberately **no automatic import** of the entire master-instruction-library.
 - This public repository holds **notes and independent code only**, never firmware update images or other proprietary material.
 
@@ -48,14 +49,14 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Exact sensor, flash chip, physical RAM, UART recovery and live AI support unverified.
 - BootROM/loader authentication, OTP/fuse state, actual UART pads/timing, Ethernet/TFTP/MMC readiness, NAND OOB/ECC/bad-block handling, GPIO 43's physical mapping, staged-update completeness/power-loss behavior, and recovery from a damaged loader/U-Boot remain unverified. Command presence is not proof that a recovery route works.
 - A1–A5 now normalize artifact/layout, command/string, normal-boot, environment/partition ownership and independent-recovery candidate evidence. Preserve and reuse the existing artifact/helper output; do not repeat broad extraction or disassembly.
-- B1 is a specification only. No bundle builder/verifier, production key, signed trust-policy format, device trust store, release catalog, durable anti-rollback state or installation mapping has been implemented or validated.
+- B2 verifies host files against caller-supplied in-memory trust/policy objects only. No production bundle builder/key, signed trust-policy format, durable device trust store/release catalog/anti-rollback state, component installation mapping or camera-side integration has been implemented or validated.
 - No camera read-only query, live video test, backup, recovery or flashing performed.
 - No independent camera replacement image or hardware-validated build exists.
 
 ## Next Codex task
-1. **B2 only:** implement a host-only parser/verifier for `docs/UPDATE_BUNDLE_SPEC.md` plus bounded synthetic positive and negative tests. It must perform no extraction, device access or flash write.
-2. Use only synthetic test components and test keys; never create or commit a production private key or proprietary firmware payload.
-3. Defer the B3 update-state simulator until B2 is reviewed and checkpointed.
+1. **B3 only:** implement a small host-only file-backed boot/update-state simulator with deterministic normal transitions and basic invariant tests. It must not model real NAND addresses or access a camera.
+2. Reuse B2's separated verification result as an input boundary; a verified bundle must not itself authorize installation or bypass state-transition policy.
+3. Defer B4 interrupted-write/power-loss fault injection until B3 is reviewed and checkpointed.
 4. Keep all live-device work and `docs/INTERFACE_RE_PLAN.md` deferred until the maintenance and recovery gates are satisfied.
 
 ## Current reproducibility checkpoint
@@ -65,11 +66,14 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - `tests/test_extractors.py`: SHA-256 `c59bc399804424dbfc652971fbfcc0878468a42c8cb1aa4937090ee5a9ce5ee1`
 - `tools/compare_manifest_sample.py`: SHA-256 `303ed20c29ce79cac54237fdaca984896f7b1d12ae05c4bc3fbff1b5212164ea`
 - `tests/test_compare_manifest_sample.py`: SHA-256 `efef7f146d3a2f5524e76639ccd50fe67a340871fb87bc5e0fdd6e2af123f276`
+- `tools/verify_update_bundle.py`: SHA-256 `bee34926b35b282f76e1bf97fc1f2ea5e57ef5797cd1c8c4a154a2f31e73f893`
+- `tests/test_verify_update_bundle.py`: SHA-256 `60277fa98096027c9d96d546bd6abb0057c6bde0e6da7fe4f70a7b5e29d5fcc8`
+- `requirements.txt`: SHA-256 `8b5c18678b29b5e8e0fb586a35ac1dce3ccd9da321e8f12ace0e118350b4e568`
 - Private `rootfs.bin`: SHA-256 `57a4da9da4abc3ea1d65fa80653f3ab57879c962d8c39675f000f6c50476ae64`
 - Private `app.bin`: SHA-256 `f1d3511609aa2d8642e05bfbff4fb02c192a4faa032bdd6de4f6fd44da043531`
 - Private `fdt.bin`: 17,399 bytes; SHA-256 `62a2b0f96262702f7ec97c6df2423a4abc8ed47e881db1248ceab66e763c9a8c`
 - Private `uboot.bin`: 572,344 bytes; SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`
-- Tested here: B1 specification consistency for header sizes, total caps, manifest/header component counts, deterministic signature transcript, exact hardware-profile policy and separation from installation/recovery claims; A5 recovery matrix; A4 environment/partition evidence; A3 boot-flow ranges; A2 command-table/string evidence; A1 artifact/layout evidence; R0 recovery; extraction cross-checks; synthetic parser/sampler behavior.
+- Tested here: Python 3.12.14 with `cryptography` 50.0.2; 38 tests ran, with 36 passing and two Windows symlink cases skipped because the account lacks symlink privilege. The 22 B2 tests cover valid deterministic synthetic bundles, chunked hashing, key rotation overlap, structural/canonical/schema/size rejection, profile/trust scope, signature/payload tampering, trusted-catalog binding and upgrade/reinstall/downgrade policy. Existing extraction/sampler tests remain passing.
 - Recovered static boot/update/recovery observations are normalized through A5; no hardware route was exercised.
 - Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux build/boot, independent recovery and all hardware behavior.
 
@@ -78,10 +82,10 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 
 ## Next-stage recommendation
 
-- **Completed:** Task B1 specified a deterministic host-only bundle with exact hardware matching, version/downgrade policy, bounded component metadata, SHA-256/Ed25519 authentication, trusted-key rotation rules, strict malformed-package rejection and explicit recovery limitations. No implementation, target image or camera operation was performed.
-- **Checkpoint:** the B1 specification commit containing `docs/UPDATE_BUNDLE_SPEC.md`, this state and the current handoff is pushed after focused documentation verification. Private artifacts remain outside Git; no key material or proprietary payload is included and no other tracked WIP remains.
-- **Next task:** **B2** — implement the bounded host-only bundle parser/verifier and synthetic negative tests, without extraction, flash logic or camera access.
+- **Completed:** Task B2 implemented the bounded host-only parser/verifier, trusted-key and release-policy inputs, separate decision results and synthetic adversarial tests. The full suite ran 38 tests: 36 passed and two permission-based symlink cases were skipped; no production key, proprietary payload, installation logic or camera operation was introduced.
+- **Checkpoint:** the B2 implementation commit containing the verifier, tests, dependency pin, updated specification, this state and the current handoff is pushed after focused verification. Private artifacts remain outside Git; generated test keys/bundles were temporary and no other tracked WIP remains.
+- **Next task:** **B3** — implement the host-only file-backed boot/update-state simulator and normal-transition invariant tests; do not begin B4 fault injection or add real flash targets.
 - **Recommended model and reasoning:** **High**.
-- **Why:** B2 is security-sensitive untrusted-input parsing and cryptographic verification with many boundary/adversarial cases; implementation and negative-test review warrant High.
-- **When to switch:** Medium is sufficient after the core verifier and adversarial cases pass and only routine documentation remains. Consider Ultra only for a narrowly scoped cryptographic/security failure that persists after two changed hypotheses; no such issue is known.
-- **Usage preparation:** B1 must be committed and pushed before B2. Reliable telemetry at 2026-10-16 03:11 PDT showed 88% five-hour and 66% weekly usage remaining. This is a snapshot, not continuous monitoring; start B2 only from the clean B1 checkpoint and checkpoint before introducing cryptographic dependencies or generated fixtures.
+- **Why:** B3 introduces persistent state-machine invariants and rollback boundaries where incorrect transitions could later become safety-critical, although it remains a bounded host-only implementation.
+- **When to switch:** Medium is sufficient after normal transitions and invariants pass and only documentation remains. Stay at High for B4 power-loss/interruption fault injection; Ultra is not indicated unless a narrowly scoped recovery-state ambiguity resists two materially different approaches.
+- **Usage preparation:** B2 must be committed and pushed before B3. Reliable telemetry at 2026-10-16 12:29 PDT showed 87% five-hour and 64% weekly usage remaining. This is a snapshot, not continuous monitoring; begin B3 only from the clean B2 checkpoint and checkpoint before B4's broader fault matrix.

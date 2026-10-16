@@ -1,6 +1,6 @@
 # Offline boot, update and recovery analysis
 
-**Checkpoint:** 2026-10-16 (atomic tasks A1–A3). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
+**Checkpoint:** 2026-10-16 (atomic tasks A1–A4). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
 
 This document keeps observations from the matching Reolink package separate from capabilities found in generic Novatek source code. A generic BSP feature is not proof that the shipped RLC-811A binary enables it or that the board exposes the required pins, port or recovery trigger.
 
@@ -156,6 +156,65 @@ for insn in m.disasm(p.read_bytes(), 0x06000000):
 
 These ranges cover the early FDT call, both FDT source branches, the FDT property selector, the normal named-partition Linux loader, the firmware-selection wrapper, and the complete `nvt_boot` handler. They intentionally do not trace the alternate loader, environment backend, updater, or recovery mechanisms assigned to later atomic tasks.
 
+### A4 — environment, boot arguments and flash ownership
+
+The matching binary does not use its declared `uenv` partition as a persistent U-Boot environment. Its environment linker list is exactly one 20-byte entry at file offsets `0x7fe0c..0x7fe1f`: the name points to `"nowhere"`, the load and save slots are null, and the initializer is `0x060425f0`. That initializer points U-Boot at the compiled default blob at linked address `0x0606c0b8` and marks it invalid/default, matching the behavior of the pinned generic `env/nowhere.c`. This is stronger evidence than the `uenv` label or generic configuration options.
+
+| Environment stage | Confirmed matching-binary evidence | Consequence / limit |
+|---|---|---|
+| Compiled defaults | File offsets `0x6c0b8..0x6c23e` form a 391-byte, 15-entry default blob. Relevant entries are `bootargs=earlyprintk console=ttyS0,115200 rootwait nprofile_irq_duration=on root=ubi0:rootfs rootfstype=ubifs ubi.fm_autoconvert=1 init=/linuxrc ` at `0x6c0b8`, `bootcmd=nvt_boot` at `0x6c14a`, `bootdelay=0` at `0x6c15b`, and `baudrate=115200` at `0x6c167`. | Defaults are actual packaged-binary data, not proof of values read from installed flash. |
+| Persistence backend | The sole `nowhere` entry and `0x060425f0` initializer provide defaults only. No `saveenv` token or registered command exists in the bounded image. | U-Boot environment changes are volatile in this binary. This does not prove that the earlier loader or Linux never uses the separate `uenv` bytes for some other purpose. |
+| FDT-derived partition variables | Early boot calls `0x0600acc8`. At `0x0600ad58..0x0600ad74` it sets `mtdids=nand0=spi_nand.0`; at `0x0600ad9c` it begins `mtdparts=spi_nand.0:`; and at `0x0600b434..0x0600b440` it stores the generated partition list in the in-memory environment. Format strings include `uenv` at file offset `0x66778` and translate the FDT `partition_kernel` role to the runtime name `linux` at `0x6678c`. | A generated `uenv` MTD name does not imply an environment storage driver. The exact generated string is runtime data and was not observed on hardware. |
+| Rootfs argument | The actual helper at `0x06005750` walks `/nand` child nodes until `partition_rootfs`; in this FDT it counts rootfs as MTD index 6. The caller at `0x0600b3d4..0x0600b40c` appends the compiled literal ` ubi.mtd=%d ro `, yielding the static expected addition `ubi.mtd=6 ro`. | The index is confirmed by actual code plus this package FDT, but not by a live kernel command line. The `ro` literal applies to UBI attachment; filesystem/write behavior was not tested. |
+| Bootargs ownership | The package FDT `/chosen/bootargs` value is only a single space. Early boot gets the compiled U-Boot `bootargs`, adds the FDT-derived rootfs argument, and writes it back at `0x06001314..0x06001354`; A3 then appends `bootts`, `resume_addr` and `user_debug` before `bootm`. | The effective command line is assembled in volatile U-Boot state. The FDT does not own the base command line in this package. Runtime timestamp/resume values remain unknown. |
+
+The package FDT declares the following 128 MiB map. “In package” describes update payload coverage only; it is not evidence that installed bytes match or that an omitted region is unused.
+
+| FDT region | Range | In package | Matching evidence and ownership classification |
+|---|---:|---:|---|
+| `loader` | `0x00000000..0x0003ffff` | Yes | Early-boot component. Not environment storage; must remain protected. |
+| `fdt` | `0x00040000..0x0007ffff` | Yes | Board configuration. A3 found a compiled raw-NAND FDT reader at this offset, but the confirmed direct initialization path consumes a loader-supplied memory FDT. |
+| `fdt.restore` | `0x00080000..0x000bffff` | No | Declared but absent from the update package; no restore-selection behavior is proved. Preserve as unknown. |
+| `uboot` | `0x000c0000..0x0023ffff` | Yes | Packaged bootloader region. Not environment storage. |
+| `uenv` | `0x00240000..0x0027ffff` | No | Declared and emitted into runtime `mtdparts`, but the matching U-Boot registers only the `nowhere` backend. Owner/content/restore semantics remain unknown; preserve. |
+| `kernel` | `0x00280000..0x006fffff` | Yes | Packaged kernel region; actual U-Boot translates `partition_kernel` to MTD name `linux` and A3 reads that name. This alias is not a second partition. |
+| `rootfs` | `0x00700000..0x026fffff` | Yes | Packaged UBI/UBIFS rootfs; actual static boot construction selects MTD index 6 and UBI volume `rootfs`. |
+| `app` | `0x02700000..0x03bfffff` | Yes | Packaged UBI/UBIFS application filesystem. No environment role found. |
+| `para` | `0x03c00000..0x043fffff` | No | Prior bounded analysis found a reset/update path touching part of this region. Exact contents and ownership remain unknown; preserve the whole partition. |
+| `sp` | `0x04400000..0x0447ffff` | No | No environment ownership established. Possible factory/service data remain unclassified; preserve. |
+| `ext_para` | `0x04480000..0x044fffff` | No | No environment ownership established. Preserve as unknown. |
+| `download` | `0x04500000..0x07ffffff` | No | Prior static evidence ties its base to a staged `upgrade all` input. It is not free space and not a persistent environment. Exact lifecycle remains for A5. |
+| `all` | `0x00000000..0x07ffffff` | No | Whole-device alias in the FDT, not additional storage. Never treat it as an independently writable partition. |
+
+#### Matching binary versus pinned generic BSP
+
+| Topic | Matching Reolink evidence | Generic Novatek evidence at commit `b23172486e60c2f40729231eae06f48ac3c8d680` | Safe conclusion |
+|---|---|---|---|
+| Environment backend | One `nowhere` driver; null load/save; defaults-only initializer; no `saveenv` command | `include/configs/nvt-na51055-evb.h` conditionally selects NAND/NOR/MMC storage, otherwise `CONFIG_ENV_IS_NOWHERE`; `env/nowhere.c` supplies only the default environment | The generic header describes build choices, not the shipped selection. The actual binary is volatile/default-only. |
+| NAND environment address | No matching-binary NAND environment driver; package FDT reserves `uenv` at `0x00240000` for `0x40000` bytes | When `_NVT_UBOOT_ENV_IN_STORG_SUPPORT_NAND_` is defined, the generic header uses offset `0x002c0000`, size `0x20000`, range `0x40000` | The generic NAND range `0x002c0000..0x002fffff` lies inside this package's `kernel` partition. Copying it would risk kernel corruption and is forbidden. |
+| Save command | No registered `saveenv` in the 61-entry matching command table | The published `configs/nvt-na51055_nand_defconfig` says `CONFIG_CMD_SAVEENV=y` even though storage selection also depends on legacy/generated macros | This public defconfig is not the Reolink build configuration and cannot override actual-binary evidence. |
+| Base bootargs | Actual default is the UBIFS string above; FDT `/chosen/bootargs` contains only one space; actual code adds `ubi.mtd=6 ro` | The generic header contains the same base string under `_NVT_ROOTFS_TYPE_NAND_UBI_` and generic code derives `ubi.mtd` from the FDT | The common source explains the mechanism, while the matching binary/FDT establish this package's selected values. |
+| Partition naming | FDT node/label `kernel`; runtime MTD name `linux`. FDT includes `uenv` even though persistence is disabled | Generic translation maps `partition_kernel` to `EMBTYPE_LINUX` and `partition_uenv` to `EMBTYPE_UENV` | Runtime MTD labels, update-component names and environment backends are separate concepts; none establishes ownership alone. |
+
+Focused A4 reproduction commands (read-only; private outputs remain ignored):
+
+```bash
+ANALYZER_PY=/home/firmware-analysis/slot20_private/venv-capstone-5.0.9/bin/python
+IMAGE=firmware_workspace/analysis/sections/uboot.bin
+FDT=firmware_workspace/analysis/sections/fdt.bin
+DISASM=firmware_workspace/disasm_arm_ranges.py
+od -Ax -tx4 -j 0x7fe0c -N 0x14 "$IMAGE"
+strings -a -t x "$IMAGE" | grep -E 'nowhere|bootargs=|bootcmd=|bootdelay=|baudrate='
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x60  "$IMAGE" 0x0604190c
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x20  "$IMAGE" 0x060425f0
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x1a0 "$IMAGE" 0x06005750
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x110 "$IMAGE" 0x0600acc8
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x140 "$IMAGE" 0x0600b334
+dtc -q -I dtb -O dts "$FDT"
+```
+
+The generic comparison used only the pinned public Git objects and focused paths `include/configs/nvt-na51055-evb.h`, `configs/nvt-na51055_nand_defconfig`, `env/nowhere.c`, `board/novatek/common/nvt_ivot_fw_update_utils.c`, and `board/novatek/common/nvt_ivot_soc_utils.c`. No generic offset is promoted to a camera instruction.
+
 ## Confirmed from official Novatek source
 
 Novatek's public repositories contain branches matching the versions observed in the package:
@@ -186,7 +245,7 @@ The BSP is also not yet a proven fully source-buildable replacement: the inspect
 
 ## Important mismatch warning
 
-The generic U-Boot header conditionally places a NAND environment at `0x002c0000`; the matching Reolink FDT declares `uenv` at `0x00240000`. Generic offsets, default environment, commands and partition names must never be copied onto this camera. The actual package U-Boot and exact board FDT are the only current board-specific static evidence.
+A4 confirms that the generic optional NAND environment range would overlap the matching package's kernel partition, while the matching binary actually selects the volatile `nowhere` backend. Generic offsets, default environment, commands and partition names must never be copied onto this camera. The actual package U-Boot and exact board FDT are the only current board-specific static evidence.
 
 ## Recovery candidates, not proven mechanisms
 
@@ -199,7 +258,7 @@ The generic U-Boot header conditionally places a NAND environment at `0x002c0000
 ## Evidence still required before hardware work
 
 - Identify the physical NAND part, page/OOB/erase geometry, ECC scheme and bad-block behavior.
-- Observe the documented normal boot sequence on matching spare hardware; determine environment persistence/partition ownership, practical boot interruption, watchdog/reset-reason handling and whether secure boot/eFuses are active. The static command and normal-flow paths are now inventoried, but hardware usability remains unverified.
+- Observe the documented normal boot sequence on matching spare hardware; verify the static volatile-environment result, resolve ownership of omitted partitions, and determine practical boot interruption, watchdog/reset-reason handling and whether secure boot/eFuses are active. Static command, normal-flow and environment paths are now inventoried, but hardware usability remains unverified.
 - Determine whether a ROM downloader, UART recovery, USB device recovery, TFTP recovery or programmer can restore every required region on matching spare hardware.
 - Acquire and verify a complete per-device backup including OOB/bad-block information and unique factory/calibration/identity regions.
 - Explain the purpose and restore semantics of `fdt.restore`, `uenv`, `para`, `sp`, `ext_para` and `download` without repurposing them.

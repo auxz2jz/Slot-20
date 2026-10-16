@@ -1,37 +1,38 @@
 # Slot-20 — Current task handoff
 
-**Status:** Task A2 COMPLETE — the actual matching-package U-Boot command table and targeted strings now have a concise present/absent/uncertain evidence record. Compiled functionality is explicitly separated from verified hardware functionality.
+**Status:** Task A3 COMPLETE — the actual matching-package U-Boot normal path is documented from the registered `nvt_boot` handler through the named `linux` load and prepared FDT to the constructed `bootm` command. Static facts, compiled alternatives and unresolved provenance are explicitly separated.
 
-**LAST TASK ID / STATUS:** A2 command and recovery surface — **VERIFIED COMPLETE**. The source artifact remained private and ignored; no target code was executed and no A3 control-flow work was started.
+**LAST TASK ID / STATUS:** A3 normal U-Boot boot sequence — **VERIFIED COMPLETE**. The private artifact remained ignored; recovered ARM code was disassembled but never executed, and no A4/A5 work was started.
 
 **EVIDENCE AND TESTS:**
 
-- The bounded probe found one contiguous 61-entry command-table run at file offsets `0x7f5ac..0x7fc57` (end-exclusive `0x7fc58`), with 28-byte entries and in-image name/handler pointers.
-- Normal boot commands `bootm`, `nboot`, and `nvt_boot` are registered at `0x7f600`, `0x7f910`, and `0x7f948`; exact default strings `bootcmd=nvt_boot` and `bootdelay=0` occur at `0x6c14a` and `0x6c15b`.
-- UART clues `console=ttyS0,115200`, `baudrate=115200`, and `Hit ctrl + c` occur at `0x6c0cd`, `0x6c167`, and `0x6b4ce`; `nvt_uart_disable` is registered, while `serial`, `loadx`, `loady`, and `loads` are absent from the parsed command table. Physical console access remains unverified.
-- `bootp`, `dhcp`, `ping`, and `tftpboot` are registered, as are NAND/MTD/UBI/UBIFS and MMC/FAT command families. This proves compiled handlers, not Ethernet, flash, or removable-media hardware usability.
-- `nvt_update_all` and `upgrade` are registered at `0x7fa60` and `0x7fc20`; checksum and security/OTP commands are also present. This does not prove authenticated updates, safe writes, fuse state, rollback, or independent recovery.
-- No registered `usb`, `dfu`, `ums`, `fastboot`, serial-transfer, or `saveenv` command was found. Exact bounded searches found no `bootcount`, `bootlimit`, `altbootcmd`, `upgrade_available`, `rollback`, `fallback`, `rescue`, `recovery`, or `fdt.restore` token. These are scoped absences, not proof that equivalent unnamed or Boot ROM mechanisms cannot exist.
-- Focused verification consisted of the existing capped command-table probe, one capped exact-string lookup, documentation consistency/whitespace checks, ignored-private-file checks, and staged-file scope review.
+- The A2 table's `nvt_boot` entry at file offset `0x7f948` points to handler `0x0600d600`. The handler reads existing `bootargs`, calls the loader wrapper at `0x0600d550`, appends timestamp/resume arguments, and writes the updated environment value.
+- The wrapper passes the prepared FDT (`[0x060802c8]`) to `0x0600c984`, which reads `/nvt_memory_cfg/rtos` `reg` cells and chooses the named-partition Linux loader at `0x0600cacc` or unresolved alternate `0x0600ce5c`.
+- The traced NAND branch constructs `nand read 0x5800000 linux 0x40`, derives total size from the big-endian legacy-image size field, reloads that total, and calls the packaged-kernel helper with `0x05800000` and `0x01100000`. A separate `0x03800000` branch remains semantically unresolved.
+- Before `nvt_boot`, the only direct call to FDT initializer `0x06003c90` is at `0x060012c8` with argument zero. That branch verifies and copies a loader-supplied memory FDT from global `0x060802bc` to the destination referenced by `0x060802c8`. The compiled nonzero/NAND branch reads `0x20000` bytes at flash offset `0x00040000`, optionally continuing at `0x00060000`, with a `0x80000` cap; it is not proved to be the normal path.
+- The handler sets `fdt_high`, `bootm_size`, and `bootm_mapsize` to `0x07000000`, sets `bootm_low` to zero, constructs `bootm 5800000 - <fdt-address>`, and dispatches it through the command executor at `0x0601d7b4`.
+- Focused verification used bounded Capstone ranges around the FDT caller/loader, selector, Linux loader, wrapper and handler, plus one input-capped full-image direct-call scan. Documentation consistency, whitespace, private-file ignore status, staged-file scope, and the final Git push are checked at checkpoint time.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; parent checkpoint `2409607`. The A2 checkpoint is the commit containing this file and is pushed to `origin/main` after focused verification; use `git log -1 --oneline` for its immutable ID.
+**IMPORTANT STATIC LIMITS:** `0x0600d550` discards the selected loader's return and returns zero; `nvt_boot` does not check the final command executor's return. No live failure behavior was tested. The source of the loader-temporary FDT pointer, meanings of the FDT `reg` cells/selection global, alternate Linux loader, installed-camera byte identity, actual boot success and standard `bootm` acceptance policy remain unresolved.
+
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; parent checkpoint `acef47c`. The A3 checkpoint is the commit containing this file and is pushed to `origin/main` after focused verification; use `git log -1 --oneline` for its immutable ID.
 
 **LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):** proprietary `uboot.bin`, the two ignored bounded helper scripts, prior extracted firmware, and isolated WSL analyzer environments remain local/private and are not Git-backed. Do not delete or upload `firmware_workspace/` or `/home/firmware-analysis/slot20_private/`.
 
-**WHAT REMAINS UNFINISHED:** actual normal-boot and validation control flow (A3), environment persistence/partition ownership (A4), and independent-rescue evidence (A5). Installed-camera byte identity, BootROM/loader authentication, fuse state, physical interfaces, NAND/OOB/ECC behavior, update power-loss safety, rollback and every live recovery path remain unverified.
+**WHAT REMAINS UNFINISHED:** environment persistence/partition ownership (A4) and independent-rescue evidence (A5). FDT source-pointer provenance, alternate boot branches, installed-camera byte identity, BootROM/loader authentication, fuse state, physical interfaces, NAND/OOB/ECC behavior, update power-loss safety, rollback and every live recovery path remain unverified.
 
-**NEXT SINGLE TASK ID + INPUT:** **A3** — reuse the interrupted disassembly to trace only the normal `nvt_boot` path through Linux/FDT loading to the constructed `bootm` invocation. Verify cited offsets/calls against the preserved binary; do not trace update/recovery paths or broaden into A4/A5.
+**NEXT SINGLE TASK ID + INPUT:** **A4** — analyze the actual environment location and boot arguments relative to the matching package FDT and generic BSP. Reuse the recovered environment findings, explicitly report offset/partition ownership mismatches, and never convert generic offsets into camera instructions. Do not begin A5.
 
-**PASS CRITERION FOR NEXT TASK:** one narrow sanitized control-flow record cites actual-binary offsets for the normal boot path, labels direct evidence versus inference, identifies unresolved branches, executes no target code, and passes focused documentation checks.
+**PASS CRITERION FOR NEXT TASK:** one concise sanitized report identifies actual-binary environment backend/persistence evidence, maps relevant boot arguments to the package FDT, distinguishes matching-binary facts from generic BSP defaults, and lists unresolved ownership without executing target code or touching hardware.
 
-**RECOMMENDED REASONING + WHY:** **High** for A3 because stripped ARM call/data-reference validation requires careful firmware-analysis judgment, but the recovered offsets make it a bounded path rather than open-ended reverse engineering.
+**RECOMMENDED REASONING + WHY:** **High** for A4 because correlating stripped-binary environment calls with the board-specific FDT and generic BSP requires careful provenance and mismatch analysis, but the preserved findings keep it bounded.
 
-**WHEN TO SWITCH:** use Medium once only documentation remains. Consider Ultra only after another checkpoint if one specific indirect call, image-validation branch, or hardware-critical control-flow question cannot be resolved at High.
+**WHEN TO SWITCH:** use Medium when only documentation remains. Consider Ultra only after an A4 checkpoint if one specific hardware-critical environment backend or partition-ownership ambiguity cannot be resolved with bounded High analysis.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable Codex telemetry at 2026-10-15 14:36 PDT reported 22% used in the five-hour window and 19% used in the weekly window (78% and 81% remaining respectively). This is a timestamped snapshot, not continuous monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable Codex telemetry at 2026-10-16 01:31 PDT reported 8% used in the five-hour window and 22% used in the weekly window (92% and 78% remaining respectively). This is a timestamped snapshot, not continuous monitoring.
 
-**USAGE PREPARATION:** A2 is committed and pushed before any A3 work. Recheck usage at the next task boundary; do not use this snapshot as a live meter.
+**USAGE PREPARATION:** A3 is committed and pushed before A4. Recheck usage at the next task boundary; do not use this snapshot as a live meter. A4 should begin from this handoff without repeating A3 disassembly.
 
-**CONTINUE OR STOP + REASON:** **STOP after A2**, as explicitly requested. Do not start A3 automatically.
+**CONTINUE OR STOP + REASON:** **STOP after A3**, as explicitly requested. Do not start A4 automatically.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification, or flash was performed or authorized.

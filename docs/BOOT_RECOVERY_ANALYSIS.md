@@ -1,6 +1,6 @@
 # Offline boot, update and recovery analysis
 
-**Checkpoint:** 2026-10-15 (atomic tasks A1–A2). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
+**Checkpoint:** 2026-10-16 (atomic tasks A1–A3). **Evidence class:** static package/source inspection only. No camera, flash dump, UART console or matching spare has been accessed.
 
 This document keeps observations from the matching Reolink package separate from capabilities found in generic Novatek source code. A generic BSP feature is not proof that the shipped RLC-811A binary enables it or that the board exposes the required pins, port or recovery trigger.
 
@@ -72,7 +72,7 @@ The preserved command-table probe found one contiguous 61-entry run at file offs
 
 | Area | Classification | Matching-binary evidence | Limit / unresolved point |
 |---|---|---|---|
-| Normal booting | **Present (compiled); runtime uncertain** | `bootm` entry `0x7f600`, handler `0x0600efb4`; `nboot` `0x7f910` / `0x060147a0`; `nvt_boot` `0x7f948` / `0x0600d600`. Exact strings: `bootcmd=nvt_boot` at `0x6c14a`, `bootdelay=0` at `0x6c15b` | Establishes commands/default strings only. A3 must document the normal boot control flow; no live boot was observed |
+| Normal booting | **Present (compiled); runtime uncertain** | `bootm` entry `0x7f600`, handler `0x0600efb4`; `nboot` `0x7f910` / `0x060147a0`; `nvt_boot` `0x7f948` / `0x0600d600`. Exact strings: `bootcmd=nvt_boot` at `0x6c14a`, `bootdelay=0` at `0x6c15b` | Establishes commands/default strings; A3 documents the static normal flow below, but no live boot was observed |
 | UART / serial console | **Present clues; serial loaders absent; hardware uncertain** | Exact strings `console=ttyS0,115200` at `0x6c0cd`, `baudrate=115200` at `0x6c167`, and `Hit ctrl + c` at `0x6b4ce`; registered `nvt_uart_disable` at `0x7fa44`, handler `0x0600ef34`. No registered `serial`, `loadx`, `loady`, or `loads` command | Does not establish pinout, voltage, pad mux, fuse state, readable output, or a usable interrupt window. Never invoke the UART-disable command |
 | Ethernet / DHCP / TFTP | **Present (compiled); hardware uncertain** | `bootp` `0x7f61c` / `0x06014c84`; `dhcp` `0x7f6a8` / `0x06014c90`; `ping` `0x7fa98` / `0x06014cdc`; `tftpboot` `0x7fb5c` / `0x06014c9c`. No separate registered `eth` diagnostic command | Network stack commands are present, but MAC/PHY initialization, link, board wiring, RAM destinations, and image acceptance are untested |
 | NAND / UBI | **Present (compiled); device geometry uncertain** | `chpart` at `0x7f638`; `mtdparts` `0x7f8bc`; `nand` `0x7f8f4`; `nboot` `0x7f910`; `ubi` `0x7fb94`; `ubifsload`, `ubifsls`, `ubifsmount`, `ubifsumount` at `0x7fbb0..0x7fc04` | Command presence does not identify the physical NAND, ECC/OOB scheme, bad blocks, safe partition bounds, or restore correctness |
@@ -107,6 +107,54 @@ for value in present + absent:
 ```
 
 The probe caps input at 8 MiB and reports only plausible command records whose pointers remain inside the image. The targeted string command scans the known 572,344-byte input for the listed exact tokens; `-1` supports only “absent as that exact string,” not absence of all equivalent code.
+
+### A3 — normal `nvt_boot` control flow
+
+This trace follows the actual packaged binary's registered `nvt_boot` handler. Runtime addresses below use the A1 linked base `0x06000000`; for addresses inside the first `0x80000` bytes, the corresponding file offset is the address minus that base. Names such as `env_get`, `env_set` and `run_command` describe behavior inferred from their call sites and arguments because this is a stripped flat image.
+
+| Stage | Verified static evidence in the matching binary | Boundary / unresolved behavior |
+|---|---|---|
+| Command entry | The A2 command-table entry at file offset `0x7f948` points `nvt_boot` to `0x0600d600` (file offset `0xd600`). The handler clears bounded local command/argument buffers, reads `bootargs` via `0x06016764` at `0x0600d694`, and preserves that string for later extension. | `bootcmd=nvt_boot` and `bootdelay=0` make this the compiled default path, not proof that the installed camera ran it. |
+| FDT preparation before `nvt_boot` | The only direct `bl 0x06003c90` found by a complete instruction scan is at `0x060012c8` (file offset `0x12c8`), immediately after `r0=0`. In this memory-source branch, `0x06003c90` obtains a loader-supplied FDT pointer through global `0x060802bc`, checks the header, derives the big-endian total size, and copies exactly that size to the buffer referenced by global `0x060802c8`. | The code that originally assigns the loader-temporary pointer is not yet identified. The direct-call result does not exclude an indirect caller. Thus the FDT is verified as already prepared when `nvt_boot` begins, but its normal flash provenance is unresolved. |
+| Compiled FDT NAND branch | When `0x06003c90` is called with a nonzero argument, it allocates at most `0x80000` bytes, constructs an initial `nand read` from raw flash offset `0x00040000` for `0x20000` bytes, rejects an invalid header or total size over `0x80000`, and if necessary reads the remainder beginning at `0x00060000`. It then copies the exact FDT to the `0x060802c8` destination. | This branch is **present but not established as the normal path**: the only direct caller found passes zero. The raw offsets must not be treated as a partition map, recovery procedure, or hardware-verified location. |
+| Firmware-selection wrapper | At `0x0600d6d4`, the handler calls `0x0600d550`. That wrapper passes the prepared FDT (`[0x060802c8]`) to `0x0600c984`, which looks up `/nvt_memory_cfg/rtos` and reads its `reg` property. Parse failure, a zero second returned cell, or global `0x060802d0 == 1` selects `0x0600cacc`; otherwise it selects the alternate function `0x0600ce5c`. | The exact meanings of the two `reg` cells and `0x060802d0` are not proved. A3 follows `0x0600cacc`, the branch that visibly reads the named `linux` NAND partition; `0x0600ce5c` is deliberately left unresolved. |
+| Linux load | `0x0600cacc` first queries `0x060043c4`. Its NAND branch builds and executes `nand read 0x5800000 linux 0x40`, reads the big-endian legacy-image data-size word at RAM `0x05800000 + 0x0c`, adds the `0x40`-byte header, and issues a second `nand read 0x5800000 linux <derived-total>`. It records address `0x05800000` and the derived size in globals `0x060802d4`/`0x060802d8`. | A nonzero result from `0x060043c4` selects another path involving address `0x03800000`; its boot-source semantics are unknown. A local selector is initialized to zero, so the visible `0x80` preload/decrypt alternative is not selected within this function in this build. The two command return values are not checked here. |
+| Optional packaged-kernel transform | The loader then calls `0x0600c618` with source `0x05800000` and workspace/destination `0x01100000`. Preserved bounded analysis identifies the conditional `BCL1` (`0x314c4342`) path, its 8 MiB bound, decompression workspace and legacy-image reconstruction. A negative return is diagnosed as an unzip failure. | This is static code behavior, not proof that every packaged kernel takes the compressed branch. The precise accepted-image/authentication policy inside standard `bootm` remains outside this narrow trace. |
+| Boot arguments and limits | After the loader wrapper returns, `0x0600d718..0x0600d784` appends `bootts=%lu,%lu resume_addr=0x%08lx user_debug=0xff ` to the saved boot arguments and writes `bootargs` via `0x06016514`. The same setter installs `fdt_high`, `bootm_size` and `bootm_mapsize` as `0x07000000`, and `bootm_low` as zero (`0x0600d7a8..0x0600d84c`). | The two timestamps and resume address are runtime globals; their values and hardware meaning were not inferred. Environment persistence is A4, not part of A3. |
+| Final handoff | `0x0600d850..0x0600d8c0` constructs `bootm 5800000 - <fdt-address>`, where the FDT address is read from `[0x060802c8]`; the literal `-` omits a ramdisk. At `0x0600d920`, that buffer is passed with flags zero to the command executor at `0x0601d7b4`. | This verifies command construction and dispatch only. It does not prove that `bootm` succeeded, Linux reached its entry point, or the physical board used these bytes. |
+
+Two error-flow details remain important. First, `0x0600d550` discards the selected loader's return value and returns zero, so the caller's `"boot firmware init failed"` branch does not receive a negative result from `0x0600cacc` through this wrapper. Second, `nvt_boot` also returns zero after invoking the constructed command without checking the command executor's return. These observations are direct static control flow, not a live failure test.
+
+Bounded A3 reproduction commands (read-only; they disassemble bytes but never execute the ARM image):
+
+```bash
+ANALYZER_PY=/home/firmware-analysis/slot20_private/venv-capstone-5.0.9/bin/python
+IMAGE=firmware_workspace/analysis/sections/uboot.bin
+DISASM=firmware_workspace/disasm_arm_ranges.py
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x110 "$IMAGE" 0x06001270
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x3c0 "$IMAGE" 0x06003c90
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x148 "$IMAGE" 0x0600c984
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x220 "$IMAGE" 0x0600cacc
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0xb0  "$IMAGE" 0x0600d550
+"$ANALYZER_PY" "$DISASM" --base 0x06000000 --bytes 0x340 "$IMAGE" 0x0600d600
+```
+
+The direct-call check is intentionally capped at 8 MiB and prints only call-site addresses:
+
+```bash
+"$ANALYZER_PY" -c '
+from pathlib import Path
+from capstone import Cs, CS_ARCH_ARM, CS_MODE_ARM
+import sys
+p = Path(sys.argv[1]); assert p.stat().st_size <= 8 * 1024 * 1024
+m = Cs(CS_ARCH_ARM, CS_MODE_ARM)
+for insn in m.disasm(p.read_bytes(), 0x06000000):
+    if insn.mnemonic in ("bl", "blx") and insn.op_str == "#0x6003c90":
+        print(hex(insn.address), insn.mnemonic, insn.op_str)
+' "$IMAGE"
+```
+
+These ranges cover the early FDT call, both FDT source branches, the FDT property selector, the normal named-partition Linux loader, the firmware-selection wrapper, and the complete `nvt_boot` handler. They intentionally do not trace the alternate loader, environment backend, updater, or recovery mechanisms assigned to later atomic tasks.
 
 ## Confirmed from official Novatek source
 
@@ -151,7 +199,7 @@ The generic U-Boot header conditionally places a NAND environment at `0x002c0000
 ## Evidence still required before hardware work
 
 - Identify the physical NAND part, page/OOB/erase geometry, ECC scheme and bad-block behavior.
-- Determine the real boot sequence, environment persistence/partition ownership, practical boot interruption, watchdog/reset-reason handling and whether secure boot/eFuses are active. The compiled command set is now inventoried, but hardware usability remains unverified.
+- Observe the documented normal boot sequence on matching spare hardware; determine environment persistence/partition ownership, practical boot interruption, watchdog/reset-reason handling and whether secure boot/eFuses are active. The static command and normal-flow paths are now inventoried, but hardware usability remains unverified.
 - Determine whether a ROM downloader, UART recovery, USB device recovery, TFTP recovery or programmer can restore every required region on matching spare hardware.
 - Acquire and verify a complete per-device backup including OOB/bad-block information and unique factory/calibration/identity regions.
 - Explain the purpose and restore semantics of `fdt.restore`, `uenv`, `para`, `sp`, `ext_para` and `download` without repurposing them.

@@ -25,7 +25,8 @@ One task should have a specific input, one main output, and a verification crite
 | B3 | Implement small file-backed boot/update-state simulator | Deterministic state transitions and basic tests; no real NAND or camera access | High |
 | B4 | Add bounded interrupted-write/power-loss fault tests to simulator | Recorded pass/fail evidence for selected transitions; simulator results explicitly not hardware proof | High |
 | C1 | Audit required Novatek BSP build inputs, shipped binary objects, licensing and cross-compiler ABI | Dependency/toolchain decision with licensing and reproducibility caveats | High |
-| C2 | Produce a **minimal offline** Buildroot/kernel/rootfs prototype in separate verifiable steps | Reproducible host-side build artifacts; no claim of device boot, flashing or recovery | High |
+| C2a | Freeze BSP/Buildroot/toolchain inputs and run a disposable configuration/`prepare` preflight | Repeatable input manifest and preflight, or one exact blocker; no rootfs or image assembly | High |
+| C2b | Produce a **minimal offline** Buildroot/kernel/rootfs prototype in separate verifiable steps, only after C2a | Reproducible host-side build artifacts; no claim of device boot, flashing or recovery | High |
 | C3 | Implement and demonstrate local browser management UI **against simulator only** | PC-hosted screenshots for status, firmware validation/update, rollback/errors and recovery explanation; label offline demo | Medium–High |
 | D1+ (BLOCKED) | Obtain matching spare and plan safe full per-device backup + independent recovery tests | **Explicit fresh user approval**, independent matching-hardware proof, and required backups **before** any physical experiments or flashing | High/Ultra for specific questions |
 

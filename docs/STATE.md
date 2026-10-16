@@ -1,6 +1,6 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-16 — Atomic task A4 documented the actual matching-package U-Boot environment, bootargs assembly and flash-partition ownership boundaries. The binary uses a volatile `nowhere` backend; the declared `uenv` partition is not its persistent environment, and the generic NAND environment offset would overlap the package kernel. No camera interacted with.
+**Last milestone:** 2026-10-16 — Atomic task A5 evaluated UART, U-Boot TFTP/Ethernet, MMC/FAT, SoC Boot ROM, external SPI-NAND programming, the existing reset/staged-update path, and proposed protected rescue/A-B designs. Every route remains unverified; the report now states each independence boundary, missing evidence, risk, required matching-spare equipment and minimum future proof. No camera interacted with.
 
 ## Goal
 Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
@@ -35,6 +35,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Atomic task A2 verified a 61-entry, 28-byte command-table run at file offsets `0x7f5ac..0x7fc57`. The actual package binary registers normal/NAND boot, UART-disable, BOOTP/DHCP/TFTP/ping, NAND/MTD/UBI/UBIFS, MMC/FAT, checksum and two update command paths. It does not register USB/DFU/UMS/fastboot, serial-transfer or `saveenv` commands. Exact bounded string searches found compiled console/default-boot clues but no named bootcount/bootlimit/alternate-boot/rollback/rescue tokens. These are static command/string facts, not proof of working hardware or independent recovery.
 - Atomic task A3 traced the registered `nvt_boot` handler at `0x0600d600`. The named-partition branch issues a `0x40`-byte probe and derived-length reload of `linux` at `0x05800000`, calls the bounded packaged-kernel transform, extends `bootargs`, sets the `bootm` memory limits, and dispatches `bootm 5800000 - <prepared-fdt>`. The prepared FDT comes through globals `0x060802bc`/`0x060802c8`; the only direct call to its initializer passes memory-source mode. The compiled raw-NAND FDT branch at offsets `0x00040000`/`0x00060000`, an alternate Linux loader, original FDT-pointer provenance and live success remain unverified.
 - Atomic task A4 verified that the actual U-Boot environment linker list has only the `nowhere` driver with null load/save slots and a defaults-only initializer. The 391-byte default blob supplies the UBIFS bootargs, `nvt_boot`, zero delay and 115200 baud; early boot then derives volatile `mtdids`, `mtdparts` and `ubi.mtd=6 ro` from the package FDT before A3's runtime arguments. The FDT declares `uenv` at `0x00240000`, but current U-Boot does not use it for persistence. The generic optional NAND environment range `0x002c0000..0x002fffff` would overlap the matching FDT's kernel partition and must never be copied to this target.
+- Atomic task A5 added the independent-recovery evidence matrix. Preserved U-Boot plus UART/TFTP or MMC/FAT are plausible Linux-independent leads but remain U-Boot-dependent and physically unverified. Boot ROM and external raw NAND access could reach below U-Boot but have the largest protocol/electrical/raw-geometry gaps. The GPIO 43/`download` staged-update path is not proven atomic or restorative, and no protected rescue/A-B design or automatic rollback currently exists. No candidate satisfies the recovery gate.
 - Project-specific lightweight safety / checkpoint rules established; deliberately **no automatic import** of the entire master-instruction-library.
 - This public repository holds **notes and independent code only**, never firmware update images or other proprietary material.
 
@@ -45,14 +46,14 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Vendor executable ABI / callbacks and AI formats are not yet mapped.
 - Exact sensor, flash chip, physical RAM, UART recovery and live AI support unverified.
 - BootROM/loader authentication, OTP/fuse state, actual UART pads/timing, Ethernet/TFTP/MMC readiness, NAND OOB/ECC/bad-block handling, GPIO 43's physical mapping, staged-update completeness/power-loss behavior, and recovery from a damaged loader/U-Boot remain unverified. Command presence is not proof that a recovery route works.
-- A1–A4 now normalize artifact/layout, command/string, normal-boot, environment and partition-ownership evidence with bounded reproduction commands. Recovery findings still need the separate A5 evidence record. Preserve and reuse the existing artifact/helper output; do not repeat broad extraction or disassembly.
+- A1–A5 now normalize artifact/layout, command/string, normal-boot, environment/partition ownership and independent-recovery candidate evidence. Preserve and reuse the existing artifact/helper output; do not repeat broad extraction or disassembly.
 - No camera read-only query, live video test, backup, recovery or flashing performed.
 - No independent camera replacement image or hardware-validated build exists.
 
 ## Next Codex task
-1. **A5 only:** review possible independent rescue routes and identify the minimum missing evidence for each. Produce a recovery-candidate/test-hardware matrix; command/code presence must not be presented as working UART, TFTP, MMC, Boot ROM or programmer recovery.
-2. After the A5 checkpoint, reassess whether Phase A is sufficiently normalized before starting any B-series host-only implementation task.
-3. Define and test a host-only signed bundle schema plus file-backed update/boot-state simulator only after the Phase-A evidence handoff is adequately normalized.
+1. **B1 only:** define a host-only compatible signed update-bundle format with board ID, version/downgrade policy, bounded component metadata, cryptographic hashes/signature, and explicit security assumptions. Do not write flash or target the camera.
+2. Keep the bundle schema independent of unresolved physical recovery choices; A5 does not authorize persistent installation or repurposing `download`/unknown partitions.
+3. Defer B2 implementation/negative tests until B1 is reviewed and checkpointed.
 4. Keep all live-device work and `docs/INTERFACE_RE_PLAN.md` deferred until the maintenance and recovery gates are satisfied.
 
 ## Current reproducibility checkpoint
@@ -66,8 +67,8 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Private `app.bin`: SHA-256 `f1d3511609aa2d8642e05bfbff4fb02c192a4faa032bdd6de4f6fd44da043531`
 - Private `fdt.bin`: 17,399 bytes; SHA-256 `62a2b0f96262702f7ec97c6df2423a4abc8ed47e881db1248ceab66e763c9a8c`
 - Private `uboot.bin`: 572,344 bytes; SHA-256 `f2d4fe401c28d5be792b6e559ffc7cc14627ad69ed0f873672fbeca2cda7dc6b`
-- Tested here: A4 sole-environment-driver table and initializer, default-environment bounds/relevant entries, early FDT-derived `mtdids`/`mtdparts`/rootfs argument path, exact FDT bootargs/partition/NVTPACK nodes, and pinned generic environment/partition source; A3 boot-flow ranges; A2 command-table/string evidence; A1 artifact/layout evidence; R0 recovery; extraction cross-checks; synthetic parser/sampler behavior.
-- Recovered but not yet normalized after A4: bounded update/recovery-path observations summarized above for A5.
+- Tested here: A5 matrix cross-references against the bounded A2 command/string offsets, A3 boot dependencies, A4 environment/partition ownership, pinned generic-source limits and the recovery-gate checklist; A4 environment/partition evidence; A3 boot-flow ranges; A2 command-table/string evidence; A1 artifact/layout evidence; R0 recovery; extraction cross-checks; synthetic parser/sampler behavior.
+- Recovered static boot/update/recovery observations are normalized through A5; no hardware route was exercised.
 - Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux build/boot, independent recovery and all hardware behavior.
 
 ## Recovery/checkpoint rule
@@ -75,10 +76,10 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 
 ## Next-stage recommendation
 
-- **Completed:** Task A4 published and verified the actual volatile environment backend, compiled/default plus FDT-derived bootargs, full declared flash map, generic-BSP mismatches and unresolved ownership. No target code was executed and no camera was accessed.
-- **Checkpoint:** the A4 documentation commit containing the report, this state and the current handoff is pushed after focused checks. Private firmware, FDT, helpers, extracted trees and analyzer/upstream environments remain outside Git; no proprietary bytes are committed and no tracked WIP remains.
-- **Next task:** **A5** — produce the bounded independent-rescue candidate and missing-evidence matrix without claiming any route works.
-- **Recommended model and reasoning:** **High**.
-- **Why:** A5 must distinguish compiled recovery leads from demonstrated independent recovery and define exact spare-hardware evidence; High is sufficient for the bounded cross-evidence matrix.
-- **When to switch:** use Medium once only matrix/document editing remains. Consider Ultra only after an A5 checkpoint for one specifically identified Novatek Boot ROM, recovery-architecture or critical hardware uncertainty that cannot be resolved at High.
-- **Usage preparation:** A4 is the required checkpoint before A5. Reliable telemetry at 2026-10-16 02:42 PDT showed 40% five-hour and 70% weekly usage remaining. This is a snapshot, not continuous monitoring; checkpoint now and do not begin A5 from this session, as the user requested.
+- **Completed:** Task A5 published and cross-checked a seven-route recovery matrix covering UART, TFTP/Ethernet, MMC/FAT, Boot ROM, external SPI-NAND programming, the existing staged-update/reset path, and protected rescue/A-B options. It states the evidence class, independence boundary, unknowns, risks, equipment and minimum matching-spare verification for each. No route is claimed proven; no target code ran and no camera was accessed.
+- **Checkpoint:** the A5 documentation commit containing the report, this state and the current handoff is pushed after focused verification. Private firmware, FDT, helpers, extracted trees and analyzer/upstream environments remain outside Git; no proprietary bytes are included and no other tracked WIP remains.
+- **Next task:** **B1** — define the host-only signed update-bundle schema and security assumptions; do not implement B2 or bind the schema to unresolved camera flash regions.
+- **Recommended model and reasoning:** **Medium**.
+- **Why:** B1 is a bounded data-format and threat-model design task using established cryptographic primitives; it needs careful compatibility and downgrade-policy reasoning but no new binary reverse engineering or build.
+- **When to switch:** use High for B2 cryptographic verification implementation, adversarial negative tests or a substantive schema ambiguity. Ultra is not indicated unless a later narrowly scoped recovery/security uncertainty remains intractable at High.
+- **Usage preparation:** A5 must be committed and pushed before B1. Reliable telemetry at 2026-10-16 02:52 PDT showed 96% five-hour and 68% weekly usage remaining. This is a snapshot, not continuous monitoring; the requested A5 stop is the checkpoint before any new task.

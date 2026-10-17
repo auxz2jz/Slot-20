@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2a",
+  "recorded_at": "2026-10-17T13:08:43-07:00",
+  "scope": "one bounded host-only generic Novatek Linux kernel compile/link attempt",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "commit": "7c1a8d0105409a06f93674d941a47bdb8753c42f",
+    "origin_main_matched": true,
+    "working_tree_clean": true,
+    "free_space_gib": 945
+  },
+  "inputs": {
+    "linux_commit": "1019c2e049f239ba0668ccfd1356e952fde3b29b",
+    "linux_archive_sha256": "66aca4fee2663f60ad68f9d3e9500a1475cefa825517cb08e570599821c4b20e",
+    "config_sha256": "9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5",
+    "target_tuple": "arm-buildroot-linux-gnueabihf",
+    "target_gcc": "Buildroot 2019.05.2 GCC 6.5.0",
+    "target_binutils": "2.31.1",
+    "gcc_wrapper_sha256": "c04c34d6014b183f08559d95c16c98f47622db9bf11a5007d1b4acc46adc3df3",
+    "make_q_toolchain_exit": 0,
+    "host_gcc": "Ubuntu GCC 13.3.0",
+    "host_ld": "GNU ld 2.42",
+    "host_fcommon": false
+  },
+  "attempt": {
+    "count": 1,
+    "target": "default kernel target",
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 6.30,
+    "maximum_resident_kib": 38248,
+    "build_log_lines": 34
+  },
+  "first_blocker": {
+    "stage": "host device-tree-compiler link",
+    "classification": "host-tool linker failure",
+    "target_arm_compile_reached": false,
+    "message": "multiple definition of yylloc between scripts/dtc/dtc-parser.tab.o and scripts/dtc/dtc-lexer.lex.o",
+    "source_definition": "scripts/dtc/dtc-lexer.l:41",
+    "generated_parser_definition": "scripts/dtc/dtc-parser.tab.c:1187",
+    "symbol_evidence": "nm reports global BSS yylloc in both objects"
+  },
+  "outputs": {
+    "vmlinux": false,
+    "Image": false,
+    "zImage": false,
+    "root_filesystem": false,
+    "firmware_package": false
+  },
+  "private_logs": {
+    "build_log_sha256": "f4a916b87b9f2a590391ca4a9934af487aea6514eab1c1b074b08c0b3a26c7a1",
+    "build_time_sha256": "ff3cefcc4c4f1397f567845e88880209ec838aa9075ce6ba97aaced6d0d4f24c",
+    "defconfig_log_sha256": "c627610e186b40b84fac334881387694888e02c7d8a55c1e87021ff51ab458cb",
+    "prepare_log_sha256": "09d9c4521c3adfa4b531ea6a7b681993dcdf28c1bea9426eb8ced29717ee96da"
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "recovered_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

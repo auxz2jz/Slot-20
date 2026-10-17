@@ -1,0 +1,12 @@
+# C2a compatibility baseline only; not a production root filesystem config.
+BR2_arm=y
+BR2_cortex_a9=y
+BR2_ARM_ENABLE_NEON=y
+BR2_ARM_ENABLE_VFP=y
+BR2_ARM_EABIHF=y
+BR2_ARM_FPU_VFPV3=y
+BR2_ARM_INSTRUCTIONS_ARM=y
+BR2_TOOLCHAIN_BUILDROOT_GLIBC=y
+BR2_KERNEL_HEADERS_4_19=y
+BR2_BINUTILS_VERSION_2_31_X=y
+BR2_GCC_VERSION_6_X=y

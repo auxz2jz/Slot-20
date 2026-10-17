@@ -1,0 +1,91 @@
+{
+  "schema": "slot20.c2a-build-inputs.v1",
+  "created_date": "2026-10-17",
+  "scope": "host-only configuration preflight; not a firmware or root-filesystem build",
+  "sources": [
+    {
+      "id": "novatek-linux",
+      "url": "https://codeload.github.com/Novatek-OSS/kernel/tar.gz/1019c2e049f239ba0668ccfd1356e952fde3b29b",
+      "git_commit": "1019c2e049f239ba0668ccfd1356e952fde3b29b",
+      "archive_bytes": 163963602,
+      "archive_sha256": "66aca4fee2663f60ad68f9d3e9500a1475cefa825517cb08e570599821c4b20e",
+      "extracted_regular_files": 62148,
+      "extracted_symbolic_links": 34
+    },
+    {
+      "id": "novatek-uboot",
+      "url": "https://codeload.github.com/Novatek-OSS/u-boot/tar.gz/b23172486e60c2f40729231eae06f48ac3c8d680",
+      "git_commit": "b23172486e60c2f40729231eae06f48ac3c8d680",
+      "archive_bytes": 21033080,
+      "archive_sha256": "3f9b2f9b3d475ccbd28f482e904d08ff9bca6db3094994c494865e96243ca3c8",
+      "extracted_regular_files": 15815,
+      "extracted_symbolic_links": 24
+    },
+    {
+      "id": "buildroot",
+      "url": "https://buildroot.org/downloads/buildroot-2019.05.2.tar.gz",
+      "version": "2019.05.2",
+      "archive_bytes": 6351403,
+      "archive_sha256": "7c0ea9ffc170e19735aed281592fe766e4b698bb139eae851f4f98f024a776b5",
+      "extracted_regular_files": 11082,
+      "extracted_symbolic_links": 40
+    }
+  ],
+  "toolchain_compatibility_baseline": {
+    "status": "configuration-reproduced; compiler executable not materialized",
+    "defconfig_path": "configs/c2a_buildroot_2019.05.2_defconfig",
+    "defconfig_sha256": "83d056aa42ad4557f5d6dd481be63c60526c5d01cfdce90040d4ec3150718b9d",
+    "normalized_config_sha256": "2d4d71e0cfc3badd846387a96dff56191654f8834b411a666e460f923b4f875f",
+    "normalized_in_two_clean_trees": true,
+    "architecture": "armv7-a",
+    "cpu_compatibility_lead": "cortex-a9",
+    "cpu_lead_is_matching_hardware_proof": false,
+    "abi": "EABI5 hard-float",
+    "floating_point": "VFPv3",
+    "neon": true,
+    "instruction_mode": "ARM",
+    "libc": "glibc",
+    "linux_headers": "4.19.69",
+    "gcc": "6.5.0",
+    "binutils": "2.31.1",
+    "compiler_executable_materialized": false
+  },
+  "preflight": {
+    "buildroot_configuration": {
+      "status": "pass",
+      "clean_runs": 2,
+      "legacy_bootstrap_required": "support/scripts/br2-external -m -o output/.br-external.mk"
+    },
+    "kernel_configuration_and_prepare": {
+      "status": "blocked-before-config-completion",
+      "clean_runs": 2,
+      "defconfig": "na51055_evb_defconfig_nand_squash_release",
+      "cross_compile_prefix": "arm-buildroot-linux-gnueabihf-",
+      "controlled_vos_hdal_directories_created_empty": true,
+      "prepare_recipe_reached": false,
+      "normalized_error_signature_sha256": "5e10375dfc0a4ae42955d37393a3e07c1984c84d652845037519d5f04bf7a07c",
+      "observed_blockers": [
+        "arm-buildroot-linux-gnueabihf-gcc is not installed",
+        "bison is not installed"
+      ],
+      "additional_missing_host_inputs": [
+        "flex",
+        "cpio",
+        "unzip"
+      ]
+    }
+  },
+  "preservation": {
+    "existing_analysis_repositories_modified": false,
+    "kernel_analysis_status_sha256_before_after": "180c5d627f93f6bf4285a9aa4c934bc29668ae3771d410b76b5a2ccea1341cad",
+    "uboot_analysis_status_sha256_before_after": "0b55d09572d9a4f105c788b2dafd27473aaa658c52a551a17c7a561eb3716fc7"
+  },
+  "release_blockers": [
+    "binary-only NA51055 PLL object",
+    "binary-only OTP object under the generic configuration",
+    "missing VOS/HDAL SDK sources",
+    "missing matching-board kernel DTS and defconfig",
+    "no authenticated or locally built GCC 6.5.0 cross-compiler",
+    "no compile, link, root filesystem, firmware package, emulator, or hardware result"
+  ]
+}

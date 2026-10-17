@@ -1,40 +1,43 @@
 # Slot-20 — Current task handoff
 
-**Status:** Task C2a COMPLETE — public build inputs are SHA-256 frozen, complete clean sources exist in two private WSL trees, and the Buildroot compatibility configuration reproduces. Kernel configuration/`prepare` is precisely blocked before completion by missing host inputs. No target compilation, rootfs, firmware or hardware work occurred.
+**Status:** Task C2b-1 COMPLETE — the frozen Buildroot configuration now has a provenance-recorded GCC 6.5.0 ARM hard-float toolchain, and generic Novatek kernel `defconfig`/`prepare` passes reproducibly in two clean private trees. No complete kernel, rootfs image, firmware or hardware work occurred.
 
-**LAST TASK ID / STATUS:** C2a build-input freeze and configuration preflight — **VERIFIED COMPLETE WITH REPRODUCED BLOCKER**. C2b was not started.
+**LAST TASK ID / STATUS:** C2b-1 missing prerequisites and repeated configuration preflight — **VERIFIED COMPLETE**. C2b-2a was not started.
 
 **EVIDENCE AND TESTS:**
 
-- Private WSL root `/home/firmware-analysis/slot20_private/c2a_20261017/` contains cache plus independent `run-a` and `run-b` trees. Keep it private and do not confuse it with a Git backup.
-- Commit-addressed Linux and U-Boot archives and Buildroot 2019.05.2 passed gzip checks and were SHA-256 frozen. Extracted path counts in both runs match: kernel 62,148 files + 34 symlinks; U-Boot 15,815 + 24; Buildroot 11,082 + 40.
-- `configs/c2a_build_inputs.json` records URLs, commits, sizes, archive hashes, normalized configuration, preflight status, preservation evidence and remaining release blockers.
-- `configs/c2a_buildroot_2019.05.2_defconfig` selects Cortex-A9/ARMv7-A, EABI hard-float, VFPv3, NEON, glibc, 4.19 headers, GCC 6.5.0 and binutils 2.31.1. Cortex-A9 remains a generic-BSP compatibility lead, not matching-camera proof.
-- Both Buildroot trees produced byte-identical normalized `.config` SHA-256 `2d4d71e0cfc3badd846387a96dff56191654f8834b411a666e460f923b4f875f`. The legacy tree required explicit generation of `output/.br-external.mk` with its own helper before `defconfig`.
-- Both kernel trees used controlled empty VOS/HDAL paths and produced the same normalized error-signature SHA-256 `5e10375dfc0a4ae42955d37393a3e07c1984c84d652845037519d5f04bf7a07c`: `arm-buildroot-linux-gnueabihf-gcc` and `bison` are absent. Configuration did not finish and `prepare` was not entered.
-- Existing partial analysis repositories retained the same pinned HEADs and identical bounded status-stream hashes before/after C2a. They were not reset, populated or used as download targets.
-- Final focused validation parsed the JSON, checked its schema/hash fields against tracked files and passed `git diff --check`. The unchanged suite ran 64 tests: 62 passed and two Windows symlink cases were skipped for unavailable privilege.
+- Private C2b-1 root: `/home/firmware-analysis/slot20_private/c2b1_20261017/`. It reuses the C2a frozen archives/configuration without modifying the C2a trees.
+- Ubuntu Noble `bison`, `flex`, `cpio` and `unzip` packages were downloaded, SHA-256 recorded and extracted to a private prefix because passwordless `sudo` was unavailable. The WSL system package database was not changed. Runtime versions are Bison 3.8.2, flex 2.6.4, cpio 2.15 and UnZip 6.00.
+- Buildroot 2019.05.2 built only its `toolchain` target: GCC 6.5.0, binutils 2.31.1, glibc 2.29 and Linux 4.19.69 headers for `arm-buildroot-linux-gnueabihf`. Eleven downloaded public archives, source origins and SHA-256 values are in `configs/c2b1_build_inputs.json`.
+- Modern glibc required the exact official Buildroot host-m4 backport from commit `5a9504831f3fa1ef3be334036c93da30150fde55`; patch SHA-256 `a659db8cd9cad78130f3732ecd369fdfdcdbf0c1cf23821b1c44ea8661e65c4e`. `make -q toolchain` passes after the build.
+- A synthetic object is ELF32 little-endian ARM EABI5, Cortex-A9/ARMv7 application profile, ARM ISA, VFPv3 and VFP-register argument convention. It was inspected, not executed.
+- The correct vendor config invocation is `KBUILD_DEFCONFIG=na51055_evb_defconfig_nand_squash_release defconfig`; the filename itself is not a valid direct make target because it does not end in `*_defconfig`.
+- Two independently extracted Linux trees completed `defconfig` and `prepare`. `.config` SHA-256 is `9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5`; six compared generated configuration/header files also match byte-for-byte, with hashes recorded in the manifest/report.
+- Each prepare run adds the same four symlinks: two internal NA51055 platform links and two links to that run's controlled VOS/HDAL directories. Both external directories remain empty.
+- Both runs reproduce one non-fatal legacy shell warning, `/bin/sh: [: unexpected operator`, while generating `nvtversion.h`; outputs still match.
+- Buildroot's `images` directory is absent; no `vmlinux` or `zImage` exists. No rootfs, firmware/update package, recovered-code execution or camera interaction occurred.
+- Existing analysis repositories retain the pinned HEADs and exact C2a status-stream hashes; they were not reset, populated or used as build directories.
 
-**IMPORTANT LIMITS:** The Buildroot configuration is reproducible, but no compiler executable/sysroot was built or authenticated. An obsolete Linaro URL returned HTML and was rejected. WSL also lacks `flex`, `cpio` and `unzip`. C1's binary PLL/OTP licensing concerns, missing VOS/HDAL source and absent matching-board DTS/defconfig remain. No compile, link, emulation, device boot or redistribution conclusion is supported.
+**IMPORTANT LIMITS:** This proves a historical generic-BSP configuration/prepare boundary only. It does not resolve the binary-only PLL/enabled OTP licensing and source issues, missing VOS/HDAL/media sources, absent matching-board DTS/defconfig, obsolete-toolchain security debt, live hardware compatibility, boot, update or recovery.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; parent checkpoint `ae9b860`. The C2a checkpoint is the commit containing this file and is pushed to `origin/main` after final verification; use `git log -1 --oneline` for its immutable ID.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; C2b-1 prerequisite checkpoint `91f7249` is pushed. The final C2b-1 checkpoint is the commit containing this file and must be verified against `origin/main` with `git log -1`/`git rev-parse`.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** C2a public archives, extracted source trees and logs are under `/home/firmware-analysis/slot20_private/c2a_20261017/`, outside Git. Proprietary firmware/FDT/U-Boot and earlier extracted data remain separately private. Do not upload either private area or delete it without reviewing the manifest/handoff.
+**LOCAL UNTRACKED OR PRIVATE WORK:** The public-source cache, 3.8 GiB toolchain output, two prepared kernel trees, synthetic probes and logs are under the private C2b-1 root outside Git. The C2a root and all proprietary firmware/FDT/U-Boot/private camera material remain separate and unchanged. Do not upload or delete private areas without review.
 
-**WHAT REMAINS UNFINISHED:** A provenance-acceptable GCC 6.5.0 ARM hard-float compiler/sysroot; host `bison`/`flex`/`cpio`/`unzip`; a completed kernel configuration/`prepare`; actual PLL/OTP link compatibility; lawful source/replacements; matching-board configuration; and every compile, rootfs, image, recovery and hardware gate.
+**WHAT REMAINS UNFINISHED:** A generic kernel compile/link result; PLL/OTP object compatibility and lawful-source decision; the non-POSIX vendor shell expression; missing VOS/HDAL/media sources; a matching-board DTS/defconfig; rootfs/package/license work; and every firmware, recovery and hardware gate.
 
-**NEXT SINGLE TASK ID + INPUT:** **C2b-1**, only when explicitly started — materialize digest-authenticated host prerequisites and the frozen GCC 6.5.0 ARM hard-float toolchain baseline, then rerun only generic kernel defconfig/`prepare` in two clean disposable trees.
+**NEXT SINGLE TASK ID + INPUT:** **C2b-2a**, only when explicitly started — in a new disposable private tree, use the C2b-1 toolchain and corrected `KBUILD_DEFCONFIG` procedure for one generic kernel compile/link pass, inventory the first exact source/blob/link blocker, and stop.
 
-**PASS CRITERION FOR NEXT TASK:** both kernel configuration/`prepare` runs complete with identical relevant generated configuration, or one new exact blocker is reproduced and recorded. Do not compile/package a kernel, assemble a rootfs, combine the private Reolink FDT, create an update bundle or access hardware.
+**PASS CRITERION FOR NEXT TASK:** a reproducible generic kernel compile/link result or one exact reproducible source/blob/link blocker. Do not build a rootfs, package a kernel, combine the private Reolink FDT, assemble firmware, access hardware or claim board compatibility.
 
-**RECOMMENDED REASONING + WHY:** **High**. Toolchain provenance, legacy host compatibility and ABI/object preparation require careful implementation/debugging, but no bootloader reverse engineering is involved.
+**RECOMMENDED REASONING + WHY:** **High**. The next step is an ordinary but legacy, blob-sensitive Linux build/debug task with provenance and licensing boundaries; it is not difficult bootloader reverse engineering.
 
-**WHEN TO SWITCH:** Medium once verified compiler/host inputs exist and only deterministic preflight plus documentation remains. Consider Ultra only for one specific persistent compiler/object ABI incompatibility after two materially different bounded approaches; return to High after isolation.
+**WHEN TO SWITCH:** Medium is enough after the first compile boundary is stable and only tests/docs remain. Consider Ultra only if two materially different bounded High-reasoning approaches expose a persistent, hardware-critical object ABI/link problem; return to High once isolated.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** reliable telemetry during C2a on 2026-10-17 reported 16% used in the five-hour window and 48% used in the weekly window (84% and 52% remaining). This is a timestamped snapshot, not continuous monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable telemetry at C2b-1 closeout on 2026-10-17 showed 85% used in the five-hour window and 59% used in the weekly window (15% and 41% remaining). This is a timestamped snapshot, not continuous monitoring; do not start C2b-2a without a fresh check.
 
-**USAGE PREPARATION:** C2a is committed and pushed before any package installation, toolchain download/build or kernel compilation. Recheck telemetry and create a checkpoint before the next large toolchain operation.
+**USAGE PREPARATION:** C2b-1 has an already-pushed prerequisite checkpoint and must receive a final pushed checkpoint now. With only 15% of the five-hour window remaining at closeout, stop after that push; C2b-2a requires a fresh usage check and clean checkpoint before its expensive compile.
 
-**CONTINUE OR STOP + REASON:** **STOP after C2a**, as explicitly requested. Do not begin C2b-1 automatically.
+**CONTINUE OR STOP + REASON:** **STOP after C2b-1**, as explicitly requested. Do not begin C2b-2a automatically.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification or flash was performed or authorized.

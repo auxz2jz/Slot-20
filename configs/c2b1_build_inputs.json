@@ -2,7 +2,7 @@
   "schema": "slot20.c2b1-build-inputs.v1",
   "created_date": "2026-10-17",
   "scope": "host-only prerequisite, cross-toolchain, and kernel configuration/prepare preflight",
-  "status": "in-progress-before-toolchain-build",
+  "status": "verified-complete",
   "parent_checkpoint": "41f5e2c216af2e2ce66d6a51a8dde277a3141777",
   "private_workspace": "/home/firmware-analysis/slot20_private/c2b1_20261017",
   "host": {
@@ -47,7 +47,9 @@
   "host_prerequisite_deployment": {
     "method": "dpkg-deb extraction into a private prefix",
     "reason": "passwordless sudo unavailable; avoid system modification",
-    "buildroot_dependency_check": "pass"
+    "buildroot_dependency_check": "pass",
+    "bison_transitive_m4": "Buildroot host-m4 1.4.18 with the pinned glibc compatibility backport",
+    "bison_m4_probe": "pass"
   },
   "frozen_buildroot": {
     "version": "2019.05.2",
@@ -56,19 +58,131 @@
     "normalized_config_sha256": "2d4d71e0cfc3badd846387a96dff56191654f8834b411a666e460f923b4f875f"
   },
   "toolchain": {
-    "status": "not-yet-built",
+    "status": "built-and-verified",
+    "build_target": "Buildroot toolchain only",
     "target_tuple": "arm-buildroot-linux-gnueabihf",
     "gcc": "6.5.0",
     "binutils": "2.31.1",
+    "linux_headers": "4.19.69",
     "libc": "glibc",
+    "glibc": "2.29-30-g2d3fefd7ce64ac1015701c96916fffacc073a877",
     "architecture": "ARMv7-A Cortex-A9",
     "abi": "EABI5 hard-float",
-    "floating_point": "VFPv3 with NEON"
+    "floating_point": "VFPv3; frozen configuration also enables NEON",
+    "instruction_mode": "ARM",
+    "gcc_wrapper_sha256": "c04c34d6014b183f08559d95c16c98f47622db9bf11a5007d1b4acc46adc3df3",
+    "gcc_real_sha256": "4f157a85bd2cc11b6fcadce093e98552e73d94fc61ecbd35e4a0c841037d80fe",
+    "ld_sha256": "16b812ef36b7eff7eff53315454761f7b12f1866ae8bcbd85b87d358fcdaeaaf",
+    "make_q_toolchain": "up-to-date"
+  },
+  "toolchain_source_archives": [
+    {
+      "file": "binutils-2.31.1.tar.xz",
+      "origin": "http://ftpmirror.gnu.org/binutils/binutils-2.31.1.tar.xz (redirected to mirror.team-cymru.com)",
+      "sha256": "5d20086ecf5752cc7d9134246e9588fa201740d540f7eb84d795b1f7a93bca86"
+    },
+    {
+      "file": "bison-3.0.4.tar.xz",
+      "origin": "http://ftpmirror.gnu.org/bison/bison-3.0.4.tar.xz (redirected to mirror.team-cymru.com)",
+      "sha256": "a72428c7917bdf9fa93cb8181c971b6e22834125848cf1d03ce10b1bb0716fe1"
+    },
+    {
+      "file": "gawk-4.2.1.tar.xz",
+      "origin": "http://ftpmirror.gnu.org/gawk/gawk-4.2.1.tar.xz (redirected to mirror.team-cymru.com)",
+      "sha256": "d1119785e746d46a8209d28b2de404a57f983aa48670f4e225531d3bdc175551"
+    },
+    {
+      "file": "gcc-6.5.0.tar.xz",
+      "origin": "http://ftpmirror.gnu.org/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz (redirected to mirror.team-cymru.com)",
+      "sha256": "7ef1796ce497e89479183702635b14bb7a46b53249209a5e0f999bebf4740945"
+    },
+    {
+      "file": "glibc-2.29-30-g2d3fefd7ce64ac1015701c96916fffacc073a877.tar.gz",
+      "origin": "https://github.com/bminor/glibc at commit 2d3fefd7ce64ac1015701c96916fffacc073a877",
+      "sha256": "bd9fa9932c374b5256a976b543992c20de23338d08879df70a0a2502d17e671d"
+    },
+    {
+      "file": "gmp-6.1.2.tar.xz",
+      "origin": "http://ftpmirror.gnu.org/gmp/gmp-6.1.2.tar.xz (redirected to mirror.team-cymru.com)",
+      "sha256": "87b565e89a9a684fe4ebeeddb8399dce2599f9c9049854ca8c0dfbdea0e21912"
+    },
+    {
+      "file": "linux-4.19.69.tar.xz",
+      "origin": "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.69.tar.xz",
+      "sha256": "c091760b520a4e4a4c7034a8329cc2689a0ea3f81a377b694ed196d623e2d987"
+    },
+    {
+      "file": "m4-1.4.18.tar.xz",
+      "origin": "http://ftpmirror.gnu.org/m4/m4-1.4.18.tar.xz (redirected to mirror.team-cymru.com)",
+      "sha256": "f2c1e86ca0a404ff281631bdc8377638992744b175afb806e25871a24a934e07"
+    },
+    {
+      "file": "mpc-1.1.0.tar.gz",
+      "origin": "http://ftpmirror.gnu.org/mpc/mpc-1.1.0.tar.gz (redirected to mirror.team-cymru.com)",
+      "sha256": "6985c538143c1208dcb1ac42cedad6ff52e267b47e5f970183a3e75125b43c2e"
+    },
+    {
+      "file": "mpfr-4.0.2.tar.xz",
+      "origin": "https://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz",
+      "sha256": "1d3be708604eae0e42d578ba93b390c2a145f17743a744d8f3f8c2ad5855a38a"
+    },
+    {
+      "file": "tar-1.29.cpio.gz",
+      "origin": "http://ftpmirror.gnu.org/tar/tar-1.29.cpio.gz (redirected to mirror.team-cymru.com)",
+      "sha256": "9173f222464dd3676118408840da5990527062b5c7daf6487bed7c396c45bfb1"
+    }
+  ],
+  "host_m4_compatibility_patch": {
+    "buildroot_commit": "5a9504831f3fa1ef3be334036c93da30150fde55",
+    "url": "https://gitlab.com/buildroot.org/buildroot/-/raw/5a9504831f3fa1ef3be334036c93da30150fde55/package/m4/0003-c-stack-stop-using-SIGSTKSZ.patch",
+    "sha256": "a659db8cd9cad78130f3732ecd369fdfdcdbf0c1cf23821b1c44ea8661e65c4e",
+    "reason": "Buildroot 2019.05.2 host-m4 1.4.18 does not compile against glibc 2.34+ without this upstream Buildroot backport"
+  },
+  "abi_probe": {
+    "sha256": "132b1163032ac71a45b175ae03d1c89132df02624e0fcfe819c45c54f19bada9",
+    "format": "ELF32 little-endian ARM relocatable",
+    "eabi": "version 5",
+    "cpu_name": "Cortex-A9",
+    "cpu_arch": "ARMv7 application profile",
+    "arm_isa": true,
+    "thumb2_capability": true,
+    "fp_arch": "VFPv3",
+    "vfp_argument_convention": "VFP registers",
+    "probe_executed": false
+  },
+  "kernel_preflight": {
+    "status": "pass-in-two-independent-clean-source-trees",
+    "defconfig": "na51055_evb_defconfig_nand_squash_release",
+    "invocation": "KBUILD_DEFCONFIG=na51055_evb_defconfig_nand_squash_release defconfig, then prepare",
+    "direct_filename_as_make_target": "invalid because the vendor filename does not end in Kbuild's *_defconfig pattern",
+    "run_count": 2,
+    "config_sha256": "9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5",
+    "autoconf_h_sha256": "87a324966409e85dea170649fb1eb378a1600b978dd793b8c7dc909bda149d44",
+    "auto_conf_sha256": "6c194c08512026956cea95654177b953bd82f8c462b17a2583c206dfef83ad59",
+    "utsrelease_h_sha256": "a48bac31c3e0cb9b939e1275caa5baca812f6da1d6655ebc01536b195739288e",
+    "nvtversion_h_sha256": "7520d5cf5cfad5012ce2be5e295ad22e107af2cc98846d4b02434511c08bd0c0",
+    "bounds_h_sha256": "56b3a4056c7588bd1306802bd061be2fa0d8337ee414bd26563edd88ca8c9be8",
+    "asm_offsets_h_sha256": "2609ba2c2b8e40db128ed886cad3ae17bddc6d4fa03fc7a0d57e3db617e0c58e",
+    "matching_relevant_outputs": true,
+    "controlled_vos_hdal_directories_empty_after_prepare": true,
+    "prepare_added_symlinks_per_tree": 4,
+    "prepare_warning": "/bin/sh: [: unexpected operator; non-fatal and reproduced in both runs",
+    "full_kernel_compiled": false
+  },
+  "preservation": {
+    "existing_analysis_repositories_modified": false,
+    "kernel_head": "1019c2e049f239ba0668ccfd1356e952fde3b29b",
+    "kernel_analysis_status_sha256": "180c5d627f93f6bf4285a9aa4c934bc29668ae3771d410b76b5a2ccea1341cad",
+    "uboot_head": "b23172486e60c2f40729231eae06f48ac3c8d680",
+    "uboot_analysis_status_sha256": "0b55d09572d9a4f105c788b2dafd27473aaa658c52a551a17c7a561eb3716fc7"
   },
   "safety": {
     "full_kernel_compiled": false,
     "root_filesystem_built": false,
     "firmware_or_update_package_created": false,
-    "camera_accessed": false
+    "buildroot_images_directory_created": false,
+    "kernel_image_created": false,
+    "camera_accessed": false,
+    "recovered_firmware_executed": false
   }
 }

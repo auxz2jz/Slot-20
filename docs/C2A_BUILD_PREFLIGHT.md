@@ -53,6 +53,8 @@ make -C KERNEL O=KERNEL_OUT \
   na51055_evb_defconfig_nand_squash_release
 ```
 
+**C2b-1 correction:** that filename does not end in Kbuild's recognized `*_defconfig` suffix and is not a valid direct make target. C2a stopped in Kconfig generation before this became observable. The verified invocation is `KBUILD_DEFCONFIG=na51055_evb_defconfig_nand_squash_release make ... defconfig`; see `docs/C2B1_BUILD_PREFLIGHT.md`.
+
 The controlled VOS and HDAL paths existed and were empty. Both clean runs stopped before `.config` completion because:
 
 1. `arm-buildroot-linux-gnueabihf-gcc` is not installed; and

@@ -27,7 +27,8 @@ One task should have a specific input, one main output, and a verification crite
 | C1 | Audit required Novatek BSP build inputs, shipped binary objects, licensing and cross-compiler ABI | Dependency/toolchain decision with licensing and reproducibility caveats | High |
 | C2a | Freeze BSP/Buildroot/toolchain inputs and run a disposable configuration/`prepare` preflight | Repeatable input manifest and preflight, or one exact blocker; no rootfs or image assembly | High |
 | C2b-1 | Materialize the pinned cross-toolchain/host prerequisites and repeat kernel configuration/`prepare`, only after C2a | Two matching preflight passes or one new exact blocker; no kernel/rootfs assembly | High |
-| C2b-2 | Produce a **minimal offline** kernel/rootfs prototype in separate verifiable steps, only after C2b-1 | Reproducible host-side build artifacts; no claim of device boot, flashing or recovery | High |
+| C2b-2a | Attempt one generic Novatek kernel compile/link pass with the verified C2b-1 inputs | Reproducible compile result or one exact source/blob/link blocker; no rootfs, package or hardware claim | High |
+| C2b-2b | Produce a **minimal offline** rootfs prototype only after the kernel compile boundary is understood | Reproducible host-side rootfs artifact and license inventory; no firmware assembly, device boot, flashing or recovery claim | High |
 | C3 | Implement and demonstrate local browser management UI **against simulator only** | PC-hosted screenshots for status, firmware validation/update, rollback/errors and recovery explanation; label offline demo | Medium–High |
 | D1+ (BLOCKED) | Obtain matching spare and plan safe full per-device backup + independent recovery tests | **Explicit fresh user approval**, independent matching-hardware proof, and required backups **before** any physical experiments or flashing | High/Ultra for specific questions |
 

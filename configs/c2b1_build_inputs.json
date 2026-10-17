@@ -1,0 +1,74 @@
+{
+  "schema": "slot20.c2b1-build-inputs.v1",
+  "created_date": "2026-10-17",
+  "scope": "host-only prerequisite, cross-toolchain, and kernel configuration/prepare preflight",
+  "status": "in-progress-before-toolchain-build",
+  "parent_checkpoint": "41f5e2c216af2e2ce66d6a51a8dde277a3141777",
+  "private_workspace": "/home/firmware-analysis/slot20_private/c2b1_20261017",
+  "host": {
+    "distribution": "Ubuntu 24.04 under WSL",
+    "system_packages_modified": false,
+    "python_compatibility": "private python symlink to /usr/bin/python3 (Python 3.12.3)"
+  },
+  "host_prerequisites": [
+    {
+      "package": "bison",
+      "version": "2:3.8.2+dfsg-1ubuntu0.24.04.1",
+      "architecture": "amd64",
+      "repository": "Ubuntu noble-updates/main",
+      "deb_sha256": "9d75084d1293f68f3c1a2ee677dea5baa4e010bac2d4c455d8e23177e97aa353",
+      "runtime_version": "GNU Bison 3.8.2"
+    },
+    {
+      "package": "flex",
+      "version": "2.6.4-8.2build1",
+      "architecture": "amd64",
+      "repository": "Ubuntu noble/main",
+      "deb_sha256": "c5604f55827b50e3f568b4731b7799f86b147454c867be02bc141d9d8ce561ff",
+      "runtime_version": "flex 2.6.4"
+    },
+    {
+      "package": "cpio",
+      "version": "2.15+dfsg-1ubuntu2.1",
+      "architecture": "amd64",
+      "repository": "Ubuntu noble-updates/main",
+      "deb_sha256": "fbac731755302d218d785b4c391530e7773527f553e24946f9580636a47641b2",
+      "runtime_version": "GNU cpio 2.15"
+    },
+    {
+      "package": "unzip",
+      "version": "6.0-28ubuntu4.1",
+      "architecture": "amd64",
+      "repository": "Ubuntu noble-updates/main",
+      "deb_sha256": "a505b9d491386167bd8e14e3383315a4a7d6539e4406745901ccf009a7988271",
+      "runtime_version": "Info-ZIP UnZip 6.00"
+    }
+  ],
+  "host_prerequisite_deployment": {
+    "method": "dpkg-deb extraction into a private prefix",
+    "reason": "passwordless sudo unavailable; avoid system modification",
+    "buildroot_dependency_check": "pass"
+  },
+  "frozen_buildroot": {
+    "version": "2019.05.2",
+    "archive_sha256": "7c0ea9ffc170e19735aed281592fe766e4b698bb139eae851f4f98f024a776b5",
+    "defconfig_sha256": "83d056aa42ad4557f5d6dd481be63c60526c5d01cfdce90040d4ec3150718b9d",
+    "normalized_config_sha256": "2d4d71e0cfc3badd846387a96dff56191654f8834b411a666e460f923b4f875f"
+  },
+  "toolchain": {
+    "status": "not-yet-built",
+    "target_tuple": "arm-buildroot-linux-gnueabihf",
+    "gcc": "6.5.0",
+    "binutils": "2.31.1",
+    "libc": "glibc",
+    "architecture": "ARMv7-A Cortex-A9",
+    "abi": "EABI5 hard-float",
+    "floating_point": "VFPv3 with NEON"
+  },
+  "safety": {
+    "full_kernel_compiled": false,
+    "root_filesystem_built": false,
+    "firmware_or_update_package_created": false,
+    "camera_accessed": false
+  }
+}

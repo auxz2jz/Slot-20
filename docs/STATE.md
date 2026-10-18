@@ -125,4 +125,4 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 - **Recommended model and reasoning:** **High**.
 - **Why:** The next step is another narrow legacy host-package compatibility correction plus one Buildroot continuation, with no hardware uncertainty.
 - **When to switch:** Medium is sufficient once an authoritative patch and exact application are already established; remain on High if another host-build or rootfs-packaging blocker appears. Ultra is not indicated unless later work exposes a security- or recovery-critical architecture problem.
-- **Usage preparation:** Push this completion checkpoint before any m4 correction or build continuation and refresh reliable usage. The latest pre-documentation snapshot showed 34% of the five-hour window and 78% of the weekly window remaining.
+- **Usage preparation:** Push this completion checkpoint before any m4 correction or build continuation and refresh reliable usage. Reliable closeout telemetry on 2026-10-18 showed 19% of the five-hour window and 76% of the weekly window remaining; do not begin the next substantial build at this level.

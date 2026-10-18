@@ -73,10 +73,10 @@ exact application are established. Stay on High if a further host-build or
 rootfs-packaging blocker appears. Ultra is not warranted unless later work
 exposes a security- or recovery-critical architecture problem.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable telemetry before
-documentation on 2026-10-18 showed 66% used in the five-hour window (34%
-remaining) and 22% used in the weekly window (78% remaining). Refresh before
-another build; this is a snapshot, not continuous monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
+on 2026-10-18 showed 81% used in the five-hour window (19% remaining) and 24%
+used in the weekly window (76% remaining). Refresh before another build; this
+is a snapshot, not continuous monitoring.
 
 **USAGE PREPARATION:** Push this sanitized completion checkpoint before any m4
 patch or continuation. The next task must create a new checkpoint before its

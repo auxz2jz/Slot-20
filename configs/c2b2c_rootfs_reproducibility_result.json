@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2c",
+  "recorded_at": "2026-10-18",
+  "result": "normalized_rootfs_reproduced",
+  "base_checkpoint": "d63c13853fe08d59f3e4e0c156729ce666b272b1",
+  "pre_build_checkpoint": "1ad67c48f7f08a2d8a3c4221260388d19f8fec91",
+  "build": {
+    "attempt_count": 1,
+    "jobs": 1,
+    "timeout_seconds": 1800,
+    "exit_status": 0,
+    "elapsed_seconds": 190.17,
+    "maximum_resident_kib": 162992,
+    "log_sha256": "7c9c25509163140127039d08575c608bf5401959599da7b4f8863f18e071aa98",
+    "time_log_sha256": "5702bc555097205ae7fcf73c3540a326526594f2f8cd0b8637457d4f8a39a97b"
+  },
+  "configuration": {
+    "original_sha256": "ccda34efa8c3f1144ba3d9771c9099eed0ab0ee3299cb1e04439c5ceffd686eb",
+    "reproduced_sha256": "ccda34efa8c3f1144ba3d9771c9099eed0ab0ee3299cb1e04439c5ceffd686eb",
+    "byte_identical": true
+  },
+  "rootfs": {
+    "format": "POSIX tar archive",
+    "size_bytes": 3696640,
+    "entry_count": 374,
+    "original_sha256": "df413f6a805fb7c860b1ae1043416f225ffe18bfd32f5ffdf09be491e650e06a",
+    "reproduced_sha256": "b039fa2476051258dce8e4fb0977925be64d3ef84e19c591a1cbfe4ccd1cf635",
+    "path_lists_identical": true,
+    "normalized_metadata_identical": true,
+    "raw_timestamp_differences": 337,
+    "raw_metadata_matches": 37,
+    "regular_files_compared": 41,
+    "regular_files_byte_identical": 40,
+    "busybox_original_sha256": "1b5d8379d0694c8f0e1ab716b83a0a26e68c754ed6f8442f024cf6396856240f",
+    "busybox_reproduced_sha256": "92fa336b1f86e9a8dc5852275014a7bb0161696a7915ffeff74171825ec0c718",
+    "busybox_differing_bytes": 4,
+    "busybox_normalized_sha256": "9bd2c66613c0d14122192a11529385bd9ca678ad0f4e93106d27374edbd6514c",
+    "busybox_difference": "generated build-time banner only",
+    "dynamic_loader_sha256": "fcd7690fbd7780eda4fabf65641e99dc7ac81b2a15d98f9a9c41e77205b74034",
+    "architecture": "ELF32 little-endian ARM EABI5 ARMv7 hard-float",
+    "tar_integrity_verified": true
+  },
+  "legal_info": {
+    "exit_status": 0,
+    "target_manifest_sha256": "8f09c76e97560edc26e855cdae0e3259c89b05b4ef4c3ec0080d572198e7bee3",
+    "host_manifest_sha256": "1c8886b46406b59bba0bcfae410277271f9d85b0509b28024db27ed7f672f8ec",
+    "digest_inventory_sha256": "e198a368fe038c01d92b91349cc58ab956a322a989dce953bb258701409ee96f",
+    "target_packages": 1,
+    "versioned_host_packages": 8,
+    "gaps": [
+      "Buildroot source was not copied into legal-info",
+      "external custom toolchain source and licenses were not collected",
+      "acl and attr license files lack package hash entries"
+    ]
+  },
+  "safety": {
+    "kernel_rebuilt_or_modified": false,
+    "private_reolink_fdt_used": false,
+    "firmware_assembled": false,
+    "target_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

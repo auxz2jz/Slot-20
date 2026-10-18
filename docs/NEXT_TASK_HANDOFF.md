@@ -1,88 +1,86 @@
 # Slot-20 — Current task handoff
 
-**Status:** C2b-2b-2 COMPLETE WITH NEXT REPRODUCIBLE BLOCKER — the reused
-official m4 compatibility patch built and installed host GNU m4 1.4.18. The
-one authorized `-j1` continuation then stopped before fakeroot configuration
-because its declared `build-aux` directory is absent. No rootfs artifact
-exists.
+**Status:** C2b-2b-3 COMPLETE — Buildroot's accepted fakeroot `build-aux`
+post-patch hook resolved the autoreconf failure. The sole bounded `-j1`
+continuation exited zero and generated a verified minimal ARM hard-float
+`rootfs.tar`. The rootfs remains private and separate from the kernel and FDT.
 
-**LAST TASK ID / STATUS:** C2b-2b-2 host-m4 compatibility correction and
-minimal rootfs continuation — **COMPLETE WITH REPRODUCIBLE FAKEROOT AUTORECONF
-BLOCKER; NO ROOTFS ARTIFACT**.
+**LAST TASK ID / STATUS:** C2b-2b-3 fakeroot build-aux correction and minimal
+rootfs continuation — **COMPLETE; ROOTFS TAR GENERATED AND STATICALLY
+VERIFIED**.
 
 **EVIDENCE AND TESTS:**
 
-- Git began clean at pushed `7e5cdcf`. The public-source pre-build patch
-  checkpoint `f3f020e` is pushed.
-- C2b-1's exact official Buildroot patch from commit
-  `5a9504831f3fa1ef3be334036c93da30150fde55` was found in the preserved private
-  tree and copied byte-identically into the public repository. Its SHA-256 is
-  `a659db8cd9cad78130f3732ecd369fdfdcdbf0c1cf23821b1c44ea8661e65c4e`;
-  the header identifies gnulib commit
-  `f9e2b20a12a230efa30f1d479563ae07d276a94b`.
-- A dry run succeeded against both affected m4 files. The failed original tree
-  is preserved as `rootfs-out/build/host-m4-1.4.18.pre-c2b2b2/`.
-- Buildroot re-extracted, patched, built and installed host m4 1.4.18. The
-  patched `c-stack.c` / `c-stack.h` hashes are `c43899dd...12203` /
-  `35ab8de7...f8b3`; installed `host/bin/m4` is `5a17d185...0d0b3` and reports
-  GNU M4 1.4.18. Built and host-installed stamps exist.
-- Exactly one continuation ran with `-j1`. It re-extracted fakeroot and applied
-  all five expected patches, then stopped during autoreconf with
-  `aclocal: error: couldn't open directory 'build-aux': No such file or directory`.
-- `Makefile.am` declares `ACLOCAL_AMFLAGS = -I build-aux`, `configure.ac`
-  declares `AC_CONFIG_MACRO_DIR([build-aux])`, and that directory is absent.
-  No fix or retry was attempted.
-- The build exited 2 after 55.83 seconds and peaked at 128,392 KiB RSS.
-  Log/time SHA-256 values are `bddb74d6...7750` and `3df217b8...592d`.
-- No make/compiler process remains. `target` and `images` contain zero regular
-  files. The separate kernel remains unchanged (`zImage` `21cb120f...5231b`;
-  `vmlinux` `cdad3126...913`).
-- Full sanitized evidence is in `docs/C2B2B2_ROOTFS_BUILD.md` and
-  `configs/c2b2b2_rootfs_result.json`.
+- Git began clean at pushed `17c64d7`. Public-source pre-build checkpoint
+  `b838711` is pushed.
+- Fakeroot 1.20.2 declares `build-aux` in `Makefile.am` and `configure.ac` but
+  omits the directory from its release archive. Buildroot commit
+  `519dd1f6e043809cd5f389d8bff86cb95180390f`, cherry-picked from
+  `fd1bcce9894773d7e1c1ca5be0f04b0b32128a1d`, supplies the accepted
+  post-patch `mkdir -p $(@D)/build-aux` hook.
+- The portable recipe patch is SHA-256 `1a156d3b...be0c7`. A dry run passed.
+  The failed fakeroot tree and original recipe are preserved privately.
+- Fresh extraction created `build-aux` before autoreconf. Fakeroot configured,
+  built and installed; the installed wrapper reports 1.20.2 and is SHA-256
+  `b49b9b5a...1a653`.
+- Exactly one `-j1` continuation ran under a 1,800-second timeout. It exited
+  zero after 126.10 seconds with 162,960 KiB peak RSS.
+- Private `rootfs-out/images/rootfs.tar` is a 3,696,640-byte POSIX tar with 374
+  entries and SHA-256 `df413f6a...e06a`; a complete `tar -tf` scan passed.
+- Archived BusyBox 1.30.1 is ELF32 little-endian ARM EABI5, Cortex-A9/ARMv7,
+  hard-float with VFP register arguments and loader `/lib/ld-linux-armhf.so.3`.
+  Its SHA-256 is `1b5d8379...240f`; the loader is `fcd7690f...4034`.
+- Essential init/account/mount-point entries are present. Numeric ownership is
+  root except intentional `var/www` ownership `33:33`. No kernel, `vmlinux`,
+  DTS or DTB entry is present.
+- Build/stdout and stderr/time log hashes are `dea3247f...3777` and
+  `1e61cb71...2017`. Non-fatal legacy host warnings are preserved. No
+  make/compiler process remains.
+- Full evidence is in `docs/C2B2B3_ROOTFS_BUILD.md` and
+  `configs/c2b2b3_rootfs_result.json`.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; base `7e5cdcf` and pre-build
-checkpoint `f3f020e` are pushed. The commit containing this handoff is the
-C2b-2b-2 completion checkpoint and must match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; base `17c64d7` and pre-build
+checkpoint `b838711` are pushed. The commit containing this handoff is the
+C2b-2b-3 completion checkpoint and must match `origin/main` after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve
 `/home/firmware-analysis/slot20_private/c2b2b_20261018/`. It contains the
-Buildroot source/output, source cache, completed host packages, preserved
-pre-correction m4 tree, patched and installed m4, current failed fakeroot tree,
-and all build logs. Do not clean or rebuild it. Preserve the separate completed
-kernel tree unchanged.
+successful Buildroot output and rootfs tar, source cache, completed host
+packages, corrected recipe, preserved original/failed fakeroot tree and all
+logs. Do not clean or rebuild it. Preserve the separate completed kernel tree
+unchanged.
 
-**NEXT SINGLE TASK ID + INPUT:** **C2b-2b-3, only after explicit
-authorization.** Preserve the current failed fakeroot tree and verify the
-smallest reproducible Buildroot-compatible correction for the absent declared
-`build-aux` directory. Checkpoint the public-source correction before any
-continuation.
+**NEXT SINGLE TASK ID + INPUT:** **C2b-2c, only after explicit authorization.**
+Using the frozen config, cached sources, corrected Buildroot tree and existing
+toolchain, build the same minimal rootfs in a second clean private output tree,
+compare normalized contents and artifact-hash variance, and generate/check
+Buildroot legal-info.
 
-**PASS CRITERION FOR NEXT TASK:** Resume the preserved configuration with one
-bounded `-j1` build and stop at a verified rootfs tar or the next exact blocker.
-Do not combine it with the kernel or private Reolink FDT, assemble firmware,
-claim camera compatibility, or access hardware.
+**PASS CRITERION FOR NEXT TASK:** A second clean build either reproduces the
+normalized rootfs contents with explained hash differences and a complete
+license/source record, or stops at one exact blocker. Do not combine rootfs and
+kernel/FDT, assemble firmware, claim camera compatibility, or access hardware.
 
-**RECOMMENDED REASONING + WHY:** **High**. This is a narrow legacy
-autotools/Buildroot integration correction followed by a bounded rootfs build
-continuation and, if reached, artifact validation.
+**RECOMMENDED REASONING + WHY:** **High**. This requires another bounded Linux
+build, deterministic filesystem comparison, and source/license provenance
+checks.
 
-**WHEN TO SWITCH:** Medium is sufficient after the exact correction is known
-and only documentation or routine checks remain. Stay on High for the build or
-another host-package/rootfs blocker. Ultra is not warranted unless later work
-exposes a security- or recovery-critical architecture problem.
+**WHEN TO SWITCH:** Medium is sufficient once reproducibility/legal-info are
+established and work moves to the host-only C3 management UI. Stay on High for
+build or provenance blockers. Ultra is not warranted unless later work exposes
+a security- or recovery-critical architecture problem.
 
 **USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
-on 2026-10-18 showed 19% used in the five-hour window (81% remaining) and 27%
-used in the weekly window (73% remaining). Refresh before another build; this
+on 2026-10-18 showed 47% used in the five-hour window (53% remaining) and 32%
+used in the weekly window (68% remaining). Refresh before another build; this
 is a snapshot, not continuous monitoring.
 
-**USAGE PREPARATION:** Push this sanitized completion checkpoint before any
-fakeroot correction. Refresh reliable usage before the next single expensive
-build operation.
+**USAGE PREPARATION:** Push this sanitized completion checkpoint before
+creating the second clean output tree. Refresh reliable usage immediately
+before its single expensive build operation.
 
-**CONTINUE OR STOP + REASON:** **STOP after C2b-2b-2**, as requested. The one
-authorized continuation reached the next exact blocker; C2b-2b-3 is not
-authorized here.
+**CONTINUE OR STOP + REASON:** **STOP after C2b-2b-3**, as requested. The
+authorized continuation succeeded; C2b-2c is not authorized here.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot,
 modification, or flash was performed or authorized.

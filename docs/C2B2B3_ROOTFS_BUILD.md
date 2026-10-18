@@ -47,3 +47,63 @@ At this checkpoint, the continuation build has **not** started. The next and
 only build action authorized by C2b-2b-3 is one bounded `-j1` continuation,
 after a reliable usage check. It must stop at a verified rootfs tar or the next
 exact reproducible blocker.
+
+## Single continuation result
+
+Pre-build checkpoint `b838711` was pushed. Reliable telemetry immediately
+before compilation showed 67% of the five-hour window and 71% of the weekly
+window remaining. The preserved configuration then ran exactly once with
+`-j1` under a 30-minute timeout.
+
+Buildroot freshly extracted fakeroot, applied all five preserved patches, ran
+the new post-patch hook, and created `build-aux` before autoreconf. Fakeroot
+configured, built and installed successfully; all expected stamps through
+`.stamp_host_installed` exist. The installed host wrapper reports fakeroot
+1.20.2 and has SHA-256
+`b49b9b5aa596330b8bf062179504a984ffba28fc10c10498798b926284b1a653`.
+
+The same invocation continued through BusyBox and target finalization and
+exited zero after 126.10 seconds, with peak resident memory of 162,960 KiB.
+It generated one image:
+
+| Property | Verified value |
+| --- | --- |
+| Private path | `rootfs-out/images/rootfs.tar` |
+| Format | POSIX tar archive; full `tar -tf` integrity scan passed |
+| Size | 3,696,640 bytes |
+| SHA-256 | `df413f6a805fb7c860b1ae1043416f225ffe18bfd32f5ffdf09be491e650e06a` |
+| Archive entries | 374 |
+| Resolved Buildroot configuration | `ccda34efa8c3f1144ba3d9771c9099eed0ab0ee3299cb1e04439c5ceffd686eb` |
+
+Static inspection of the archived `./bin/busybox` reports ELF32
+little-endian ARM EABI5, Cortex-A9/ARMv7, hard-float VFP-register arguments,
+dynamic interpreter `/lib/ld-linux-armhf.so.3`, and Linux 4.19 ABI tagging. It
+identifies itself as BusyBox 1.30.1. Its SHA-256 is
+`1b5d8379d0694c8f0e1ab716b83a0a26e68c754ed6f8442f024cf6396856240f`;
+the loader hash is
+`fcd7690fbd7780eda4fabf65641e99dc7ac81b2a15d98f9a9c41e77205b74034`.
+The archive contains `sbin/init`, `etc/inittab`, account files and the expected
+`dev`, `proc` and `sys` mount points. Numeric ownership is root except the
+intentional `var/www` ownership `33:33`. No kernel image, `vmlinux`, DTS or DTB
+entry is present.
+
+The private build/stdout and stderr/time logs have SHA-256 values
+`dea3247f92a906321276eea619ee890dbe0414b70728cee45e2a6632fca83777`
+and `1e61cb71fcec6ad947893628ff34e8e33240c4bbda0a4b4b8389a413cc4d2017`.
+The logs retain non-fatal legacy host-fakeroot type/format warnings, generic
+configure-option warnings, one stale BusyBox `FEATURE_FLOAT_SLEEP` assignment,
+and finalization probes for absent optional paths. They contain no failed build
+step, and the timed command's exit status is zero.
+
+## Limits and next bounded task
+
+This is one verified generic rootfs build, not an independent clean rebuild.
+Build timestamps appear in BusyBox and the tar metadata, so byte-for-byte
+reproducibility has not been demonstrated. The ARM binary was inspected but
+never executed. The tar was not combined with the generic kernel or private
+Reolink FDT and is not a bootable-camera or compatibility claim.
+
+**C2b-2c, only after explicit authorization:** reproduce the frozen minimal
+rootfs in a second clean private output directory, compare normalized contents
+and hashes, and generate/check Buildroot legal-info using only the preserved
+source cache and toolchain. Do not assemble firmware or access hardware.

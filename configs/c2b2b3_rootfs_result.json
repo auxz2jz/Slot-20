@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2b-3",
+  "recorded_at": "2026-10-18",
+  "result": "rootfs_tar_generated",
+  "base_checkpoint": "17c64d7fd3108df0f542adfa184dee818985ec68",
+  "pre_build_checkpoint": "b838711",
+  "fakeroot_build_aux_correction": {
+    "buildroot_branch_commit": "519dd1f6e043809cd5f389d8bff86cb95180390f",
+    "buildroot_master_commit": "fd1bcce9894773d7e1c1ca5be0f04b0b32128a1d",
+    "portable_patch_sha256": "1a156d3b7b44c4388012c3fae06c2ecb1902515c25d82144cf65605b945be0c7",
+    "original_recipe_sha256": "0ed2ea7a0c9ed8a3e95c95cb7d5a1492eb1d56144fcb548f48e4ac7b988e83df",
+    "corrected_recipe_sha256": "a00314db79d6fafb86e86b12a26a11069aed60fec184bf3ab52a7db0b4d2b8bc",
+    "build_aux_created": true,
+    "fakeroot_version": "1.20.2",
+    "fakeroot_built_and_host_installed": true,
+    "installed_fakeroot_sha256": "b49b9b5aa596330b8bf062179504a984ffba28fc10c10498798b926284b1a653"
+  },
+  "attempt": {
+    "count": 1,
+    "jobs": 1,
+    "timeout_seconds": 1800,
+    "exit_status": 0,
+    "elapsed_seconds": 126.10,
+    "maximum_resident_kib": 162960,
+    "log_sha256": "dea3247f92a906321276eea619ee890dbe0414b70728cee45e2a6632fca83777",
+    "time_log_sha256": "1e61cb71fcec6ad947893628ff34e8e33240c4bbda0a4b4b8389a413cc4d2017"
+  },
+  "rootfs": {
+    "path": "rootfs-out/images/rootfs.tar",
+    "format": "POSIX tar archive",
+    "size_bytes": 3696640,
+    "sha256": "df413f6a805fb7c860b1ae1043416f225ffe18bfd32f5ffdf09be491e650e06a",
+    "entry_count": 374,
+    "tar_integrity_verified": true,
+    "resolved_config_sha256": "ccda34efa8c3f1144ba3d9771c9099eed0ab0ee3299cb1e04439c5ceffd686eb",
+    "architecture": "ELF32 little-endian ARM EABI5 Cortex-A9 ARMv7 hard-float",
+    "busybox_version": "1.30.1",
+    "busybox_sha256": "1b5d8379d0694c8f0e1ab716b83a0a26e68c754ed6f8442f024cf6396856240f",
+    "dynamic_loader_sha256": "fcd7690fbd7780eda4fabf65641e99dc7ac81b2a15d98f9a9c41e77205b74034",
+    "kernel_or_device_tree_included": false,
+    "independent_clean_rebuild_verified": false
+  },
+  "outputs": {
+    "rootfs_tar": true,
+    "kernel_modified": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "target_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

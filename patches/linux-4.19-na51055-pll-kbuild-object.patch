@@ -1,0 +1,13 @@
+Subject: [PATCH] clk: novatek: name NA51055 shipped PLL object for Kbuild
+Upstream-Status: Pending
+License: GPL-2.0-only
+
+Kbuild's shipped-object rule is selected by listing the output .o name. Listing
+the .o_shipped input directly drops it from built-in.a and leaves
+pll_dump_info unresolved.
+
+--- a/drivers/clk/novatek/Makefile
++++ b/drivers/clk/novatek/Makefile
+@@ -9 +9 @@ obj-$(CONFIG_COMMON_CLK_NA51089)	+= nvt-im-clk-fr.o na51089-clk.o nvt-clk-dbg.o na51089/pll.o_shipped
+-obj-$(CONFIG_COMMON_CLK_NA51055)	+= nvt-im-clk-fr.o na51055-clk.o nvt-clk-dbg.o na51055/pll.o_shipped
++obj-$(CONFIG_COMMON_CLK_NA51055)	+= nvt-im-clk-fr.o na51055-clk.o nvt-clk-dbg.o na51055/pll.o

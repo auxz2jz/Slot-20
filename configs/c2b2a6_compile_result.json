@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2a-6",
+  "recorded_at": "2026-10-18T10:30:14-07:00",
+  "scope": "provenance-verified host lz4c input plus one resumed generic Novatek Linux kernel build",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "base_commit": "6e285dfc6fa61f5a84ef31355c24c9fd107c6042",
+    "pushed": true,
+    "free_space_gib": 943
+  },
+  "host_lz4": {
+    "existing_compatible_utility_found": false,
+    "repository": "Ubuntu noble-updates universe amd64",
+    "package": "lz4",
+    "version": "1.9.4-1build1.1",
+    "archive_path": "pool/universe/l/lz4/lz4_1.9.4-1build1.1_amd64.deb",
+    "package_size": 93790,
+    "package_sha256": "6322e77aaee1975c5517892a39f63e80b3e2fe65219bf693192a564b1b9fc7aa",
+    "metadata_hash_matched": true,
+    "installed_system_wide": false,
+    "executable_size": 202992,
+    "executable_sha256": "87c0d5d060fd36c685b98a38611b7bd6c4614d40b36d29be84edcd6c173f8160",
+    "reported_version": "1.9.4"
+  },
+  "format_verification": {
+    "kernel_command": "lz4c -l -c1",
+    "kernel_archive_magic_hex": "0x184c2102",
+    "compressed_prefix_hex": "02214c18",
+    "synthetic_input_size": 4096,
+    "synthetic_compressed_size": 34,
+    "input_sha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+    "compressed_sha256": "c5918b3a3ce0190db28ff51de3a54200c0066e28a8e6720634fef7c8941769bf",
+    "decompressed_sha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+    "round_trip_passed": true
+  },
+  "attempt": {
+    "count": 1,
+    "target": "default kernel target",
+    "jobs": 1,
+    "exit_status": 0,
+    "elapsed_seconds": 13.93,
+    "maximum_resident_kib": 45620,
+    "zimage_ready_marker": true,
+    "modules_modpost_count": 86,
+    "section_mismatch_warning_count": 1
+  },
+  "private_logs": {
+    "build_log_lines": 208,
+    "build_log_sha256": "fcb3550cf307906e3c48a5fb015bb40c1bdfbc1eb12831e30806af53a414741b",
+    "build_time_lines": 23,
+    "build_time_sha256": "e30372a251b8c5b810964356480fd340099c18cf007b493b1a93b5787f06b27d"
+  },
+  "outputs": {
+    "vmlinux": {
+      "exists": true,
+      "size": 7663316,
+      "sha256": "cdad3126f41b07bc147cfc83132b18999bf628b0cf7f0cfe8fbc755917328913"
+    },
+    "System.map": {
+      "exists": true,
+      "size": 1198837,
+      "sha256": "1c51ceba0fcb76846d671c86fa7b9cabf9415f56f279c9cfe764deb0d529db0c"
+    },
+    "Image": {
+      "exists": true,
+      "size": 7577616,
+      "sha256": "04c6f8cf7061a8b00947c0e38a5a3227ad2c0faa499f6043ead86f13319ea040"
+    },
+    "zImage": {
+      "exists": true,
+      "size": 2878408,
+      "sha256": "21cb120f49a2028ffef04e3fdf43a0cc9b91a45c86f03807545f6c24b515231b",
+      "file_format": "Linux kernel ARM boot executable zImage (little-endian)",
+      "header_magic_offset_hex": "0x24",
+      "header_magic_value_hex": "0x016f2818"
+    },
+    "root_filesystem": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "target_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

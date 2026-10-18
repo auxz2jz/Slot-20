@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2b",
+  "recorded_at": "2026-10-18T11:00:25-07:00",
+  "scope": "minimal host-only Buildroot rootfs prototype attempt",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "base_commit": "484800cb31cf7e1ccea9ba0515c64adbd9804e13",
+    "config_checkpoint": "e6f353a",
+    "config_checkpoint_pushed": true,
+    "free_space_gib": 943
+  },
+  "buildroot": {
+    "version": "2019.05.2",
+    "archive_sha256": "7c0ea9ffc170e19735aed281592fe766e4b698bb139eae851f4f98f024a776b5",
+    "workspace_separate_from_kernel": true
+  },
+  "configuration": {
+    "public_defconfig": "configs/c2b2b_minimal_rootfs_defconfig",
+    "public_defconfig_sha256": "aa78f01fdca1aa1f165185e7d6d9f2483c79a92f2df927fd72efca54914a01a6",
+    "resolved_config_sha256": "ccda34efa8c3f1144ba3d9771c9099eed0ab0ee3299cb1e04439c5ceffd686eb",
+    "architecture": "ARM Cortex-A9 ARMv7-A EABI5 hard-float VFPv3 NEON",
+    "external_toolchain": "arm-buildroot-linux-gnueabihf GCC 6.5.0 glibc 2.29",
+    "target_packages": [
+      "busybox 1.30.1",
+      "Buildroot in-tree sysv init/network skeleton"
+    ],
+    "root_password_login_enabled": false,
+    "getty_enabled": false,
+    "rootfs_format": "uncompressed tar",
+    "kernel_selected": false,
+    "bootloader_selected": false
+  },
+  "sources": [
+    {
+      "package": "busybox",
+      "version": "1.30.1",
+      "role": "target",
+      "license": "GPL-2.0",
+      "source": "http://www.busybox.net/downloads/busybox-1.30.1.tar.bz2",
+      "sha256": "3d1d04a4dbd34048f4794815a5c48ebb9eb53c5277e09ffffc060323b95dfbdc"
+    },
+    {
+      "package": "attr",
+      "version": "2.4.48",
+      "role": "host",
+      "license": "GPL-2.0+ programs; LGPL-2.1+ libraries",
+      "source": "http://download.savannah.gnu.org/releases/attr/attr-2.4.48.tar.gz",
+      "sha256": "5ead72b358ec709ed00bbf7a9eaef1654baad937c001c044fe8b74c57f5324e7"
+    },
+    {
+      "package": "acl",
+      "version": "2.2.53",
+      "role": "host",
+      "license": "GPL-2.0+ programs; LGPL-2.1+ libraries",
+      "source": "http://download.savannah.gnu.org/releases/acl/acl-2.2.53.tar.gz",
+      "sha256": "06be9865c6f418d851ff4494e12406568353b891ffe1f596b34693c387af26c7"
+    },
+    {
+      "package": "fakeroot",
+      "version": "1.20.2",
+      "role": "host",
+      "license": "GPL-3.0+",
+      "source": "http://snapshot.debian.org/archive/debian/20141005T221953Z/pool/main/f/fakeroot/fakeroot_1.20.2.orig.tar.bz2",
+      "sha256": "7c0a164d19db3efa9e802e0fc7cdfeff70ec6d26cdbdc4338c9c2823c5ea230c"
+    },
+    {
+      "package": "patchelf",
+      "version": "0.9",
+      "role": "host",
+      "license": "GPL-3.0+",
+      "source": "https://nixos.org/releases/patchelf/patchelf-0.9/patchelf-0.9.tar.bz2",
+      "sha256": "a0f65c1ba148890e9f2f7823f4bedf7ecad5417772f64f994004f59a39014f83"
+    }
+  ],
+  "metadata": {
+    "show_info_sha256": "08c691c69c7f104ac0d8e3f901716c9ed43640e3ce4fb5193bae2826bd9276e6",
+    "source_fetch_log_sha256": "9db5dd5df356c658b7735704d7d2b9f89f61a6c74efd67aff4e7021e2b525e8f",
+    "source_fetch_time_sha256": "b0308191ad1c604ece9eff8375fa592826a0c731068c2ce213d1112ced23a0f1"
+  },
+  "attempt": {
+    "count": 1,
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 17.04,
+    "maximum_resident_kib": 128476,
+    "completed_host_packages": [
+      "host-skeleton",
+      "host-attr 2.4.48",
+      "host-acl 2.2.53"
+    ]
+  },
+  "first_blocker": {
+    "stage": "host-fakeroot 1.20.2 compilation",
+    "classification": "legacy host package incompatible with current host glibc",
+    "host_glibc": "Ubuntu GLIBC 2.39-0ubuntu8.9",
+    "message": "libfakeroot.c: _STAT_VER undeclared",
+    "build_log_sha256": "ee0aecd2598041af8dd09a872105683914681fdeeed17818704b6700da927a1a",
+    "build_time_sha256": "854636d4e7c8e863732df477e4ee10e3c4a17e76229acb76dcd9ac199b91889a"
+  },
+  "outputs": {
+    "rootfs_tar": false,
+    "busybox_compiled": false,
+    "kernel_modified": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "target_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

@@ -1,83 +1,86 @@
 # Slot-20 — Current task handoff
 
-**Status:** C2b-2a-6 COMPLETE — a provenance-verified private LZ4 1.9.4 host
-utility produced the Linux 4.19 legacy format, and the one authorized resumed
-`-j1` build completed successfully with a generic ARM `zImage`.
+**Status:** C2b-2b COMPLETE WITH FIRST REPRODUCIBLE BLOCKER — the minimal
+Buildroot rootfs configuration and source/license inventory are frozen, but the
+one authorized `-j1` build stopped in host fakeroot 1.20.2 before BusyBox or a
+rootfs artifact was built.
 
-**LAST TASK ID / STATUS:** C2b-2a-6 host LZ4 input and bounded zImage build —
-**COMPLETE**.
+**LAST TASK ID / STATUS:** C2b-2b minimal offline rootfs prototype — **COMPLETE
+WITH REPRODUCIBLE HOST-TOOL BLOCKER; NO ROOTFS ARTIFACT**.
 
 **EVIDENCE AND TESTS:**
 
-- Git began clean at pushed `6e285df`. Existing kernel source, configured
-  outputs, GCC 6.5.0 toolchain, OpenSSL input, host utilities, and objects were
-  preserved and reused. No working dependency or toolchain was rebuilt.
-- No compatible `lz4c` command or cached package was found in the bounded
-  search. Ubuntu Noble updates `lz4` 1.9.4-1build1.1 was downloaded and
-  privately extracted without system installation.
-- The 93,790-byte package SHA-256
-  `6322e77aaee1975c5517892a39f63e80b3e2fe65219bf693192a564b1b9fc7aa`
-  exactly matches signed APT metadata. The 202,992-byte x86-64 executable
-  SHA-256 is
-  `87c0d5d060fd36c685b98a38611b7bd6c4614d40b36d29be84edcd6c173f8160`.
-- Linux 4.19 invokes `lz4c -l -c1` and its decompressor expects archive magic
-  `0x184C2102`. A synthetic compression began `02 21 4c 18`; decompression
-  reproduced the 4,096-byte input byte-for-byte.
-- Exactly one resumed default-target build ran with `-j1`. It exited zero after
-  13.93 seconds and logged `Kernel: arch/arm/boot/zImage is ready`.
-- Private `zImage` is 2,878,408 bytes, SHA-256
-  `21cb120f49a2028ffef04e3fdf43a0cc9b91a45c86f03807545f6c24b515231b`.
-  `file` recognizes a little-endian Linux ARM boot executable zImage and its
-  header word at offset `0x24` is `0x016f2818`.
-- The build completed stage-two processing for 86 modules. `modpost` reported
-  one section-mismatch warning; no unrequested diagnostic rebuild was started.
-- Private log hashes: `build-c2b2a6.log`
-  `fcb3550cf307906e3c48a5fb015bb40c1bdfbc1eb12831e30806af53a414741b`;
-  `build-c2b2a6.time`
-  `e30372a251b8c5b810964356480fd340099c18cf007b493b1a93b5787f06b27d`.
-- No compiler process remains. Full sanitized evidence is in
-  `docs/C2B2A6_KERNEL_COMPILE.md` and
-  `configs/c2b2a6_compile_result.json`.
+- Git began clean at pushed `484800c`. A separate private workspace was made
+  from verified Buildroot 2019.05.2; the completed kernel tree was not used or
+  modified, and its `zImage`/`vmlinux` hashes remain unchanged.
+- Normalized `configs/c2b2b_minimal_rootfs_defconfig`, SHA-256
+  `aa78f01fdca1aa1f165185e7d6d9f2483c79a92f2df927fd72efca54914a01a6`,
+  selects Cortex-A9/EABI5 hard-float, the preserved external GCC 6.5.0/glibc
+  toolchain, BusyBox init/userspace, disabled password login/getty, and an
+  uncompressed tar. Kernel and bootloader targets are disabled.
+- Resolved `.config` SHA-256 is
+  `ccda34efa8c3f1144ba3d9771c9099eed0ab0ee3299cb1e04439c5ceffd686eb`.
+  Buildroot's canonical absolute output path resolved the initial out-of-tree
+  wrapper bootstrap; no compilation occurred during that configuration issue.
+- The normalized config was committed and pushed before building at `e6f353a`.
+- Selected source hashes passed Buildroot checks: BusyBox 1.30.1
+  `3d1d04a4...dfbdc`; attr 2.4.48 `5ead72b3...24e7`; acl 2.2.53
+  `06be9865...6c7`; fakeroot 1.20.2 `7c0a164d...230c`; patchelf 0.9
+  `a0f65c1b...4f83`. Full hashes, origins, roles, and licenses are in
+  `configs/c2b2b_rootfs_result.json`.
+- Exactly one rootfs build ran with `-j1`. Host skeleton, attr, and acl passed.
+  Host fakeroot compilation then stopped with
+  `libfakeroot.c: error: '_STAT_VER' undeclared` against Ubuntu glibc 2.39.
+- Buildroot 2019.05.2 carries fakeroot 1.20.2 plus two unrelated older patches.
+  No compatibility patch or build retry was attempted.
+- Private build log hashes: `rootfs-build.log`
+  `ee0aecd2598041af8dd09a872105683914681fdeeed17818704b6700da927a1a`;
+  `rootfs-build.time`
+  `854636d4e7c8e863732df477e4ee10e3c4a17e76229acb76dcd9ac199b91889a`.
+- BusyBox has only its download stamp; target/images contain no rootfs. No build
+  process remains. Full sanitized evidence is in
+  `docs/C2B2B_ROOTFS_BUILD.md` and `configs/c2b2b_rootfs_result.json`.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; base checkpoint `6e285df` is pushed.
-The commit containing this handoff is the C2b-2a-6 completion checkpoint and
-must match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; pre-build config checkpoint
+`e6f353a` is pushed. The commit containing this handoff is the C2b-2b completion
+checkpoint and must match `origin/main` after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve
-`/home/firmware-analysis/slot20_private/c2b2a2_20261017/`. It contains the
-source corrections, private Ubuntu LZ4 package/extraction, synthetic format
-test, binary-only Novatek objects, completed kernel/modules, and full logs. Do
-not clean or publish these artifacts.
+`/home/firmware-analysis/slot20_private/c2b2b_20261018/`. It contains the fresh
+Buildroot source/output, verified source cache, completed host-package objects,
+failed fakeroot tree, metadata, and logs. Do not clean or rebuild it. Preserve
+the separate completed kernel tree unchanged.
 
-**NEXT SINGLE TASK ID + INPUT:** **C2b-2b, only after explicit authorization.**
-Produce a minimal offline rootfs prototype using the pinned Buildroot inputs and
-a frozen configuration, separately from the private kernel outputs.
+**NEXT SINGLE TASK ID + INPUT:** **C2b-2b-1, only after explicit
+authorization.** Verify an authoritative upstream fakeroot/Buildroot fix for
+modern glibc `_STAT_VER` removal, preserve the original fakeroot source, and
+apply the smallest correction only in the disposable private Buildroot tree.
 
-**PASS CRITERION FOR NEXT TASK:** Produce a reproducible host-side minimal
-rootfs artifact plus package/license inventory, or record one exact blocker. Do
-not combine it with the kernel or private Reolink FDT, assemble firmware, call
-it camera-compatible, or access hardware.
+**PASS CRITERION FOR NEXT TASK:** Resume the preserved configuration with one
+bounded `-j1` build and stop at a verified rootfs tar or the next exact blocker.
+Do not combine it with the kernel or private Reolink FDT, assemble firmware,
+claim camera compatibility, or access hardware.
 
-**RECOMMENDED REASONING + WHY:** **High**. Buildroot package selection,
-reproducibility, licensing, and ordinary host build failures require careful
-implementation and evidence, but not bootloader reverse engineering.
+**RECOMMENDED REASONING + WHY:** **High**. The next task is a narrow legacy
+host-package compatibility correction followed by Buildroot continuation and
+rootfs artifact validation.
 
-**WHEN TO SWITCH:** Medium is sufficient for documentation-only package
-selection. Use High for the rootfs build and dependency debugging. Consider
-Ultra only for a persistent security- or recovery-critical architectural
-uncertainty, not routine Buildroot failures.
+**WHEN TO SWITCH:** Medium is sufficient to document an already verified
+upstream patch. High remains appropriate for applying it and one continued
+build. Consider Ultra only after two materially different High-level approaches
+expose a security- or recovery-critical architecture problem.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
-on 2026-10-18 showed 26% used in the five-hour window (74% remaining) and 15%
-used in the weekly window (85% remaining). Refresh before the next task; this
-is a snapshot, not continuous monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry on
+2026-10-18 showed 52% used in the five-hour window (48% remaining) and 19% used
+in the weekly window (81% remaining). Refresh before the next task; this is a
+snapshot, not continuous monitoring.
 
-**USAGE PREPARATION:** Base checkpoint `6e285df` is pushed. Push this completion
-checkpoint before starting the substantially more expensive rootfs build.
+**USAGE PREPARATION:** Pre-build checkpoint `e6f353a` is pushed. Push this
+completion checkpoint before applying any fakeroot correction or resuming the
+build.
 
-**CONTINUE OR STOP + REASON:** **STOP after C2b-2a-6**, as requested. The
-generic zImage was generated and verified; C2b-2b is not authorized in this
-session.
+**CONTINUE OR STOP + REASON:** **STOP after C2b-2b**, as requested. The single
+build reached the first exact blocker; C2b-2b-1 is not authorized here.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification,
 or flash was performed or authorized.

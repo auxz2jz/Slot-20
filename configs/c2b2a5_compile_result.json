@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2a-5",
+  "recorded_at": "2026-10-18T10:15:27-07:00",
+  "scope": "private NA51055 PLL Kbuild object-name correction plus one bounded generic kernel build attempt",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "base_commit": "3deb3e326dfc497eead67f4a4b7c1db49b62577c",
+    "patch_checkpoint": "e753060",
+    "patch_checkpoint_pushed": true
+  },
+  "source_correction": {
+    "file": "drivers/clk/novatek/Makefile",
+    "original_preserved": true,
+    "original_sha256": "2beb443d6fd4d355fee001f814f9e72222c4664ad63448daeaaf4b3ceaf30dcf",
+    "patched_sha256": "88ea634fc4bb0a236eb95c1a297d23f9c0561aced3877a646b6757c47ebe4cf9",
+    "portable_patch": "patches/linux-4.19-na51055-pll-kbuild-object.patch",
+    "portable_patch_sha256": "2535865c84c633af2fd5d16399e9f1e14a086044e7af2d1c7c4d2be9bbaac48a",
+    "change": "enabled NA51055 member na51055/pll.o_shipped to na51055/pll.o only",
+    "na51089_entry_changed": false
+  },
+  "focused_kbuild": {
+    "successful_exit_status": 0,
+    "output_object_sha256": "a676bf4a156726769578710994704e863585034615001b3d7b9b90d2c5a6a87c",
+    "shipped_input_sha256": "a676bf4a156726769578710994704e863585034615001b3d7b9b90d2c5a6a87c",
+    "byte_identical": true,
+    "clock_archive_sha256": "bef7514f76cbbf3027471cde50dd7096ce35b376586af9fa4c73a5f527d19494",
+    "provider_in_clock_archive": true,
+    "provider_symbol": "00001cc0 T pll_dump_info"
+  },
+  "attempt": {
+    "count": 1,
+    "target": "default kernel target",
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 8.49,
+    "maximum_resident_kib": 78756,
+    "final_vmlinux_link_succeeded": true,
+    "system_map_generated": true,
+    "uncompressed_image_generated": true
+  },
+  "first_blocker": {
+    "stage": "zImage LZ4 compression",
+    "classification": "missing host utility",
+    "message": "/bin/sh: 1: lz4c: not found",
+    "lz4c_on_build_path": false
+  },
+  "private_logs": {
+    "build_log_sha256": "e9049583b226c93b12b6ea06cfde05881bd219d11d4b8494d93ddb953e7bee5e",
+    "build_time_sha256": "9715ef70059825a39295fcc55fbd96192ae1f83be54ab976fb45199eda1f4879"
+  },
+  "outputs": {
+    "vmlinux": {
+      "exists": true,
+      "size": 7663316,
+      "sha256": "cdad3126f41b07bc147cfc83132b18999bf628b0cf7f0cfe8fbc755917328913"
+    },
+    "System.map": {
+      "exists": true,
+      "size": 1198837,
+      "sha256": "1c51ceba0fcb76846d671c86fa7b9cabf9415f56f279c9cfe764deb0d529db0c"
+    },
+    "Image": {
+      "exists": true,
+      "size": 7577616,
+      "sha256": "04c6f8cf7061a8b00947c0e38a5a3227ad2c0faa499f6043ead86f13319ea040"
+    },
+    "zImage": false,
+    "root_filesystem": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "recovered_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

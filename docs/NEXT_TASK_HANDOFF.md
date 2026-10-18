@@ -1,98 +1,106 @@
 # Slot-20 — Current task handoff
 
-**Status:** C2b-2a-2 COMPLETE WITH NEXT EXACT BLOCKER — the recovered upstream
-DTC `yylloc` correction is build-verified, relative `O=../out` fixes the vendor
-OTP output placement, and the one authorized `-j1` build stopped at a missing
-host OpenSSL development header. No kernel image was produced.
+**Status:** C2b-2a-3 COMPLETE WITH NEXT EXACT BLOCKER — a matching Ubuntu
+OpenSSL development package was privately extracted, `extract-cert` now builds,
+and the one authorized `-j1` kernel build advanced into ARM platform code before
+a vendor rule generated invalid `nvtversion.h` C input. No kernel image exists.
 
-**LAST TASK ID / STATUS:** C2b-2a-2 host-DTC compatibility and bounded rebuild —
-**COMPLETE WITH REPRODUCIBLE BLOCKER**.
+**LAST TASK ID / STATUS:** C2b-2a-3 host OpenSSL dependency and bounded rebuild
+— **COMPLETE WITH REPRODUCIBLE BLOCKER**.
 
 **EVIDENCE AND TESTS:**
 
-- Reused private root
-  `/home/firmware-analysis/slot20_private/c2b2a2_20261017/`, its existing patch,
-  and the C2b-1 host tools/toolchain. Nothing was re-extracted, re-patched,
-  installed, downloaded, or rebuilt before configuration.
-- Patched `source/scripts/dtc/dtc-lexer.l` still has SHA-256
-  `69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c`;
-  its archive-identical `.orig` remains
-  `f3d221c5a7d243c456e0516f751ddbd7cf2cc6d28e0783a81e9ccaa0fb313902`.
-- Relative `O=../out` `defconfig` and `prepare` passed. `.config` SHA-256
-  `9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5`
-  matches both C2b-1 runs.
-- All four OTP files landed under
-  `out/drivers/soc/nvt/otp/na51055/`; no `source/home/...` path exists.
-  Controlled VOS/HDAL directories remain empty.
-- Exactly one default-target build ran with `-j1`. It exited 2 after 4.91
-  seconds. Host DTC linked successfully at SHA-256
-  `e193fdda1bf389fef9796d974d48b1a9aa520b38be2ce1a9e491c4447adb382f`,
-  so the upstream DTC correction is build-verified.
-- `scripts/mod/empty.o` is ELF32 little-endian ARM EABI5, proving the preserved
-  target compiler was invoked for a build helper. This is not a kernel link or
-  camera-compatibility result.
-- First fatal diagnostic:
-  `scripts/extract-cert.c:21:10: fatal error: openssl/bio.h: No such file or directory`.
-  `CONFIG_SYSTEM_TRUSTED_KEYRING=y` selects this host tool. The WSL OpenSSL
-  executable is present, but `/usr/include/openssl/bio.h` and private-host copies
-  are absent.
-- No retry was made. No `vmlinux`, `Image`, `zImage`, rootfs, or firmware
-  package exists. No build/compiler process remains running.
-- Private evidence hashes: `defconfig.log`
-  `743339714b7ec4c794d8269e208a35cf47353ab5a3e53a151ec4ecbccca635c4`;
-  `prepare.log`
-  `cf5d9b00abe2efddc2afb0f1b60aab43d4ee86e4714a29a9cd8f41ab302ea25b`;
-  `build.log`
-  `0e40d72570bca34acf302c243bdf996d5230157d1dd2a3a243d48e7fce3bcbd2`;
-  `build.time`
-  `f8985352cbe0e1b7d407fbeed62daeaca8697c011deef0579611a7948e0fc732`.
-- Sanitized details are in `docs/C2B2A2_KERNEL_COMPILE.md` and
-  `configs/c2b2a2_compile_result.json`.
+- Git was clean at pushed `a1af255b37a153c0a79a7c44cf494f0df5289101`.
+  Reused the existing C2b-2a-2 source, output, GCC 6.5.0 toolchain and host
+  utilities; no installed package, cross-toolchain or prerequisite source build
+  was reinstalled or rebuilt. Kbuild regenerated only host outputs required by
+  its command tracking.
+- No existing OpenSSL development header was found. Downloaded, but did not
+  install, Ubuntu 24.04 `noble-updates/main` `libssl-dev:amd64`
+  `3.0.13-0ubuntu3.16`. Its 2,408,684-byte `.deb` SHA-256
+  `2b4734df0475e305ac03abb0a2cc5659651ed37ef02d967a1c4033a154cf714b`
+  matches APT metadata and exactly depends on installed
+  `libssl3t64 (= 3.0.13-0ubuntu3.16)`.
+- Private package evidence: `openssl/bio.h` SHA-256
+  `9dde507c18007338ee90517748b2b468cf416b4738f56a68baab0b4bb362cbc0`;
+  amd64 `opensslconf.h`
+  `890184233890bacd52fd420fef07befad411b9a318b97efbf36f46673d3e7841`;
+  `libcrypto.a`
+  `9dffa9e77b1cb29b890e473cf9ee379818cb57a576c7ef476356cd4d5a433bcd`.
+  Installed matching `libcrypto.so.3` SHA-256 is
+  `6866ed711dab8927e1bf82bf1cd30e828bdfc34f3cc1e83b1c9eb01ce6c37d9a`.
+- A focused host compile passed. The final Kbuild independently produced the
+  same 17,728-byte x86-64 PIE `out/scripts/extract-cert`, SHA-256
+  `9ede0315dd5da6ac2bfc2e817e05d4ab4ca822f2b846fbb9e9e48b8053405df4`,
+  linked to matching `libcrypto.so.3`. OpenSSL 3 deprecation warnings are
+  nonfatal.
+- Exactly one default-target kernel build ran with `-j1`. It exited 2 after
+  16.14 seconds, after compiling ARM core, MM, crypto and initial Novatek
+  platform objects.
+- First blocker: `out/include/generated/nvtversion.h` begins
+  `-e #define NVT_UTS_RELEASE ...`, so `nvt-info.o` cannot compile. The 39-byte
+  generated file SHA-256 is
+  `7520d5cf5cfad5012ce2be5e295ad22e107af2cc98846d4b02434511c08bd0c0`.
+- Source `Makefile:1058-1063` uses non-POSIX `==`, compares literal `/bin/sh`
+  against `/bin/dash`, then calls `echo -e`. `/bin/sh` resolves to dash, whose
+  echo emits `-e` literally; a bounded shell probe reproduces the bytes.
+- Later `pci_iomap` type errors appear in the same failed translation unit and
+  are not yet classified; first regenerate the header correctly, then determine
+  whether they persist.
+- No retry was made. No `vmlinux`, `Image`, `zImage`, rootfs or firmware package
+  exists, and no build/compiler process remains running.
+- Private build logs: `build-c2b2a3.log` SHA-256
+  `4b75ddcee15ef6d42d14a6e441481b987dfd9b30354b455cfcd6270d5763d88a`;
+  `build-c2b2a3.time`
+  `680cecad1b7827a1c24f919c373a48e620df22074fc9bf4f3bd3d06b59847156`.
+  Full sanitized evidence is in `docs/C2B2A3_KERNEL_COMPILE.md` and
+  `configs/c2b2a3_compile_result.json`.
 
 **GIT BRANCH / COMMIT / PUSHED?:** `main`; build began from clean, pushed
-`35c49332f232545c1361afd41724a61b3c129d0d`. The commit containing this handoff
-is the C2b-2a-2 completion checkpoint and must match `origin/main` after push.
+`a1af255`. The commit containing this handoff is the C2b-2a-3 completion
+checkpoint and must match `origin/main` after push.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** The patched public-source build tree, logs,
-generated host tools and target objects remain private/off-Git at the path
-above. Preserve them; do not clean or re-extract. No proprietary firmware,
-private Reolink FDT, camera identifier, generated object, or private log is in
-the public checkpoint.
+**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve
+`/home/firmware-analysis/slot20_private/c2b2a2_20261017/`. It now contains the
+privately extracted public Ubuntu development package, all exploratory and
+final logs, generated host tools, and ARM intermediate objects. Do not clean or
+re-extract it. None of those artifacts, proprietary firmware, the private
+Reolink FDT, or camera data is committed.
 
-**NEXT SINGLE TASK ID + INPUT:** **C2b-2a-3, only after explicit
-authorization.** Obtain or reuse a provenance-recorded host OpenSSL development
-input that supplies `openssl/bio.h` and compatible host `libcrypto`; do not
-change the source archive or camera. Then resume the existing configured tree
-with one further `-j1` default-target build and stop at success or the next exact
-blocker.
+**NEXT SINGLE TASK ID + INPUT:** **C2b-2a-4, only after explicit
+authorization.** Verify and apply a minimal reproducible POSIX-shell correction
+to the public vendor `nvtversion.h` generation rule in this private tree,
+preferably replacing the conditional `echo` behavior with `printf`. Regenerate
+and inspect the header, then make one further `-j1` build attempt.
 
-**PASS CRITERION FOR NEXT TASK:** Record the host header/library source,
-versions and hashes; prove `extract-cert` passes the missing-header boundary;
-then preserve one bounded build result or one new exact blocker. Do not start
-C2b-2b, build a rootfs, package a kernel, combine the private Reolink FDT,
-assemble firmware, or access hardware.
+**PASS CRITERION FOR NEXT TASK:** Record the source correction and resulting
+valid header; run exactly one bounded kernel build and stop at success or the
+next exact blocker. Explicitly determine whether the observed `pci_iomap`
+diagnostics persist. Do not begin C2b-2b, build a rootfs, package a kernel, use
+the private Reolink FDT, assemble firmware, or access hardware.
 
-**RECOMMENDED REASONING + WHY:** **High**. This remains bounded legacy Linux
-host-prerequisite and build debugging, with provenance and possible later
-shipped-object/link boundaries.
+**RECOMMENDED REASONING + WHY:** **High**. The next task is a bounded legacy
+vendor Kbuild/shell-portability correction followed by ordinary ARM compiler
+debugging.
 
-**WHEN TO SWITCH:** Medium is sufficient once the generic kernel compile/link
-boundary is stable and only routine documentation or tests remain. Consider
-Ultra only after two materially different bounded High approaches expose a
-persistent hardware-critical ABI/link problem; return to High after isolation.
+**WHEN TO SWITCH:** Medium is sufficient once the generic compile/link boundary
+is stable and only routine documentation/tests remain. Consider Ultra only
+after two materially different bounded High approaches expose a persistent
+hardware-critical ABI or shipped-object link problem; return to High after
+isolation.
 
 **USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry on
-2026-10-18 showed 31% used in the five-hour window (69% remaining) and 5% used
-in the weekly window (95% remaining). This is a snapshot, not continuous
+2026-10-18 showed 48% used in the five-hour window (52% remaining) and 8% used
+in the weekly window (92% remaining). This is a snapshot, not continuous
 monitoring.
 
-**USAGE PREPARATION:** This completion checkpoint must be committed and pushed
-before acquiring another host dependency or starting another compile. Refresh
-usage before the next expensive operation.
+**USAGE PREPARATION:** Commit and push this checkpoint before modifying the
+vendor rule or launching another build. Refresh usage before the next expensive
+operation.
 
-**CONTINUE OR STOP + REASON:** **STOP after C2b-2a-2**, as requested. The task
-has reached one exact reproducible blocker; do not install OpenSSL headers or
-start another build automatically.
+**CONTINUE OR STOP + REASON:** **STOP after C2b-2a-3**, as requested. The one
+authorized build reached its next exact reproducible blocker; no workaround or
+second kernel build is authorized in this task.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification,
 or flash was performed or authorized.

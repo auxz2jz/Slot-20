@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2a-3",
+  "recorded_at": "2026-10-18T03:35:55-07:00",
+  "scope": "private host OpenSSL development dependency plus one bounded generic Novatek Linux kernel build attempt",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "commit": "a1af255b37a153c0a79a7c44cf494f0df5289101",
+    "origin_main_matched": true,
+    "working_tree_clean": true,
+    "free_space_gib": 943
+  },
+  "preserved_inputs": {
+    "linux_commit": "1019c2e049f239ba0668ccfd1356e952fde3b29b",
+    "config_sha256": "9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5",
+    "dtc_lexer_patched_sha256": "69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c",
+    "target_gcc": "Buildroot 2019.05.2 GCC 6.5.0",
+    "gcc_wrapper_sha256": "c04c34d6014b183f08559d95c16c98f47622db9bf11a5007d1b4acc46adc3df3"
+  },
+  "host_openssl": {
+    "origin": "Ubuntu 24.04 noble-updates/main",
+    "package": "libssl-dev:amd64",
+    "version": "3.0.13-0ubuntu3.16",
+    "installed": false,
+    "private_extraction": true,
+    "deb_size": 2408684,
+    "deb_sha256": "2b4734df0475e305ac03abb0a2cc5659651ed37ef02d967a1c4033a154cf714b",
+    "apt_metadata_sha256_matched": true,
+    "bio_h_sha256": "9dde507c18007338ee90517748b2b468cf416b4738f56a68baab0b4bb362cbc0",
+    "opensslconf_h_sha256": "890184233890bacd52fd420fef07befad411b9a318b97efbf36f46673d3e7841",
+    "libcrypto_a_sha256": "9dffa9e77b1cb29b890e473cf9ee379818cb57a576c7ef476356cd4d5a433bcd",
+    "runtime_package": "libssl3t64:amd64 3.0.13-0ubuntu3.16",
+    "runtime_libcrypto_sha256": "6866ed711dab8927e1bf82bf1cd30e828bdfc34f3cc1e83b1c9eb01ce6c37d9a"
+  },
+  "extract_cert": {
+    "standalone_compile_passed": true,
+    "kbuild_compile_passed": true,
+    "format": "ELF64 little-endian x86-64 PIE",
+    "size": 17728,
+    "sha256": "9ede0315dd5da6ac2bfc2e817e05d4ab4ca822f2b846fbb9e9e48b8053405df4",
+    "linked_runtime": "libcrypto.so.3"
+  },
+  "attempt": {
+    "count": 1,
+    "target": "default kernel target",
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 16.14,
+    "maximum_resident_kib": 76416,
+    "stdout_log_lines": 145,
+    "stderr_time_log_lines": 114
+  },
+  "first_blocker": {
+    "stage": "ARM compile of arch/arm/mach-nvt-ivot/nvt-info.o",
+    "classification": "non-portable vendor shell rule generated invalid C header",
+    "source_rule": "Makefile:1058-1063",
+    "generated_file": "out/include/generated/nvtversion.h",
+    "generated_file_sha256": "7520d5cf5cfad5012ce2be5e295ad22e107af2cc98846d4b02434511c08bd0c0",
+    "generated_first_line": "-e #define NVT_UTS_RELEASE  \"4.19.91_\"",
+    "host_shell": "/bin/sh -> /usr/bin/dash",
+    "later_pci_iomap_diagnostics_resolved": false,
+    "target_kernel_link_reached": false
+  },
+  "private_logs": {
+    "build_log_sha256": "4b75ddcee15ef6d42d14a6e441481b987dfd9b30354b455cfcd6270d5763d88a",
+    "build_time_sha256": "680cecad1b7827a1c24f919c373a48e620df22074fc9bf4f3bd3d06b59847156"
+  },
+  "outputs": {
+    "vmlinux": false,
+    "Image": false,
+    "zImage": false,
+    "root_filesystem": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "recovered_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

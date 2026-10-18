@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2a-4",
+  "recorded_at": "2026-10-18T04:33:33-07:00",
+  "scope": "private POSIX version-header correction plus one bounded generic Novatek Linux kernel build attempt",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "base_commit": "f8e9d911a9dd749b90e43017ea9968951e0dbd5b",
+    "patch_checkpoint": "d9e6db1",
+    "patch_checkpoint_pushed": true,
+    "free_space_gib": 943
+  },
+  "source_correction": {
+    "file": "Makefile",
+    "original_preserved": true,
+    "original_sha256": "426e1381390a092ff937b6e1203c8fe5330ce5da8cfffb9cc758a46dfa6cdecb",
+    "patched_sha256": "681521f1027d322ad4fffbb57f38919f3bfa0c2db1e3e16bbf909d8e66c77ff2",
+    "portable_patch": "patches/linux-4.19-nvtversion-posix-printf.patch",
+    "portable_patch_sha256": "9708234c6450f640fd8c5900fb1417d3203a951d371ef67637a635f5b0798638",
+    "change": "replace shell-name and echo conditional with one POSIX printf"
+  },
+  "generated_header": {
+    "path": "out/include/generated/nvtversion.h",
+    "regeneration_exit_status": 0,
+    "size": 35,
+    "sha256": "e12d54040a10d69a57425bc2cd68b4d50a9cff5846828c390397390aa85074a7",
+    "leading_dash_e_absent": true,
+    "target_gcc_syntax_check_passed": true
+  },
+  "attempt": {
+    "count": 1,
+    "target": "default kernel target",
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 292.25,
+    "maximum_resident_kib": 136860,
+    "stdout_log_lines": 1553,
+    "stderr_time_log_lines": 32,
+    "final_vmlinux_link_reached": true,
+    "pci_iomap_errors_persisted": false
+  },
+  "first_blocker": {
+    "stage": "final vmlinux link",
+    "classification": "vendor Kbuild object-name omission",
+    "message": "undefined reference to pll_dump_info from drivers/clk/novatek/nvt-clk-dbg.o",
+    "consumer_object_sha256": "5bea5ac361db22bb4b741327e530b1a0866e275837481be8d3750a7391aca8e7",
+    "provider_shipped_object": "drivers/clk/novatek/na51055/pll.o_shipped",
+    "provider_shipped_object_size": 25892,
+    "provider_shipped_object_sha256": "a676bf4a156726769578710994704e863585034615001b3d7b9b90d2c5a6a87c",
+    "provider_symbol_offset_hex": "0x1cc0",
+    "provider_output_object_exists": false,
+    "provider_in_clock_archive": false,
+    "target_kernel_link_succeeded": false
+  },
+  "private_logs": {
+    "header_log_sha256": "38466cd9a018a5e09e6c5b0929b2b9089dab8fab22d21247f1589e7660c0e1e5",
+    "header_time_sha256": "a3937375c0cdb27582c9fa73bab31236493d9375af6d2ae635cd9ebadafcee97",
+    "build_log_sha256": "e138e875bd98b9a71d4c06d9253d28d0a2af1e2eb87089d14e4eb7903fb13a10",
+    "build_time_sha256": "1050d4d09ae5929514f6d23e81204fef4ec324f00dba155b6d6fa9619309d17d"
+  },
+  "outputs": {
+    "vmlinux": false,
+    "Image": false,
+    "zImage": false,
+    "root_filesystem": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "recovered_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

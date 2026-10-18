@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2b-2",
+  "recorded_at": "2026-10-18",
+  "result": "next_exact_reproducible_blocker",
+  "base_checkpoint": "7e5cdcf689d829213091b64d36e14110dde232b9",
+  "pre_build_checkpoint": "f3f020e",
+  "m4": {
+    "version": "1.4.18",
+    "buildroot_commit": "5a9504831f3fa1ef3be334036c93da30150fde55",
+    "gnulib_commit": "f9e2b20a12a230efa30f1d479563ae07d276a94b",
+    "patch_sha256": "a659db8cd9cad78130f3732ecd369fdfdcdbf0c1cf23821b1c44ea8661e65c4e",
+    "original_c_stack_c_sha256": "34286fa24484ee8eefc3e768c97b444b5a22963752d45be7acae9ccab7cae6aa",
+    "original_c_stack_h_sha256": "02c57886ba8b59b5183c1a6777a1d619b726ecab7ece0daa32a15a96a890872a",
+    "patched_c_stack_c_sha256": "c43899dd5bd6da727bf2ed3567a7f8b8fddb1f44adb0689db8d0c5dd56a12203",
+    "patched_c_stack_h_sha256": "35ab8de7d5aa6750771b623a97bb366143494d0006fcb4177a3d5cb09109f8b3",
+    "installed_host_binary_sha256": "5a17d1859a74c6d93543baedf5e22c99167c4275ca17bbe0c415162bf2e0d0b3",
+    "built": true,
+    "installed": true
+  },
+  "attempt": {
+    "count": 1,
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 55.83,
+    "maximum_resident_kib": 128392,
+    "log_sha256": "bddb74d66fd6d6554d117e833d18b4957056b67df126d7e635fe336a785c7750",
+    "time_log_sha256": "3df217b86058423a3ac43b5b01452ca19b394d425ae300ece246d37a247e592d"
+  },
+  "first_blocker": {
+    "stage": "host-fakeroot 1.20.2 autoreconf",
+    "classification": "declared autotools macro directory absent from extracted source",
+    "message": "aclocal: error: couldn't open directory 'build-aux': No such file or directory",
+    "makefile_am_reference": "ACLOCAL_AMFLAGS = -I build-aux",
+    "configure_ac_reference": "AC_CONFIG_MACRO_DIR([build-aux])",
+    "build_aux_present": false,
+    "fakeroot_configure_ac_sha256": "9324ae80c498a0003763bdf6fd49f8143596c9a2518277961fc3db1e07314c43",
+    "fakeroot_libfakeroot_c_sha256": "1bf25a56b844a5c06a884cbe1f6e6f90cfcc3b8d5c6f0b0c931e20646ad03204"
+  },
+  "outputs": {
+    "rootfs_tar": false,
+    "target_regular_files": 0,
+    "images_regular_files": 0,
+    "kernel_modified": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "target_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

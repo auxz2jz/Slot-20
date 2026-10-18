@@ -1,39 +1,98 @@
 # Slot-20 — Current task handoff
 
-**Status:** C2b-2a-2 RECOVERY CHECKPOINT SAVED — the interrupted session applied the authoritative host-DTC `yylloc` fix in a fresh private tree but stopped before configuration, preparation or compilation. **C2b-2a-2 is not complete.**
+**Status:** C2b-2a-2 COMPLETE WITH NEXT EXACT BLOCKER — the recovered upstream
+DTC `yylloc` correction is build-verified, relative `O=../out` fixes the vendor
+OTP output placement, and the one authorized `-j1` build stopped at a missing
+host OpenSSL development header. No kernel image was produced.
 
-**LAST TASK ID / STATUS:** C2b-2a-2 host-DTC compatibility and bounded rebuild — **INCOMPLETE, SAFE TO RESUME AT CONFIGURATION**.
+**LAST TASK ID / STATUS:** C2b-2a-2 host-DTC compatibility and bounded rebuild —
+**COMPLETE WITH REPRODUCIBLE BLOCKER**.
 
-**RECOVERED EVIDENCE:**
+**EVIDENCE AND TESTS:**
 
-- Git was clean at `90d93152e4f31f627514204c058bb6a0ca144c1a` and matched `origin/main` before this recovery checkpoint. No post-checkpoint local commit, branch, stash or repository work was found.
-- Preserved private root: `/home/firmware-analysis/slot20_private/c2b2a2_20261017/`. Do not re-extract it, reapply its patch, clean it or delete it.
-- Authoritative source: Linux upstream commit `e33a814e772cdc36436c8c188d8c42d019fda639`, `scripts/dtc: Remove redundant YYLOC global declaration`. Its public patch is preserved privately as `provenance/e33a814e.patch`, SHA-256 `b683608be3be4048de517587b636982ebaa0a1cdbc315c45b7661aef3f9264d9`.
-- The patch is applied exactly once to private `source/scripts/dtc/dtc-lexer.l`. Patched SHA-256: `69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c`. The only difference from the frozen source is deletion of `YYLTYPE yylloc;`.
-- `source/scripts/dtc/dtc-lexer.l.orig` preserves the unmodified original, SHA-256 `f3d221c5a7d243c456e0516f751ddbd7cf2cc6d28e0783a81e9ccaa0fb313902`, byte-identical to the pinned source archive member.
-- Portable public reproduction patch: `patches/linux-4.19-dtc-yylloc-e33a814e.patch`, SHA-256 `54052f112c34e5edd1d585db176c716a8d88c0fc617821c1f391563bfbe4edcd`. It contains only the public upstream provenance and zero-context one-line GPL-2.0-only source deletion. `patch --dry-run -p1` succeeds against a temporary copy of the frozen original; applying it to a separate temporary copy reproduces patched SHA-256 `69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c` exactly.
-- The prior command stopped after patch application because a verification expression was mangled before reaching WSL. The filesystem inspection independently verifies the intended change; no build command followed.
-- Private `out/` and `logs/` are empty. `.config`, generated objects, `vmlinux`, `Image` and `zImage` are absent. No build/compiler process was running at recovery.
-- No malformed `source/home/...` output path exists. This means the previous absolute-`O` bug has not recurred, but the planned relative-output accommodation has not yet been exercised.
+- Reused private root
+  `/home/firmware-analysis/slot20_private/c2b2a2_20261017/`, its existing patch,
+  and the C2b-1 host tools/toolchain. Nothing was re-extracted, re-patched,
+  installed, downloaded, or rebuilt before configuration.
+- Patched `source/scripts/dtc/dtc-lexer.l` still has SHA-256
+  `69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c`;
+  its archive-identical `.orig` remains
+  `f3d221c5a7d243c456e0516f751ddbd7cf2cc6d28e0783a81e9ccaa0fb313902`.
+- Relative `O=../out` `defconfig` and `prepare` passed. `.config` SHA-256
+  `9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5`
+  matches both C2b-1 runs.
+- All four OTP files landed under
+  `out/drivers/soc/nvt/otp/na51055/`; no `source/home/...` path exists.
+  Controlled VOS/HDAL directories remain empty.
+- Exactly one default-target build ran with `-j1`. It exited 2 after 4.91
+  seconds. Host DTC linked successfully at SHA-256
+  `e193fdda1bf389fef9796d974d48b1a9aa520b38be2ce1a9e491c4447adb382f`,
+  so the upstream DTC correction is build-verified.
+- `scripts/mod/empty.o` is ELF32 little-endian ARM EABI5, proving the preserved
+  target compiler was invoked for a build helper. This is not a kernel link or
+  camera-compatibility result.
+- First fatal diagnostic:
+  `scripts/extract-cert.c:21:10: fatal error: openssl/bio.h: No such file or directory`.
+  `CONFIG_SYSTEM_TRUSTED_KEYRING=y` selects this host tool. The WSL OpenSSL
+  executable is present, but `/usr/include/openssl/bio.h` and private-host copies
+  are absent.
+- No retry was made. No `vmlinux`, `Image`, `zImage`, rootfs, or firmware
+  package exists. No build/compiler process remains running.
+- Private evidence hashes: `defconfig.log`
+  `743339714b7ec4c794d8269e208a35cf47353ab5a3e53a151ec4ecbccca635c4`;
+  `prepare.log`
+  `cf5d9b00abe2efddc2afb0f1b60aab43d4ee86e4714a29a9cd8f41ab302ea25b`;
+  `build.log`
+  `0e40d72570bca34acf302c243bdf996d5230157d1dd2a3a243d48e7fce3bcbd2`;
+  `build.time`
+  `f8985352cbe0e1b7d407fbeed62daeaca8697c011deef0579611a7948e0fc732`.
+- Sanitized details are in `docs/C2B2A2_KERNEL_COMPILE.md` and
+  `configs/c2b2a2_compile_result.json`.
 
-**IMPORTANT LIMITS:** The DTC source correction is provenance-verified but not yet build-verified. C2b-2a-2 has not run `defconfig`, `prepare` or its authorized single-threaded compile. Target GCC behavior, PLL/OTP object compatibility, later source/link blockers, board compatibility, boot and redistribution beyond the upstream patch remain unverified.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; build began from clean, pushed
+`35c49332f232545c1361afd41724a61b3c129d0d`. The commit containing this handoff
+is the C2b-2a-2 completion checkpoint and must match `origin/main` after push.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; base `90d9315` was pushed. The commit containing this handoff and portable patch is the recovery checkpoint and must be verified against `origin/main` after push.
+**LOCAL UNTRACKED OR PRIVATE WORK:** The patched public-source build tree, logs,
+generated host tools and target objects remain private/off-Git at the path
+above. Preserve them; do not clean or re-extract. No proprietary firmware,
+private Reolink FDT, camera identifier, generated object, or private log is in
+the public checkpoint.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** The complete public-source build tree and downloaded upstream patch remain private/off-Git at the path above. No proprietary firmware, private Reolink FDT, camera identifier, generated object or build artifact is included in the public checkpoint.
+**NEXT SINGLE TASK ID + INPUT:** **C2b-2a-3, only after explicit
+authorization.** Obtain or reuse a provenance-recorded host OpenSSL development
+input that supplies `openssl/bio.h` and compatible host `libcrypto`; do not
+change the source archive or camera. Then resume the existing configured tree
+with one further `-j1` default-target build and stop at success or the next exact
+blocker.
 
-**NEXT SINGLE ACTION:** After explicit continuation approval, resume the existing patched tree without re-extraction or reapplication. Run the verified `KBUILD_DEFCONFIG=na51055_evb_defconfig_nand_squash_release defconfig` and `prepare` procedure using relative `O=../out`. Before compilation, verify that OTP copies land under private `out/drivers/soc/nvt/otp/` and that no `source/home/...` path appears. Then perform the one authorized `-j1` generic kernel build and stop at success or the next exact blocker.
+**PASS CRITERION FOR NEXT TASK:** Record the host header/library source,
+versions and hashes; prove `extract-cert` passes the missing-header boundary;
+then preserve one bounded build result or one new exact blocker. Do not start
+C2b-2b, build a rootfs, package a kernel, combine the private Reolink FDT,
+assemble firmware, or access hardware.
 
-**PASS CRITERION FOR C2b-2a-2:** matching `.config`; successful `prepare`; correct relative output placement; and exactly one single-threaded generic compile yielding either a compile/link result or one next exact blocker. Do not build a rootfs, package a kernel, use the private Reolink FDT, assemble firmware, access hardware or claim board compatibility.
+**RECOMMENDED REASONING + WHY:** **High**. This remains bounded legacy Linux
+host-prerequisite and build debugging, with provenance and possible later
+shipped-object/link boundaries.
 
-**RECOMMENDED REASONING + WHY:** **High**. Remaining work is bounded legacy Linux build-system and compiler debugging with shipped-object/provenance boundaries, not bootloader reverse engineering.
+**WHEN TO SWITCH:** Medium is sufficient once the generic kernel compile/link
+boundary is stable and only routine documentation or tests remain. Consider
+Ultra only after two materially different bounded High approaches expose a
+persistent hardware-critical ABI/link problem; return to High after isolation.
 
-**WHEN TO SWITCH:** Medium is sufficient after the generic build boundary is stable and only routine documentation/tests remain. Consider Ultra only after two materially different bounded High approaches expose a persistent hardware-critical ABI/link problem.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry on
+2026-10-18 showed 31% used in the five-hour window (69% remaining) and 5% used
+in the weekly window (95% remaining). This is a snapshot, not continuous
+monitoring.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable checkpoint telemetry on 2026-10-18 showed 8% used in the five-hour window (92% remaining) and 1% used in the weekly window (99% remaining). This is a snapshot, not continuous monitoring; refresh before compilation.
+**USAGE PREPARATION:** This completion checkpoint must be committed and pushed
+before acquiring another host dependency or starting another compile. Refresh
+usage before the next expensive operation.
 
-**USAGE PREPARATION:** This recovery checkpoint must be committed and pushed before any configuration or build. Refresh usage immediately before the single expensive build attempt.
+**CONTINUE OR STOP + REASON:** **STOP after C2b-2a-2**, as requested. The task
+has reached one exact reproducible blocker; do not install OpenSSL headers or
+start another build automatically.
 
-**CONTINUE OR STOP + REASON:** **STOP after this recovery checkpoint**, as requested. Do not run `defconfig`, `prepare` or compilation automatically.
-
-**CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification or flash was performed or authorized.
+**CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification,
+or flash was performed or authorized.

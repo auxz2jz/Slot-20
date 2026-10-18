@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2a-2",
+  "recorded_at": "2026-10-18T03:18:26-07:00",
+  "scope": "upstream host-DTC correction, relative output validation, and one bounded host-only generic Novatek Linux kernel compile/link attempt",
+  "checkpoint_before_build": {
+    "branch": "main",
+    "commit": "35c49332f232545c1361afd41724a61b3c129d0d",
+    "origin_main_matched": true,
+    "working_tree_clean": true,
+    "free_space_gib": 943
+  },
+  "inputs": {
+    "linux_commit": "1019c2e049f239ba0668ccfd1356e952fde3b29b",
+    "config_sha256": "9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5",
+    "target_tuple": "arm-buildroot-linux-gnueabihf",
+    "target_gcc": "Buildroot 2019.05.2 GCC 6.5.0",
+    "gcc_wrapper_sha256": "c04c34d6014b183f08559d95c16c98f47622db9bf11a5007d1b4acc46adc3df3",
+    "dtc_upstream_commit": "e33a814e772cdc36436c8c188d8c42d019fda639",
+    "dtc_lexer_patched_sha256": "69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c",
+    "dtc_lexer_original_sha256": "f3d221c5a7d243c456e0516f751ddbd7cf2cc6d28e0783a81e9ccaa0fb313902",
+    "output_argument": "O=../out"
+  },
+  "preparation": {
+    "defconfig_exit_status": 0,
+    "prepare_exit_status": 0,
+    "defconfig_log_sha256": "743339714b7ec4c794d8269e208a35cf47353ab5a3e53a151ec4ecbccca635c4",
+    "prepare_log_sha256": "cf5d9b00abe2efddc2afb0f1b60aab43d4ee86e4714a29a9cd8f41ab302ea25b",
+    "otp_files_in_external_output": 4,
+    "malformed_source_home_path": false
+  },
+  "attempt": {
+    "count": 1,
+    "target": "default kernel target",
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 4.91,
+    "maximum_resident_kib": 43336,
+    "build_log_lines": 56
+  },
+  "verified_progress": {
+    "host_dtc_linked": true,
+    "host_dtc_sha256": "e193fdda1bf389fef9796d974d48b1a9aa520b38be2ce1a9e491c4447adb382f",
+    "target_arm_helper_object_created": true,
+    "target_arm_helper_format": "ELF32 little-endian ARM EABI5"
+  },
+  "first_blocker": {
+    "stage": "host extract-cert compile",
+    "classification": "missing host OpenSSL development header",
+    "message": "scripts/extract-cert.c:21:10: fatal error: openssl/bio.h: No such file or directory",
+    "selected_by": "CONFIG_SYSTEM_TRUSTED_KEYRING=y",
+    "host_header_present": false,
+    "private_host_header_present": false,
+    "target_kernel_link_reached": false
+  },
+  "outputs": {
+    "vmlinux": false,
+    "Image": false,
+    "zImage": false,
+    "root_filesystem": false,
+    "firmware_package": false
+  },
+  "private_logs": {
+    "build_log_sha256": "0e40d72570bca34acf302c243bdf996d5230157d1dd2a3a243d48e7fce3bcbd2",
+    "build_time_sha256": "f8985352cbe0e1b7d407fbeed62daeaca8697c011deef0579611a7948e0fc732"
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "recovered_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}

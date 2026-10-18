@@ -1,0 +1,25 @@
+From: Slot-20 reproducibility record
+Subject: [PATCH] package/fakeroot: create build-aux before autoreconf
+
+Backport the Buildroot post-patch hook from commits
+fd1bcce9894773d7e1c1ca5be0f04b0b32128a1d (master) and
+519dd1f6e043809cd5f389d8bff86cb95180390f (2019.02.x).
+
+Fakeroot 1.20.2 declares build-aux as its aclocal macro directory but omits
+the directory from the release archive.  Create it before Buildroot's
+autoreconf step.  This patch applies after the C2b-2b-1 change that enabled
+HOST_FAKEROOT_AUTORECONF.
+
+---
+ package/fakeroot/fakeroot.mk | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/package/fakeroot/fakeroot.mk b/package/fakeroot/fakeroot.mk
+--- a/package/fakeroot/fakeroot.mk
++++ b/package/fakeroot/fakeroot.mk
+@@ -22,0 +23,5 @@ FAKEROOT_LICENSE_FILES = COPYING
++define HOST_FAKEROOT_BUILD_AUX
++	mkdir -p $(@D)/build-aux
++endef
++HOST_FAKEROOT_POST_PATCH_HOOKS += HOST_FAKEROOT_BUILD_AUX
++

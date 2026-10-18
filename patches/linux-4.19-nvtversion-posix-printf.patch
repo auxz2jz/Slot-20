@@ -1,0 +1,16 @@
+Subject: [PATCH] Make Novatek version header generation POSIX-safe
+Upstream-Status: Pending
+License: GPL-2.0-only
+
+Avoid shell-name probing, the non-POSIX == test operator, and echo -e.
+POSIX printf generates the intended C macro consistently under dash and bash.
+
+--- a/Makefile
++++ b/Makefile
+@@ -1059,5 +1059 @@ define filechk_nvtversion.h
+-	if [ "$(SHELL)" == "/bin/dash" ]; then \
+-		echo "#define NVT_UTS_RELEASE \t\""$(KERNELVERSION)_$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion --show-nvtver)"\""; \
+-	else \
+-		echo -e "#define NVT_UTS_RELEASE \t\""$(KERNELVERSION)_$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion --show-nvtver)"\""; \
+-	fi
++	printf '#define NVT_UTS_RELEASE\t"%s_%s"\n' "$(KERNELVERSION)" "$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion --show-nvtver)"

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "task": "C2b-2b-1",
+  "recorded_at": "2026-10-18",
+  "result": "next_exact_reproducible_blocker",
+  "base_checkpoint": "e8bd64cfada27c8b20b59ce75d5dfc65cadb7d40",
+  "pre_build_checkpoint": "a4256b2",
+  "fakeroot": {
+    "version": "1.20.2",
+    "archive_sha256": "7c0a164d19db3efa9e802e0fc7cdfeff70ec6d26cdbdc4338c9c2823c5ea230c",
+    "preserved_original_libfakeroot_c_sha256": "234e19560ecfa5e7be79945f0baebaf27ed7b54fefe0dd9035187286543d5a31",
+    "upstream_buildroot_commit": "f45925a951318e9e53bead80b363e004301adc6f",
+    "patch_sha256": [
+      "7a4da76f086b6b80943fc36d1bee72de1b5e3a5f94b0bf88211d4cc15e8537ed",
+      "7eed80a49e454893c49fb4bc210cddb6a5533a0f5a00443204b61823d445d6f8",
+      "b2125fe3e8afb69223700e08462f0a4c5cdcde718d14c32a13b75648e22302b1"
+    ],
+    "integration_patch_sha256": "867de5e1b7920406ec3adf7f1601cc05c0eb03e8e8543344e2f9134529f2b1f0",
+    "private_fakeroot_mk_sha256": "0ed2ea7a0c9ed8a3e95c95cb7d5a1492eb1d56144fcb548f48e4ac7b988e83df",
+    "compiled": false,
+    "reason_not_compiled": "Buildroot stopped in host-m4, an autoreconf prerequisite, before fakeroot re-extraction"
+  },
+  "attempt": {
+    "count": 1,
+    "jobs": 1,
+    "exit_status": 2,
+    "elapsed_seconds": 25.95,
+    "maximum_resident_kib": 128216,
+    "log_sha256": "2fad154fe292f5f38cc95ea45eea7b8604548867f57d2af99d16aa95838be774",
+    "time_log_sha256": "2dc4459deef425f9e456eb5c67c2f9df2bd56bed32e2717eb070a67a4feb69fb"
+  },
+  "first_blocker": {
+    "stage": "host-m4 1.4.18 compilation",
+    "classification": "legacy host package incompatible with modern host glibc SIGSTKSZ definition",
+    "host_glibc": "Ubuntu GLIBC 2.39-0ubuntu8.9",
+    "message": "lib/c-stack.c:55:26: missing binary operator before token '(' in #elif HAVE_LIBSIGSEGV && SIGSTKSZ < 16384",
+    "archive_sha256": "f2c1e86ca0a404ff281631bdc8377638992744b175afb806e25871a24a934e07",
+    "failing_source_sha256": "34286fa24484ee8eefc3e768c97b444b5a22963752d45be7acae9ccab7cae6aa"
+  },
+  "outputs": {
+    "rootfs_tar": false,
+    "target_regular_files": 0,
+    "images_regular_files": 0,
+    "kernel_modified": false,
+    "firmware_package": false
+  },
+  "safety": {
+    "private_reolink_fdt_used": false,
+    "target_binary_executed": false,
+    "camera_contact": false,
+    "camera_flash": false
+  }
+}
+

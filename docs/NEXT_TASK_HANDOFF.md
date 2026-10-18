@@ -1,41 +1,39 @@
 # Slot-20 — Current task handoff
 
-**Status:** Task C2b-2a COMPLETE WITH EXACT BLOCKER — one bounded generic kernel build was attempted and stopped at the host DTC link. No ARM kernel link, rootfs, firmware or hardware work occurred.
+**Status:** C2b-2a-2 RECOVERY CHECKPOINT SAVED — the interrupted session applied the authoritative host-DTC `yylloc` fix in a fresh private tree but stopped before configuration, preparation or compilation. **C2b-2a-2 is not complete.**
 
-**LAST TASK ID / STATUS:** C2b-2a bounded generic kernel compile/link attempt — **VERIFIED COMPLETE WITH BLOCKER**. C2b-2a-2 was not started.
+**LAST TASK ID / STATUS:** C2b-2a-2 host-DTC compatibility and bounded rebuild — **INCOMPLETE, SAFE TO RESUME AT CONFIGURATION**.
 
-**EVIDENCE AND TESTS:**
+**RECOVERED EVIDENCE:**
 
-- The clean, pushed pre-build checkpoint was `7c1a8d0105409a06f93674d941a47bdb8753c42f` on `main`; 945 GiB was available before extraction.
-- Existing C2b-1 resources were reused. The Linux archive still hashes to `66aca4fee2663f60ad68f9d3e9500a1475cefa825517cb08e570599821c4b20e`; the GCC wrapper hashes to `c04c34d6014b183f08559d95c16c98f47622db9bf11a5007d1b4acc46adc3df3`; `make -q toolchain` returned zero with the preserved private host-tool path. Nothing was downloaded or rebuilt.
-- A new private tree at `/home/firmware-analysis/slot20_private/c2b2a_20261017/` reproduced C2b-1 `defconfig`/`prepare`; `.config` SHA-256 is `9a9c7ac6ecddd7900dcce61715c45507d02f0f510f6ea93fc46e33fe2c9ddbf5`. Controlled VOS/HDAL directories remain empty.
-- Exactly one default-target build was run with `-j1`. It exited 2 after 6.30 seconds. The 34-line log hashes to `f4a916b87b9f2a590391ca4a9934af487aea6514eab1c1b074b08c0b3a26c7a1`.
-- First blocker: `/usr/bin/ld` could not link the host `scripts/dtc/dtc` because `dtc-parser.tab.o` and `dtc-lexer.lex.o` both define global BSS symbol `yylloc`. Source `scripts/dtc/dtc-lexer.l:41` supplies one definition and generated parser C supplies the other. `nm` independently confirmed both object symbols.
-- Host tools were Ubuntu GCC 13.3.0 and ld 2.42; GCC reports `-fcommon` disabled. This is a host-tool compatibility blocker. The attempt did not reach target ARM object compilation, target kernel linking, or PLL/OTP ABI testing.
-- The vendor Makefile also forms its OTP output path incorrectly when `O` is absolute, copying four public OTP files into a nested path under this disposable source tree. This did not touch the analysis repositories and was not the fatal error.
-- `vmlinux`, `Image` and `zImage` are absent. No rootfs, package, private Reolink FDT use, recovered-code execution, device contact or flash occurred.
-- Sanitized evidence is in `docs/C2B2A_KERNEL_COMPILE.md` and `configs/c2b2a_compile_result.json`; raw logs and generated objects remain private/off-Git.
+- Git was clean at `90d93152e4f31f627514204c058bb6a0ca144c1a` and matched `origin/main` before this recovery checkpoint. No post-checkpoint local commit, branch, stash or repository work was found.
+- Preserved private root: `/home/firmware-analysis/slot20_private/c2b2a2_20261017/`. Do not re-extract it, reapply its patch, clean it or delete it.
+- Authoritative source: Linux upstream commit `e33a814e772cdc36436c8c188d8c42d019fda639`, `scripts/dtc: Remove redundant YYLOC global declaration`. Its public patch is preserved privately as `provenance/e33a814e.patch`, SHA-256 `b683608be3be4048de517587b636982ebaa0a1cdbc315c45b7661aef3f9264d9`.
+- The patch is applied exactly once to private `source/scripts/dtc/dtc-lexer.l`. Patched SHA-256: `69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c`. The only difference from the frozen source is deletion of `YYLTYPE yylloc;`.
+- `source/scripts/dtc/dtc-lexer.l.orig` preserves the unmodified original, SHA-256 `f3d221c5a7d243c456e0516f751ddbd7cf2cc6d28e0783a81e9ccaa0fb313902`, byte-identical to the pinned source archive member.
+- Portable public reproduction patch: `patches/linux-4.19-dtc-yylloc-e33a814e.patch`, SHA-256 `54052f112c34e5edd1d585db176c716a8d88c0fc617821c1f391563bfbe4edcd`. It contains only the public upstream provenance and zero-context one-line GPL-2.0-only source deletion. `patch --dry-run -p1` succeeds against a temporary copy of the frozen original; applying it to a separate temporary copy reproduces patched SHA-256 `69564959cad177a54298c21903c8a242c5b167cfeee3b1265dca1ccdb5cca94c` exactly.
+- The prior command stopped after patch application because a verification expression was mangled before reaching WSL. The filesystem inspection independently verifies the intended change; no build command followed.
+- Private `out/` and `logs/` are empty. `.config`, generated objects, `vmlinux`, `Image` and `zImage` are absent. No build/compiler process was running at recovery.
+- No malformed `source/home/...` output path exists. This means the previous absolute-`O` bug has not recurred, but the planned relative-output accommodation has not yet been exercised.
 
-**IMPORTANT LIMITS:** The target GCC 6.5.0, shipped PLL/OTP objects, missing VOS/HDAL/media sources and kernel link were not exercised beyond configuration. This does not prove that the generic kernel can link or boot, that it matches `IPC_523128M8MP`, that binary objects may be redistributed, or that any recovery/install gate is met.
+**IMPORTANT LIMITS:** The DTC source correction is provenance-verified but not yet build-verified. C2b-2a-2 has not run `defconfig`, `prepare` or its authorized single-threaded compile. Target GCC behavior, PLL/OTP object compatibility, later source/link blockers, board compatibility, boot and redistribution beyond the upstream patch remain unverified.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; pre-build checkpoint `7c1a8d0` is pushed. The final C2b-2a commit is the commit containing this handoff and must be verified against `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; base `90d9315` was pushed. The commit containing this handoff and portable patch is the recovery checkpoint and must be verified against `origin/main` after push.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** The 929 MiB disposable C2b-2a tree and raw logs are under `/home/firmware-analysis/slot20_private/c2b2a_20261017/`. The C2b-1 toolchain/cache, C2a inputs, analysis repositories and all proprietary firmware/FDT/U-Boot/camera artifacts remain separate; do not upload or delete them without review.
+**LOCAL UNTRACKED OR PRIVATE WORK:** The complete public-source build tree and downloaded upstream patch remain private/off-Git at the path above. No proprietary firmware, private Reolink FDT, camera identifier, generated object or build artifact is included in the public checkpoint.
 
-**WHAT REMAINS UNFINISHED:** A provenance-checked host-DTC fix; safe handling of the vendor absolute-output-path assumption; any ARM kernel compile/link result; PLL/OTP object compatibility and lawful-source decision; missing VOS/HDAL/media sources; matching-board DTS/defconfig; rootfs/package/license work; and every firmware, recovery and hardware gate.
+**NEXT SINGLE ACTION:** After explicit continuation approval, resume the existing patched tree without re-extraction or reapplication. Run the verified `KBUILD_DEFCONFIG=na51055_evb_defconfig_nand_squash_release defconfig` and `prepare` procedure using relative `O=../out`. Before compilation, verify that OTP copies land under private `out/drivers/soc/nvt/otp/` and that no `source/home/...` path appears. Then perform the one authorized `-j1` generic kernel build and stop at success or the next exact blocker.
 
-**NEXT SINGLE TASK ID + INPUT:** **C2b-2a-2**, only when explicitly started — verify the minimal `yylloc` host-DTC compatibility change against an authoritative upstream source, use a fresh disposable tree with a corrected out-of-tree layout, and make one additional `-j1` generic compile/link attempt using the unchanged C2b-1 target toolchain. Stop at success or the next exact blocker.
+**PASS CRITERION FOR C2b-2a-2:** matching `.config`; successful `prepare`; correct relative output placement; and exactly one single-threaded generic compile yielding either a compile/link result or one next exact blocker. Do not build a rootfs, package a kernel, use the private Reolink FDT, assemble firmware, access hardware or claim board compatibility.
 
-**PASS CRITERION FOR NEXT TASK:** a provenance-recorded host-DTC compatibility change, no malformed nested output path, and either a generic kernel compile/link result or one next exact blocker. Do not build a rootfs, package a kernel, use the private Reolink FDT, assemble firmware, access hardware or claim board compatibility.
+**RECOMMENDED REASONING + WHY:** **High**. Remaining work is bounded legacy Linux build-system and compiler debugging with shipped-object/provenance boundaries, not bootloader reverse engineering.
 
-**RECOMMENDED REASONING + WHY:** **High**. The next task is bounded legacy Linux host/build-system compatibility and ordinary compile debugging with strict provenance boundaries; it does not require difficult bootloader reverse engineering.
+**WHEN TO SWITCH:** Medium is sufficient after the generic build boundary is stable and only routine documentation/tests remain. Consider Ultra only after two materially different bounded High approaches expose a persistent hardware-critical ABI/link problem.
 
-**WHEN TO SWITCH:** Medium is enough after the generic build boundary is stable and only routine tests/docs remain. Consider Ultra only if two materially different bounded High approaches expose a persistent hardware-critical object ABI/link problem; return to High after isolation.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable checkpoint telemetry on 2026-10-18 showed 8% used in the five-hour window (92% remaining) and 1% used in the weekly window (99% remaining). This is a snapshot, not continuous monitoring; refresh before compilation.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry on 2026-10-17 showed 13% used in the five-hour window (87% remaining) and 61% used in the weekly window (39% remaining). This is a timestamped snapshot, not continuous monitoring; refresh before another build.
+**USAGE PREPARATION:** This recovery checkpoint must be committed and pushed before any configuration or build. Refresh usage immediately before the single expensive build attempt.
 
-**USAGE PREPARATION:** Commit and push C2b-2a now. The next compile is an expensive operation and requires that checkpoint plus a fresh usage reading first.
-
-**CONTINUE OR STOP + REASON:** **STOP after C2b-2a**, as explicitly requested. Do not begin the compatibility patch or another build automatically.
+**CONTINUE OR STOP + REASON:** **STOP after this recovery checkpoint**, as requested. Do not run `defconfig`, `prepare` or compilation automatically.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot, modification or flash was performed or authorized.

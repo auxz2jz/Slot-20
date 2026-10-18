@@ -1,0 +1,14 @@
+From e33a814e772cdc36436c8c188d8c42d019fda639 Mon Sep 17 00:00:00 2001
+Subject: scripts/dtc: Remove redundant YYLOC global declaration
+Upstream: https://github.com/torvalds/linux/commit/e33a814e772cdc36436c8c188d8c42d019fda639
+License: GPL-2.0-only (same as the affected Linux kernel source)
+
+GCC 10 and later default to -fno-common.  The generated parser already
+defines yylloc, so the lexer declaration is redundant and causes the host
+DTC link to fail.
+
+diff --git a/scripts/dtc/dtc-lexer.l b/scripts/dtc/dtc-lexer.l
+--- a/scripts/dtc/dtc-lexer.l
++++ b/scripts/dtc/dtc-lexer.l
+@@ -41 +40,0 @@
+-YYLTYPE yylloc;

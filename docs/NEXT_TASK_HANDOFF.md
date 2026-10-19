@@ -1,77 +1,75 @@
 # Slot-20 — Current task handoff
 
-**Status:** D1 PLANNING IN PROGRESS — scope and atomic outputs are frozen; no
-camera or other hardware has been contacted.
+**Status:** D1 PLANNING COMPLETE — no camera was contacted, opened, powered,
+rebooted, connected to UART, read from or written.
 
-**LAST TASK ID / STATUS:** D1 design checkpoint — COMPLETE. Detailed D1.1–D1.4
-planning remains.
+**LAST TASK ID / STATUS:** D1.1–D1.4 matching-spare backup and independent
+recovery planning — **COMPLETE; HARDWARE EVIDENCE REMAINS UNVERIFIED**.
 
 **EVIDENCE AND TESTS:**
 
-- C3 was split and checkpointed as C3.1 design (`88d3d2a`), C3.2 localhost
-  shell (`cb3023d`) and C3.3 verifier/simulator integration (`ecab661`).
-- `tools/management_demo.py` binds only `127.0.0.1`, uses bounded demo
-  sessions and CSRF, accepts bounded temporary uploads, invokes the existing B2
-  verifier and exposes only a fixed B3 simulator-action enum.
-- Bundle verification never authorizes installation. The next simulated action
-  is a separate, visibly labeled host-only authorization step.
-- `tools/capture_management_demo.cjs` refuses non-loopback URLs and reproduced
-  six browser states using local Edge/Playwright. The final capture reported
-  zero browser console errors. Screenshot sizes and SHA-256 values are in
-  `configs/c3_management_demo_result.json`.
-- The actual localhost UI screenshots are under `docs/images/c3-*.png` and are
-  labeled offline simulation. They show status, successful validation,
-  committed logical update, corrupt-bundle rejection, logical rollback and
-  recovery required.
-- `python -m unittest discover -s tests -v` ran 77 tests in 8.315 seconds:
-  75 passed and two pre-existing Windows symlink tests skipped because the
-  account lacks symlink privilege. All 13 C3 tests passed.
-- `py_compile`, `node --check tools/capture_management_demo.cjs` and
-  `git diff --check` passed. The demo server was stopped; no TCP 8765 listener
-  remained.
-- `docs/C3_MANAGEMENT_UI.md` contains the design, implementation boundaries,
-  reproduction command, screenshot links and explicit evidence limits.
+- `docs/D1_BACKUP_RECOVERY_PLAN.md` defines exact Class A matching across model,
+  hardware ID, PCB, SoC, NAND, DRAM, boot chain and boot-critical routing.
+- A future verified backup requires three whole-chip physical raw data+OOB
+  reads, two ECC-corrected reads, stable bad/reserved-block maps, exact geometry
+  and tool provenance, all unique/factory regions, and two encrypted private
+  copies. At least two independent raw reads must be byte-identical; mismatches
+  and uncorrectable pages block writes.
+- External raw programming or a proved authenticated Boot-ROM path provides
+  the strongest potential independence. UART with TFTP/MMC can be
+  Linux-independent but remains U-Boot-dependent. Reset/staged update and A/B
+  are not trusted or established recovery paths.
+- G0–G9 separate purchase, acceptance, opening, passive electrical work,
+  backup, RAM-only loading, clone restore, Linux-failure recovery, early-boot
+  recovery and production review. Each needs fresh approval.
+- Global aborts cover identity/geometry/voltage mismatches, current/thermal
+  anomalies, bus contention, any unexpected write/erase/BBT/OTP action,
+  unavailable OOB, divergent reads, ECC failures and insufficient recovery
+  copies.
+- `configs/d1_recovery_plan.json` is the machine-readable target, acceptance,
+  priority and approval-gate record. Focused JSON/schema consistency,
+  documentation and Git checks must pass before the completion commit.
+- Authoritative sources are limited to Reolink support/product information,
+  Linux MTD/UBI documentation, `mtd-utils`, U-Boot and NIST; priced examples are
+  dated planning anchors, not equipment approvals.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; C3.1–C3.3 checkpoints are pushed.
-The C3.4 completion commit containing this handoff must match `origin/main`
-after the final push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; pre-detail D1 design checkpoint
+`0ba4303` is pushed. The final D1 completion commit containing this handoff must
+match `origin/main` after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve the completed kernel and both
-successful rootfs trees under `/home/firmware-analysis/slot20_private/`.
-They were not modified by C3 and remain outside Git. No proprietary input,
-private key, synthetic bundle or persistent demo state is committed.
+rootfs trees under `/home/firmware-analysis/slot20_private/` and the existing
+private firmware-analysis inputs. D1 did not modify them. No device dump,
+identity, credential, private key or hardware photograph was created or
+committed.
 
-**NEXT SINGLE TASK ID + INPUT:** Complete **D1.1–D1.4 planning only** using the
-existing A5 evidence and authoritative public references. Do not contact any
-camera.
+**NEXT SINGLE TASK ID + INPUT:** **D2a acquisition research only, BLOCKED until
+the user explicitly authorizes it.** Locate a returnable exact-revision
+`RLC-811A / IPC_523128M8MP` offer and request redacted seller device-info and
+label evidence.
 
-**PASS CRITERION FOR NEXT TASK:** A reviewed written protocol specifies exact
-hardware-match evidence, full-flash/OOB/ECC/calibration preservation, backup
-integrity checks, independent restore path, abort criteria and explicit
-approval gates. It must not assert that UART, TFTP, Boot ROM or external NAND
-recovery works without matching-hardware evidence.
+**PASS CRITERION FOR NEXT TASK:** One or more candidate offers record current
+price/return terms plus redacted proof of exact model/hardware number. Reject
+ambiguous or different hardware. Do not purchase or contact/power a camera.
 
-**RECOMMENDED REASONING + WHY:** **High.** The task crosses destructive-risk
-boundaries, board identity, NAND geometry/ECC/OOB handling and boot/recovery
-evidence. It requires careful synthesis, although no reverse engineering or
-hardware action is yet authorized.
+**RECOMMENDED REASONING + WHY:** **Medium.** D2a is bounded sourcing and
+evidence comparison against the fixed D1 checklist.
 
-**WHEN TO SWITCH:** Medium is sufficient once the recovery architecture is
-settled and the work becomes routine documentation. Ultra/highest capability
-should be considered only for one narrowly scoped, persistent Novatek
-BootROM/bootloader uncertainty after a safe checkpoint and explicit model
-selection.
+**WHEN TO SWITCH:** High is required before G1–G5 physical acceptance,
+electrical or backup design. Ultra/highest capability is reserved for one
+narrow persistent BootROM or recovery-architecture question after a safe
+checkpoint and explicit model selection.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** At the D1 design checkpoint
-on 2026-10-19, reliable telemetry showed 52% five-hour usage (48% remaining)
-and 45% weekly usage (55% remaining). This is a point-in-time snapshot.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable D1 closeout telemetry
+on 2026-10-19 showed 62% five-hour usage (38% remaining) and 47% weekly usage
+(53% remaining). This is a point-in-time snapshot, not continuous monitoring.
 
-**USAGE PREPARATION:** C3 is fully checkpointed. Refresh reliable usage before
-any expensive D1 investigation and create another checkpoint before any later
-physical operation.
+**USAGE PREPARATION:** D1 is checkpointed. Refresh usage before D2a and save a
+new checkpoint before each separately approved physical gate.
 
-**CONTINUE OR STOP + REASON:** Continue only through the authorized D1 written
-plan, then stop before D2 or any physical operation.
+**CONTINUE OR STOP + REASON:** STOP after D1. D2a is a separately authorized
+sourcing task; D2b and all physical stages are more restrictive.
 
-**CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot,
-modification, firmware assembly or flash was performed or authorized.
+**CAMERA CONTACT/FLASH:** NONE. No discovery, authentication, network contact,
+power, reboot, opening, probing, UART, NAND read/write, firmware assembly or
+flash was performed or authorized.

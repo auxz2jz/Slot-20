@@ -16,4 +16,10 @@
 
 **A minimal test image without web management may be built offline or potentially booted temporarily from RAM on a safely recoverable spare, but it must never be the first persistent firmware on the working camera.**
 
+**Current Phase D boundary (2026-10-19):** D1 planning is complete in
+[`D1_BACKUP_RECOVERY_PLAN.md`](D1_BACKUP_RECOVERY_PLAN.md). No matching spare
+has been sourced or contacted, no backup exists and no recovery method is
+proved. D2a sourcing research and every later physical gate require fresh,
+explicit authorization.
+
 Keep minimal actionable boot/updater logs and project checkpoints, not the complete Android diagnostics framework. Stock firmware update packages are not full-device backups. Do not store vendor binaries, flash dumps or device-specific secrets in the public repository.

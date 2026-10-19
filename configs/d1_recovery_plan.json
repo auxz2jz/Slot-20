@@ -1,0 +1,75 @@
+{
+  "schema": "slot20-d1-recovery-plan-v1",
+  "target": {
+    "model": "RLC-811A",
+    "hardware_id": "IPC_523128M8MP",
+    "reference_firmware": "v3.1.0.1643_2402219117"
+  },
+  "status": "planning_complete_hardware_unverified",
+  "authorized_operations": [
+    "offline_documentation",
+    "public_source_research"
+  ],
+  "prohibited_without_fresh_approval": [
+    "purchase",
+    "camera_contact",
+    "camera_power_or_reboot",
+    "opening_or_disassembly",
+    "uart_or_probe_connection",
+    "nand_read",
+    "nand_write_or_erase",
+    "ram_boot",
+    "firmware_assembly_or_installation"
+  ],
+  "spare_match_required": [
+    "exact_model_and_hardware_id",
+    "main_pcb_revision",
+    "physical_soc_identity",
+    "nand_part_package_and_geometry",
+    "dram_configuration",
+    "loader_fdt_uboot_identity_and_security_state",
+    "boot_critical_phy_power_reset_and_strap_routing"
+  ],
+  "backup_required": [
+    "three_full_raw_data_plus_oob_reads",
+    "two_full_ecc_corrected_reads",
+    "geometry_and_chip_identity",
+    "bad_and_reserved_block_maps",
+    "controller_ecc_and_tool_provenance",
+    "all_partitions_gaps_and_factory_unique_regions",
+    "two_encrypted_separate_storage_copies"
+  ],
+  "backup_acceptance": {
+    "minimum_identical_independent_raw_reads": 2,
+    "prefer_all_three_raw_reads_identical": true,
+    "bad_block_maps_must_match": true,
+    "sizes_and_geometry_must_match": true,
+    "unexplained_read_errors_allowed": 0,
+    "majority_voted_image_is_verified_backup": false,
+    "hash": "SHA-256"
+  },
+  "recovery_priority": [
+    "exact_device_external_raw_programmer",
+    "authenticated_soc_boot_rom_if_proven",
+    "preserved_uboot_uart_plus_tftp_or_mmc_for_linux_only",
+    "staged_vendor_path_only_after_full_semantics_proven",
+    "future_protected_rescue_or_ab_only_after_ownership_and_selector_proven"
+  ],
+  "approval_gates": [
+    "G0_purchase",
+    "G1_isolated_acceptance",
+    "G2_opening",
+    "G3_passive_electrical",
+    "G4_read_only_backup",
+    "G5_ram_only_recovery",
+    "G6_replacement_media_restore",
+    "G7_linux_failure_recovery",
+    "G8_early_boot_failure_recovery",
+    "G9_production_review"
+  ],
+  "recovery_proven": false,
+  "camera_contact_performed": false,
+  "flash_read_performed": false,
+  "flash_write_performed": false,
+  "next_task": "D2a acquisition research only after explicit authorization"
+}

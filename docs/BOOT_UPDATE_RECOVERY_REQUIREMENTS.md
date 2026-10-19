@@ -52,6 +52,11 @@ A working web server alone is not enough: broken kernels, flash partitions, netw
 
 Do not label an item complete based on static analysis, emulation, or a build succeeding. Separate each evidence class.
 
+The D1 planning artifact is
+[`D1_BACKUP_RECOVERY_PLAN.md`](D1_BACKUP_RECOVERY_PLAN.md). It defines the
+matching-spare, raw NAND/OOB backup, recovery-test and approval protocol, but
+completes none of the hardware proof checkboxes above.
+
 ## Pre-install owner review and visual preview (mandatory)
 
 **Before asking the owner to upload any image to any camera**, prepare an easy-to-read preflight report and review it with the owner. Their questions are expected and must be answered; never treat a broad project instruction as installation consent. Include:

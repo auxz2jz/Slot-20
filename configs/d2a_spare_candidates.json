@@ -1,0 +1,97 @@
+{
+  "schema": "slot20-d2a-spare-research-v1",
+  "checked_at": "2026-10-19",
+  "currency": "USD unless otherwise stated",
+  "target": {
+    "model": "RLC-811A",
+    "hardware_id": "IPC_523128M8MP"
+  },
+  "result": {
+    "revision_confirmed_candidates": 0,
+    "model_only_candidates": 3,
+    "rejected_or_poor_fit": 3,
+    "class_a_spare_proven": false
+  },
+  "candidates": [
+    {
+      "rank": 1,
+      "source": "eBay",
+      "listing_id": "336809300304",
+      "url": "https://www.ebay.com/itm/336809300304",
+      "condition": "used; seller-described near mint",
+      "price": 94.59,
+      "shipping": "free standard shipping as displayed",
+      "returns": "30 days; seller-paid return shipping as displayed",
+      "hardware_id_evidence": "absent",
+      "classification": "model_only_unverified",
+      "disposition": "best exact-unit evidence-request target; do not purchase"
+    },
+    {
+      "rank": 2,
+      "source": "eBay direct-from-Reolink",
+      "listing_id": "407241212657",
+      "url": "https://www.ebay.com/itm/407241212657",
+      "condition": "certified refurbished; multi-unit inventory",
+      "price": 90.99,
+      "shipping": "free standard shipping as displayed",
+      "returns": "30 days; seller-paid return shipping as displayed",
+      "hardware_id_evidence": "absent",
+      "classification": "model_only_unverified",
+      "disposition": "best price/return fallback; exact shipped unit must be proven"
+    },
+    {
+      "rank": 3,
+      "source": "Walmart marketplace; fulfilled by Walmart",
+      "listing_id": "446894080",
+      "url": "https://www.walmart.com/ip/446894080",
+      "condition": "new",
+      "price": 97.99,
+      "shipping": "free shipping as displayed",
+      "returns": "free holiday returns through 2027-01-31 as displayed",
+      "hardware_id_evidence": "absent",
+      "classification": "model_only_unverified",
+      "disposition": "strong return fallback; not used and no revision selection shown"
+    }
+  ],
+  "rejected_or_poor_fit": [
+    {
+      "source": "eBay",
+      "listing_id": "137760889931",
+      "url": "https://www.ebay.com/itm/137760889931",
+      "price": 100.00,
+      "condition": "open box",
+      "reason": "no returns and hardware ID absent"
+    },
+    {
+      "source": "eBay",
+      "listing_id": "336679019865",
+      "url": "https://www.ebay.com/itm/336679019865",
+      "price": 110.00,
+      "condition": "open box",
+      "reason": "no returns, hardware ID absent, and worse price/terms"
+    },
+    {
+      "source": "eBay EU",
+      "listing_id": "177637399684",
+      "url": "https://www.ebay.com/itm/177637399684",
+      "price": 84.99,
+      "price_currency": "EUR",
+      "condition": "certified refurbished",
+      "reason": "does not ship to United States and hardware ID absent"
+    }
+  ],
+  "required_pre_purchase_evidence": [
+    "exact_unit_device_info_model_RLC-811A",
+    "exact_unit_device_info_hardware_IPC_523128M8MP",
+    "firmware_and_build_visible",
+    "UID_serial_MAC_IP_QR_account_and_credentials_redacted",
+    "redacted_exact_unit_exterior_label_connectors_housing_and_accessories",
+    "exact_unit_tie_for_multi_quantity_inventory",
+    "return_terms_confirmed_for_hardware_mismatch"
+  ],
+  "seller_contact_performed": false,
+  "purchase_performed": false,
+  "camera_contact_performed": false,
+  "hardware_operation_performed": false,
+  "next_task": "D2a-1 seller-evidence collection only after explicit authorization; no purchase"
+}

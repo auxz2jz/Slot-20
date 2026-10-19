@@ -48,7 +48,8 @@ One task should have a specific input, one main output, and a verification crite
 | D1.2 (COMPLETE) | Specify complete NAND/data backup and verification | Data/OOB/ECC/bad-block/factory-data preservation plus multiple-read/hash acceptance criteria | High |
 | D1.3 (COMPLETE) | Rank independent-recovery candidates and define the spare test protocol | Independence boundaries, equipment, costs, aborts and approval gates; no route called proven | High |
 | D1.4 (COMPLETE) | Review safety/evidence boundaries and close D1 | Focused doc checks, sanitized pushed checkpoint and exact next approval-gated task | Medium |
-| D2a (BLOCKED) | Locate a returnable exact-revision spare and request redacted seller evidence | **Explicit fresh user authorization** for sourcing; no purchase or device contact implied | Medium |
+| D2a (COMPLETE; NO CONFIRMED MATCH) | Research returnable RLC-811A offers and prepare a redacted-evidence request | Dated candidate/rejection matrix; zero listings claimed as `IPC_523128M8MP`; no seller contact or purchase | Medium |
+| D2a-1 (BLOCKED) | Request and validate exact-unit seller evidence | **Explicit fresh user authorization** to send the prepared questions; exact `IPC_523128M8MP` Device Info proof or reject; no purchase | Medium |
 | D2b+ (BLOCKED) | Acquire/open/contact a matching spare and begin approved observations | **Explicit fresh user approval** for each physical stage; complete plan and abort conditions reviewed first | High/Ultra for specific questions |
 
 **Not yet authorized / not eligible for a persistent camera image:** video/ISP/zoom/ALPR features; modifying production camera; altering bootloader/calibration/factory data; claiming A/B, TFTP or factory fallback as proven. All physical work remains behind documented consent and recovery gates.

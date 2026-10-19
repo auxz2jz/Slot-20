@@ -1,74 +1,84 @@
 # Slot-20 — Current task handoff
 
-**Status:** D1 PLANNING COMPLETE — no camera was contacted, opened, powered,
-rebooted, connected to UART, read from or written.
+**Status:** D2a RESEARCH COMPLETE — NO REVISION-CONFIRMED SPARE. No seller was
+contacted, no purchase/account/cart action occurred, and no camera was
+accessed, powered, opened, rebooted, read from or written.
 
-**LAST TASK ID / STATUS:** D1.1–D1.4 matching-spare backup and independent
-recovery planning — **COMPLETE; HARDWARE EVIDENCE REMAINS UNVERIFIED**.
+**LAST TASK ID / STATUS:** D2a matching-spare sourcing research — **COMPLETE;
+ZERO `IPC_523128M8MP` OFFERS CONFIRMED**.
 
 **EVIDENCE AND TESTS:**
 
-- `docs/D1_BACKUP_RECOVERY_PLAN.md` defines exact Class A matching across model,
-  hardware ID, PCB, SoC, NAND, DRAM, boot chain and boot-critical routing.
-- A future verified backup requires three whole-chip physical raw data+OOB
-  reads, two ECC-corrected reads, stable bad/reserved-block maps, exact geometry
-  and tool provenance, all unique/factory regions, and two encrypted private
-  copies. At least two independent raw reads must be byte-identical; mismatches
-  and uncorrectable pages block writes.
-- External raw programming or a proved authenticated Boot-ROM path provides
-  the strongest potential independence. UART with TFTP/MMC can be
-  Linux-independent but remains U-Boot-dependent. Reset/staged update and A/B
-  are not trusted or established recovery paths.
-- G0–G9 separate purchase, acceptance, opening, passive electrical work,
-  backup, RAM-only loading, clone restore, Linux-failure recovery, early-boot
-  recovery and production review. Each needs fresh approval.
-- Global aborts cover identity/geometry/voltage mismatches, current/thermal
-  anomalies, bus contention, any unexpected write/erase/BBT/OTP action,
-  unavailable OOB, divergent reads, ECC failures and insufficient recovery
-  copies.
-- `configs/d1_recovery_plan.json` is the machine-readable target, acceptance,
-  priority and approval-gate record. Focused JSON/schema consistency,
-  documentation and Git checks must pass before the completion commit.
-- Authoritative sources are limited to Reolink support/product information,
-  Linux MTD/UBI documentation, `mtd-utils`, U-Boot and NIST; priced examples are
-  dated planning anchors, not equipment approvals.
+- `docs/D2A_SPARE_CAMERA_RESEARCH.md` is the dated 2026-10-19 candidate,
+  rejection, evidence and seller-question record.
+- Three returnable RLC-811A model-only offers were recorded at US$90.99–97.99.
+  The preferred evidence-request target is used eBay item `336809300304` at
+  US$94.59 with free shipping and seller-paid 30-day returns because it is an
+  individually photographed unit. Direct-from-Reolink refurbished eBay item
+  `407241212657` is the lowest observed price/return fallback at US$90.99, but
+  it is multi-unit inventory. Walmart item `446894080` is a US$97.99 new-stock
+  return fallback.
+- None shows an exact-unit Device Info hardware number. Reolink's current
+  RLC-811A support page lists both `IPC_523128M8MP` and `IPC_560B158MP`, so the
+  retail model name does not prove compatibility.
+- Two no-return US offers and one EU offer that does not ship to the US were
+  rejected/flagged. Sold/ended offers are price context only.
+- `configs/d2a_spare_candidates.json` records the candidates, rejection reasons,
+  required evidence and all-false contact/purchase/hardware state. JSON parse,
+  fixed-target/count checks, local Markdown-link checks and `git diff --check`
+  must pass before the completion commit.
+- Verified SHA-256 values are
+  `96c44f18ead8a739f7f7f2898e091aa9e8e1edbc9c2610149ef47583ba3c19c4` for
+  the report and
+  `86b5bb416d46fb665b7300c76dea07623cc51901c249620f675553c96e895fed` for
+  the machine-readable record.
+- Seller questions are drafted but were not sent. Required proof is a redacted
+  exact-unit Device Info screen showing `RLC-811A`, `IPC_523128M8MP` and
+  firmware/build, plus redacted exterior/label/connector photos and confirmed
+  mismatch-return terms.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; pre-detail D1 design checkpoint
-`0ba4303` is pushed. The final D1 completion commit containing this handoff must
-match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `fe88743` was
+clean and matched `origin/main`. Replace this sentence with the D2a completion
+commit and verified remote SHA after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve the completed kernel and both
-rootfs trees under `/home/firmware-analysis/slot20_private/` and the existing
-private firmware-analysis inputs. D1 did not modify them. No device dump,
-identity, credential, private key or hardware photograph was created or
-committed.
+rootfs trees under `/home/firmware-analysis/slot20_private/` and all existing
+private firmware-analysis inputs. D2a did not inspect or modify them. No seller
+response, device screenshot, label photograph, private identifier or hardware
+artifact was created.
 
-**NEXT SINGLE TASK ID + INPUT:** **D2a acquisition research only, BLOCKED until
-the user explicitly authorizes it.** Locate a returnable exact-revision
-`RLC-811A / IPC_523128M8MP` offer and request redacted seller device-info and
-label evidence.
+**NEXT SINGLE TASK ID + INPUT:** **D2a-1 seller-evidence collection only,
+BLOCKED until the user explicitly authorizes sending messages.** Recheck the
+preferred listing, send the approved draft to that seller only, and privately
+validate/redact the response. Do not purchase.
 
-**PASS CRITERION FOR NEXT TASK:** One or more candidate offers record current
-price/return terms plus redacted proof of exact model/hardware number. Reject
-ambiguous or different hardware. Do not purchase or contact/power a camera.
+**PASS CRITERION FOR NEXT TASK:** Exact-unit evidence visibly proves
+`Model = RLC-811A` and `Hardware No. = IPC_523128M8MP`, exposes firmware/build,
+has all UID/serial/MAC/IP/QR/account data redacted, is tied to the unit that
+would ship, and includes acceptable mismatch-return terms. Otherwise reject or
+remain unverified. Seller proof advances only the pre-purchase identity gate,
+not D1 Class A status.
 
-**RECOMMENDED REASONING + WHY:** **Medium.** D2a is bounded sourcing and
+**RECOMMENDED REASONING + WHY:** **Medium.** D2a-1 is bounded communication and
 evidence comparison against the fixed D1 checklist.
 
-**WHEN TO SWITCH:** High is required before G1–G5 physical acceptance,
-electrical or backup design. Ultra/highest capability is reserved for one
-narrow persistent BootROM or recovery-architecture question after a safe
-checkpoint and explicit model selection.
+**WHEN TO SWITCH:** High is required before any separately approved G1–G5
+physical acceptance, electrical or backup work. Ultra/highest capability is
+reserved for one narrow persistent BootROM or recovery-architecture question
+after a safe checkpoint and explicit selection.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable D1 closeout telemetry
-on 2026-10-19 showed 62% five-hour usage (38% remaining) and 47% weekly usage
-(53% remaining). This is a point-in-time snapshot, not continuous monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable task-start telemetry
+on 2026-10-19 showed 2% of the five-hour window used (98% remaining) and 48% of
+the weekly window used (52% remaining). This is a point-in-time snapshot, not
+continuous monitoring; refresh at the next task boundary.
 
-**USAGE PREPARATION:** D1 is checkpointed. Refresh usage before D2a and save a
-new checkpoint before each separately approved physical gate.
+**USAGE PREPARATION:** D2a is a bounded safe checkpoint. Recheck usage and
+listing availability before outreach. Checkpoint again before any purchase or
+separately approved physical operation.
 
-**CONTINUE OR STOP + REASON:** STOP after D1. D2a is a separately authorized
-sourcing task; D2b and all physical stages are more restrictive.
+**CONTINUE OR STOP + REASON:** STOP after D2a. Sending seller messages,
+purchasing, D2b acceptance and every physical gate require new explicit
+authorization.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, authentication, network contact,
 power, reboot, opening, probing, UART, NAND read/write, firmware assembly or

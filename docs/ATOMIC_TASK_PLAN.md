@@ -43,7 +43,12 @@ One task should have a specific input, one main output, and a verification crite
 | C3.2 (COMPLETE) | Implement loopback authentication/status server and static dashboard shell | Authentication, session and CSRF boundary tests pass | Medium |
 | C3.3 (COMPLETE) | Integrate B2 verification and B3 simulated update/rollback/recovery actions | Synthetic success, rejection and transition tests pass; no installer/device path | Medium–High |
 | C3.4 (COMPLETE) | Run browser demonstration and capture labeled screenshots, then finalize handoff | Required UI states shown, regression tests pass and sanitized completion is pushed | Medium |
-| D1+ (BLOCKED) | Obtain matching spare and plan safe full per-device backup + independent recovery tests | **Explicit fresh user approval**, independent matching-hardware proof, and required backups **before** any physical experiments or flashing | High/Ultra for specific questions |
+| D1 (PLANNING ONLY) | Define a non-destructive matching-spare, complete-backup and independent-recovery plan | Written plan only; no camera contact, opening, UART, NAND access, reboot or write | High |
+| D1.1 | Freeze matching-spare requirements and the evidence inventory | Acquisition/inspection checklist separates seller evidence, read-only observations and still-unknown internals | High |
+| D1.2 | Specify complete NAND/data backup and verification | Data/OOB/ECC/bad-block/factory-data preservation plus multiple-read/hash acceptance criteria | High |
+| D1.3 | Rank independent-recovery candidates and define the spare test protocol | Independence boundaries, equipment, costs, aborts and approval gates; no route called proven | High |
+| D1.4 | Review safety/evidence boundaries and close D1 | Focused doc checks, sanitized pushed checkpoint and exact next approval-gated task | Medium |
+| D2+ (BLOCKED) | Acquire/open/contact a matching spare and begin approved observations | **Explicit fresh user approval** for each physical stage; complete plan and abort conditions reviewed first | High/Ultra for specific questions |
 
 **Not yet authorized / not eligible for a persistent camera image:** video/ISP/zoom/ALPR features; modifying production camera; altering bootloader/calibration/factory data; claiming A/B, TFTP or factory fallback as proven. All physical work remains behind documented consent and recovery gates.
 

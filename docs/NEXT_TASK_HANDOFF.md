@@ -37,9 +37,9 @@ ZERO `IPC_523128M8MP` OFFERS CONFIRMED**.
   firmware/build, plus redacted exterior/label/connector photos and confirmed
   mismatch-return terms.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `fe88743` was
-clean and matched `origin/main`. Replace this sentence with the D2a completion
-commit and verified remote SHA after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; D2a content checkpoint `5970221` is
+pushed. The handoff-finalization commit containing this status must match
+`origin/main` after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve the completed kernel and both
 rootfs trees under `/home/firmware-analysis/slot20_private/` and all existing
@@ -67,10 +67,10 @@ physical acceptance, electrical or backup work. Ultra/highest capability is
 reserved for one narrow persistent BootROM or recovery-architecture question
 after a safe checkpoint and explicit selection.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable task-start telemetry
-on 2026-10-19 showed 2% of the five-hour window used (98% remaining) and 48% of
-the weekly window used (52% remaining). This is a point-in-time snapshot, not
-continuous monitoring; refresh at the next task boundary.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
+on 2026-10-19 showed 18% of the five-hour window used (82% remaining) and 51%
+of the weekly window used (49% remaining). This is a point-in-time snapshot,
+not continuous monitoring; refresh at the next task boundary.
 
 **USAGE PREPARATION:** D2a is a bounded safe checkpoint. Recheck usage and
 listing availability before outreach. Checkpoint again before any purchase or

@@ -60,8 +60,9 @@ button.secondary { border: 1px solid var(--line); color: var(--text); background
 .danger-metric strong { color: var(--red); }
 .workflow-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 16px; margin-top: 20px; }
 .workflow-panel, .recovery-panel, .event-panel { padding: 26px; }
-.file-label { padding: 14px; border: 1px dashed #487164; border-radius: 12px; background: #0a1512; }
-.file-label input { margin-top: 9px; padding: 8px; }
+.file-label { display: block; padding: 14px; border: 1px dashed #487164; border-radius: 12px; background: #0a1512; }
+.file-label code { color: var(--mint); }
+.file-label input { display: block; margin-top: 9px; padding: 8px; }
 .button-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 15px; }
 .button-row button { flex: 1 1 150px; }
 .verification { margin-top: 18px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #09130f; }

@@ -25,6 +25,7 @@
 *.jpg
 *.jpeg
 *.png
+!docs/images/c3-*.png
 *.sqlite
 *.db
 *.log

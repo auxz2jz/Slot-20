@@ -1,0 +1,90 @@
+{
+  "schema": "slot20-c3-management-demo-result-v1",
+  "captured_utc_date": "2026-10-19",
+  "mode": "offline_host_simulation",
+  "camera_contact": false,
+  "flash_writing": false,
+  "hardware_recovery_verified": false,
+  "server": {
+    "bind_address": "127.0.0.1",
+    "port": 8765,
+    "stopped_after_capture": true
+  },
+  "browser": {
+    "name": "Microsoft Edge",
+    "version": "155.0.4283.62",
+    "node_version": "24.19.0",
+    "playwright_version": "1.62.1",
+    "console_errors": 0
+  },
+  "screenshots": [
+    {
+      "path": "docs/images/c3-offline-status.png",
+      "width": 1440,
+      "height": 1576,
+      "size_bytes": 510108,
+      "sha256": "b39d2a25b39ef73bb17f79edfc443cdc8262c57f289ceb0b9cb8d377e602dfa0"
+    },
+    {
+      "path": "docs/images/c3-validation-success.png",
+      "width": 1440,
+      "height": 1746,
+      "size_bytes": 554369,
+      "sha256": "1d080d6de14e188c13e918f23624786034bdff656b0aaf5543c6ee2a979e1984"
+    },
+    {
+      "path": "docs/images/c3-update-committed.png",
+      "width": 1440,
+      "height": 1908,
+      "size_bytes": 585089,
+      "sha256": "67da0a3194e0d81c796948d1676d48a9ff265c3ce56a4359697940811855c9e9"
+    },
+    {
+      "path": "docs/images/c3-corrupt-rejected.png",
+      "width": 1440,
+      "height": 1872,
+      "size_bytes": 571883,
+      "sha256": "654582e989f9a86aa6cfa1f0718c32becc333619e2034d19445b3706ed2acd97"
+    },
+    {
+      "path": "docs/images/c3-logical-rollback.png",
+      "width": 1440,
+      "height": 1908,
+      "size_bytes": 585578,
+      "sha256": "3043fe1a4cecf0eb7d9ccd1915b29fbd7065a514e5be8ffcd82634f10f0c3cff"
+    },
+    {
+      "path": "docs/images/c3-recovery-required.png",
+      "width": 1440,
+      "height": 1908,
+      "size_bytes": 587009,
+      "sha256": "f07da282234ebf4692e5ce4d26cd48b77d3871c4acc2b2c0d5288387467fa5d7"
+    }
+  ],
+  "verification": {
+    "python": "3.12.14",
+    "tests_run": 77,
+    "tests_passed": 75,
+    "tests_skipped": 2,
+    "c3_tests_passed": 13,
+    "python_compile": "pass",
+    "capture_script_syntax": "pass",
+    "git_diff_check": "pass"
+  },
+  "source_checkpoints": {
+    "design": "88d3d2a",
+    "localhost_shell": "cb3023d",
+    "verifier_simulator_integration": "ecab661"
+  },
+  "usage_snapshot": {
+    "date": "2026-10-19",
+    "five_hour_used_percent": 44,
+    "weekly_used_percent": 44,
+    "note": "Point-in-time account telemetry; not continuous monitoring."
+  },
+  "limitations": [
+    "No camera or other external device was contacted.",
+    "No firmware image, root filesystem or kernel was assembled or installed.",
+    "Logical rollback and recovery-required states are simulations, not hardware recovery proof."
+  ]
+}

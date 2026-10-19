@@ -1,10 +1,9 @@
 # C3 host-only management UI
 
-**Status:** C3.3 COMPLETE. The loopback server now passes synthetic bundles
-through the existing B2 verifier and exposes only the fixed B3 host-simulation
-actions. Valid, corrupt, success, invalid-transition, rollback and
-recovery-required paths are covered by focused tests. Browser screenshots
-remain for C3.4.
+**Status:** C3 COMPLETE. The loopback server passes synthetic bundles through
+the existing B2 verifier and exposes only the fixed B3 host-simulation actions.
+Valid, corrupt, success, invalid-transition, rollback and recovery-required
+paths are covered by tests and by clearly labeled offline browser evidence.
 
 ## Scope and evidence boundary
 
@@ -185,3 +184,78 @@ as another request.
   exposes a non-routine security or state-consistency problem.
 - **Usage preparation:** C3.3 is a recoverable source checkpoint. Refresh usage
   before launching the browser demonstration.
+
+## C3.4 browser verification and completion
+
+The reproducible capture driver is `tools/capture_management_demo.cjs`. It
+refuses non-loopback URLs and drives an installed local Edge browser through
+Playwright. The final run used Edge `155.0.4283.62`, Node.js `24.19.0` and
+Playwright `1.62.1`. All six flows completed with zero browser console errors.
+The server was stopped afterward and TCP port 8765 had no listener.
+
+These are screenshots of the actual PC-hosted localhost application, not a
+camera UI or a proposed hardware mockup:
+
+| Evidence | Demonstrated state |
+| --- | --- |
+| [Offline system status](images/c3-offline-status.png) | Authenticated local status, known-good identity and explicit unproven-recovery warning |
+| [Validation success](images/c3-validation-success.png) | B2 signature, hash, compatibility and policy checks pass while install authorization remains separate |
+| [Simulated update committed](images/c3-update-committed.png) | Complete B3 logical success path and preserved previous known-good identity |
+| [Corrupt bundle rejected](images/c3-corrupt-rejected.png) | Payload hash mismatch fails closed without changing the simulator state |
+| [Logical rollback](images/c3-logical-rollback.png) | Simulator selects its known-good identity after a synthetic boot failure |
+| [External recovery required](images/c3-recovery-required.png) | Explicit statement that no physical rescue method has been implemented or demonstrated |
+
+The images, dimensions, sizes and SHA-256 values are recorded in
+`configs/c3_management_demo_result.json`. They contain only synthetic state and
+the deliberately public demo credential. No vendor binary, private device
+identifier, key or camera data is present.
+
+Final verification under Python 3.12.14:
+
+```text
+python -m unittest discover -s tests -v
+Ran 77 tests in 8.315s — OK (skipped=2)
+
+python -m py_compile tools/management_demo.py
+node --check tools/capture_management_demo.cjs
+git diff --check
+All passed.
+```
+
+The two skips are the pre-existing Windows tests that cannot create symbolic
+links without the account privilege. All 13 C3 HTTP/integration tests pass.
+This host result does not prove a kernel/rootfs combination, Ethernet operation
+on the camera, NAND installation, rollback, or independent hardware recovery.
+
+## Running the offline demonstration
+
+From the repository root with the Python dependencies installed:
+
+```text
+python tools/management_demo.py --port 8765
+```
+
+Open `http://127.0.0.1:8765/` and use the visibly labeled demonstration
+credential `admin` / `slot20-demo`. `SLOT20_DEMO_PASSWORD` may override the
+password for a local run. The application intentionally has no TLS,
+production credential store, remote binding, installer or camera interface.
+
+## C3 completion recommendation
+
+- **Completed:** C3.1–C3.4 deliver and verify the host-only management demo,
+  including authentication, B2 validation, B3 state controls, error/rollback
+  explanations and six reproducible browser screenshots.
+- **Checkpoint:** commit and push the sanitized source, screenshots, result
+  manifest and documentation. The completed private kernel/rootfs trees remain
+  unchanged and outside Git.
+- **Next task:** D1 planning only — prepare an explicit-approval-gated protocol
+  for acquiring a matching spare, obtaining a full per-device backup and
+  demonstrating independent recovery. Do not contact hardware yet.
+- **Recommended model and reasoning:** High.
+- **Why:** recovery planning crosses board identity, NAND/OOB/ECC handling,
+  bootloader behavior and evidence gates; mistakes could become destructive.
+- **When to switch:** use Medium for documentation after the recovery route is
+  established; consider Ultra only for one narrowly defined unresolved
+  BootROM/bootloader question after a checkpoint and explicit model selection.
+- **Usage preparation:** C3 is a safe source checkpoint. Refresh reliable usage
+  and obtain explicit authorization before any expensive or physical D1 work.

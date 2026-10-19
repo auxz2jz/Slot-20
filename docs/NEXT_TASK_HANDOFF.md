@@ -1,90 +1,80 @@
 # Slot-20 — Current task handoff
 
-**Status:** C3.3 COMPLETE — bounded synthetic uploads now run through B2 and
-only the fixed B3 host-simulation actions are exposed. Valid, corrupt, commit,
-invalid-transition, rollback and recovery-required paths pass focused tests.
-Browser screenshots and final regression evidence remain for C3.4.
+**Status:** C3 COMPLETE — the PC-hosted, loopback-only management demonstration
+now covers authenticated status, B2 bundle verification, separate B3 install
+authorization, successful logical update, corrupt-bundle rejection, logical
+rollback and recovery-required explanations. No camera or flash path exists.
 
-**LAST TASK ID / STATUS:** C3.3 verifier/simulator integration — **COMPLETE; 13
-FOCUSED TESTS PASS**.
+**LAST TASK ID / STATUS:** C3.4 browser verification and C3 closeout —
+**COMPLETE; 77 TESTS RUN, 75 PASSED, 2 PRIVILEGE-DEPENDENT SKIPS**.
 
 **EVIDENCE AND TESTS:**
 
-- `docs/C3_MANAGEMENT_UI.md` defines C3.1–C3.4, loopback-only serving,
-  bounded authentication/session/CSRF controls, temporary-file B2 validation,
-  B3 action mapping, synthetic-only keys/bundles, browser flows and focused
-  tests. It explicitly excludes camera/device/flash access and hardware claims.
-- `tools/management_demo.py` binds only `127.0.0.1`; static routes are explicit,
-  authenticated status is sanitized, and no outbound/device/subprocess API
-  exists. Seven C3.2 HTTP tests pass under Python 3.12.14.
-- C3.3 creates only an ephemeral in-memory key and small synthetic bundle,
-  streams authenticated uploads to a deleted temporary file, calls the existing
-  B2 verifier, and keeps B2 verification separate from B3 simulation
-  authorization. Six integration tests bring the focused total to 13.
-- Git began clean at pushed `d63c138`; pre-build input checkpoint `1ad67c4`
-  is pushed.
-- The clean output `.config` is byte-identical to the original at SHA-256
-  `ccda34ef...686eb`.
-- Exactly one `-j1` rootfs build ran under a 1,800-second bound and exited zero
-  in 3:10.17 with 162,992 KiB peak RSS.
-- Original and reproduced tar files are both 3,696,640 bytes with 374 entries.
-  Their hashes are `df413f6a...e06a` and `b039fa24...635`.
-- All paths/order match. After timestamp removal, types, permissions, numeric
-  ownership, sizes, links and device metadata are identical. Of 41 regular
-  files, 40 are byte-identical.
-- BusyBox differs in four bytes solely in its 15:37:48 versus 15:56:33 build
-  banner. Replacing only that text in private comparison copies makes both
-  files hash to `9bd2c666...514c`; architecture remains ELF32 ARM EABI5,
-  ARMv7 hard-float.
-- Raw metadata differs for 337 entries and matches for 37, explaining the
-  archive-hash variance together with the BusyBox banner.
-- `legal-info` exited zero, collected BusyBox plus eight versioned host-source
-  sets and licenses, and left the rootfs hash unchanged. It also exposed three
-  gaps: Buildroot source not copied, external toolchain sources/licenses not
-  collected, and acl/attr license files without package hash entries.
-- No make/compiler process remains. Full sanitized evidence is in
-  `docs/C2B2C_ROOTFS_REPRODUCIBILITY.md` and
-  `configs/c2b2c_rootfs_reproducibility_result.json`.
+- C3 was split and checkpointed as C3.1 design (`88d3d2a`), C3.2 localhost
+  shell (`cb3023d`) and C3.3 verifier/simulator integration (`ecab661`).
+- `tools/management_demo.py` binds only `127.0.0.1`, uses bounded demo
+  sessions and CSRF, accepts bounded temporary uploads, invokes the existing B2
+  verifier and exposes only a fixed B3 simulator-action enum.
+- Bundle verification never authorizes installation. The next simulated action
+  is a separate, visibly labeled host-only authorization step.
+- `tools/capture_management_demo.cjs` refuses non-loopback URLs and reproduced
+  six browser states using local Edge/Playwright. The final capture reported
+  zero browser console errors. Screenshot sizes and SHA-256 values are in
+  `configs/c3_management_demo_result.json`.
+- The actual localhost UI screenshots are under `docs/images/c3-*.png` and are
+  labeled offline simulation. They show status, successful validation,
+  committed logical update, corrupt-bundle rejection, logical rollback and
+  recovery required.
+- `python -m unittest discover -s tests -v` ran 77 tests in 8.315 seconds:
+  75 passed and two pre-existing Windows symlink tests skipped because the
+  account lacks symlink privilege. All 13 C3 tests passed.
+- `py_compile`, `node --check tools/capture_management_demo.cjs` and
+  `git diff --check` passed. The demo server was stopped; no TCP 8765 listener
+  remained.
+- `docs/C3_MANAGEMENT_UI.md` contains the design, implementation boundaries,
+  reproduction command, screenshot links and explicit evidence limits.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; C3.1 `88d3d2a` and C3.2 `cb3023d`
-are pushed. The commit containing this handoff is the C3.3 integration
-checkpoint and must match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; C3.1–C3.3 checkpoints are pushed.
+The C3.4 completion commit containing this handoff must match `origin/main`
+after the final push.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve both
-`/home/firmware-analysis/slot20_private/c2b2b_20261018/` and
-`/home/firmware-analysis/slot20_private/c2b2c_20261018/`. They contain the two
-rootfs artifacts, Buildroot outputs, legal-info, source cache, compatibility
-patches and full logs. Do not clean or publish these directories. Preserve the
-separate completed kernel tree unchanged.
+**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve the completed kernel and both
+successful rootfs trees under `/home/firmware-analysis/slot20_private/`.
+They were not modified by C3 and remain outside Git. No proprietary input,
+private key, synthetic bundle or persistent demo state is committed.
 
-**NEXT SINGLE TASK ID + INPUT:** **C3.4.** Run the actual localhost UI in a
-browser, verify the main workflows visually, save clearly labeled offline-demo
-screenshots, run focused plus existing B2/B3/B4 regression tests, and finalize
-state/handoff documentation.
+**NEXT SINGLE TASK ID + INPUT:** **D1 planning only, BLOCKED pending explicit
+user authorization.** Prepare a matching-spare acquisition/identity checklist
+and a non-destructive, approval-gated protocol for a verified full per-device
+backup plus independent recovery demonstration. Do not contact any camera.
 
-**PASS CRITERION FOR NEXT TASK:** Screenshots clearly show system status,
-successful validation/update state, rejected corrupt bundle, logical rollback
-and recovery explanation; all focused and relevant regression tests pass. No
-camera/device/installer API or hardware-recovery claim.
+**PASS CRITERION FOR NEXT TASK:** A reviewed written protocol specifies exact
+hardware-match evidence, full-flash/OOB/ECC/calibration preservation, backup
+integrity checks, independent restore path, abort criteria and explicit
+approval gates. It must not assert that UART, TFTP, Boot ROM or external NAND
+recovery works without matching-hardware evidence.
 
-**RECOMMENDED REASONING + WHY:** **Medium**. C3 is routine host-only UI and
-integration work against already tested Python components.
+**RECOMMENDED REASONING + WHY:** **High.** The task crosses destructive-risk
+boundaries, board identity, NAND geometry/ECC/OOB handling and boot/recovery
+evidence. It requires careful synthesis, although no reverse engineering or
+hardware action is yet authorized.
 
-**WHEN TO SWITCH:** Use High if authentication, signed-bundle integration or
-simulator state handling exposes a non-routine persistent failure. Ultra is
-not warranted unless a later recovery-critical hardware uncertainty must be
-resolved.
+**WHEN TO SWITCH:** Medium is sufficient once the recovery architecture is
+settled and the work becomes routine documentation. Ultra/highest capability
+should be considered only for one narrowly scoped, persistent Novatek
+BootROM/bootloader uncertainty after a safe checkpoint and explicit model
+selection.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable C3-start telemetry
-on 2026-10-18 showed 0% used in the five-hour window (100% remaining) and 37%
-used in the weekly window (63% remaining). This is a snapshot, not continuous
-monitoring.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
+on 2026-10-19 showed 44% used (56% remaining) in both the five-hour and weekly
+windows. This is a point-in-time account snapshot, not continuous monitoring.
 
-**USAGE PREPARATION:** Push this tested C3.3 checkpoint and refresh reliable
-usage before browser screenshot work.
+**USAGE PREPARATION:** C3 is fully checkpointed. Refresh reliable usage before
+any expensive D1 investigation and create another checkpoint before any later
+physical operation.
 
-**CONTINUE OR STOP + REASON:** Continue to C3.4 only after this tested
-integration checkpoint is pushed; stop when C3 is complete.
+**CONTINUE OR STOP + REASON:** STOP after C3. D1 is a new, safety-critical and
+explicit-approval-gated stage.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot,
-modification, or flash was performed or authorized.
+modification, firmware assembly or flash was performed or authorized.

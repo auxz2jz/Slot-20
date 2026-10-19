@@ -39,6 +39,10 @@ One task should have a specific input, one main output, and a verification crite
 | C2b-2b-3 | Resolve C2b-2b-2's fakeroot autoreconf failure caused by the missing declared `build-aux` directory, then make one continuation attempt | Verified rootfs tar or one next exact blocker; preserve the patched fakeroot tree and keep kernel/FDT separate | High |
 | C2b-2c | Reproduce the frozen minimal rootfs in a second clean private output tree and generate/check Buildroot legal-info | Normalized content comparison, artifact/hash variance explanation and complete license/source record; no kernel/FDT combination or firmware assembly | High |
 | C3 | Implement and demonstrate local browser management UI **against simulator only** | PC-hosted screenshots for status, firmware validation/update, rollback/errors and recovery explanation; label offline demo | Medium–High |
+| C3.1 | Freeze the host-only UI architecture, security/evidence boundary, API and tests | Design checkpoint pushed before application implementation | Medium |
+| C3.2 | Implement loopback authentication/status server and static dashboard shell | Authentication, session and CSRF boundary tests pass | Medium |
+| C3.3 | Integrate B2 verification and B3 simulated update/rollback/recovery actions | Synthetic success, rejection and transition tests pass; no installer/device path | Medium–High |
+| C3.4 | Run browser demonstration and capture labeled screenshots, then finalize handoff | Required UI states shown, regression tests pass and sanitized completion is pushed | Medium |
 | D1+ (BLOCKED) | Obtain matching spare and plan safe full per-device backup + independent recovery tests | **Explicit fresh user approval**, independent matching-hardware proof, and required backups **before** any physical experiments or flashing | High/Ultra for specific questions |
 
 **Not yet authorized / not eligible for a persistent camera image:** video/ISP/zoom/ALPR features; modifying production camera; altering bootloader/calibration/factory data; claiming A/B, TFTP or factory fallback as proven. All physical work remains behind documented consent and recovery gates.

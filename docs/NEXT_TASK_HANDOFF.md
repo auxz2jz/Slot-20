@@ -1,15 +1,19 @@
 # Slot-20 — Current task handoff
 
-**Status:** C2b-2c COMPLETE — a second clean, bounded `-j1` Buildroot build
-reproduced the minimal ARM hard-float rootfs at the normalized filesystem
-level. Buildroot legal-info was generated and inspected. Kernel, private FDT,
-firmware assembly and camera hardware were not involved.
+**Status:** C3.1 DESIGN CHECKPOINT — C3 is decomposed into four bounded
+host-only deliverables. The localhost API, authentication/CSRF boundary,
+bounded upload path, B2/B3 integration, test flows and screenshot evidence
+rules are defined. No server implementation exists at this checkpoint.
 
-**LAST TASK ID / STATUS:** C2b-2c independent rootfs reproduction and
-legal-info inspection — **COMPLETE; NORMALIZED ROOTFS REPRODUCED**.
+**LAST TASK ID / STATUS:** C3.1 management UI design — **COMPLETE; IMPLEMENTATION
+NOT STARTED**.
 
 **EVIDENCE AND TESTS:**
 
+- `docs/C3_MANAGEMENT_UI.md` defines C3.1–C3.4, loopback-only serving,
+  bounded authentication/session/CSRF controls, temporary-file B2 validation,
+  B3 action mapping, synthetic-only keys/bundles, browser flows and focused
+  tests. It explicitly excludes camera/device/flash access and hardware claims.
 - Git began clean at pushed `d63c138`; pre-build input checkpoint `1ad67c4`
   is pushed.
 - The clean output `.config` is byte-identical to the original at SHA-256
@@ -35,9 +39,9 @@ legal-info inspection — **COMPLETE; NORMALIZED ROOTFS REPRODUCED**.
   `docs/C2B2C_ROOTFS_REPRODUCIBILITY.md` and
   `configs/c2b2c_rootfs_reproducibility_result.json`.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; base `d63c138` and pre-build
-checkpoint `1ad67c4` are pushed. The commit containing this handoff is the
-C2b-2c completion checkpoint and must match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; C3 began from clean pushed
+`f13c850`. The commit containing this handoff is the C3.1 design checkpoint and
+must match `origin/main` after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve both
 `/home/firmware-analysis/slot20_private/c2b2b_20261018/` and
@@ -46,16 +50,14 @@ rootfs artifacts, Buildroot outputs, legal-info, source cache, compatibility
 patches and full logs. Do not clean or publish these directories. Preserve the
 separate completed kernel tree unchanged.
 
-**NEXT SINGLE TASK ID + INPUT:** **C3, only after explicit authorization.**
-Implement a PC-hosted browser management UI against the existing host-only
-bundle verifier and update-state simulator. Cover status, authenticated
-management, validation/update, rollback/error states and an accurate recovery
-explanation; produce clearly labeled offline-demo screenshots.
+**NEXT SINGLE TASK ID + INPUT:** **C3.2.** Implement the loopback-only Python
+server, bounded demonstration authentication/session/CSRF controls, fixed
+static assets and authenticated status API described in
+`docs/C3_MANAGEMENT_UI.md`. Do not yet add the complete workflow or screenshots.
 
-**PASS CRITERION FOR NEXT TASK:** Focused host tests pass and local screenshots
-demonstrate the required flows without any device, network-camera, NAND,
-kernel/FDT combination or flash-writing path. The UI must not imply that an
-independent hardware recovery method has been proven.
+**PASS CRITERION FOR NEXT TASK:** Focused tests prove unauthenticated API denial,
+authenticated status access, CSRF enforcement for state changes, explicit
+static-file routing and loopback-only binding. No camera/device/installer API.
 
 **RECOMMENDED REASONING + WHY:** **Medium**. C3 is routine host-only UI and
 integration work against already tested Python components.
@@ -65,18 +67,16 @@ simulator state handling exposes a non-routine persistent failure. Ultra is
 not warranted unless a later recovery-critical hardware uncertainty must be
 resolved.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
-on 2026-10-18 showed 78% used in the five-hour window (22% remaining) and 36%
-used in the weekly window (64% remaining). This is a snapshot, not continuous
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable C3-start telemetry
+on 2026-10-18 showed 0% used in the five-hour window (100% remaining) and 37%
+used in the weekly window (63% remaining). This is a snapshot, not continuous
 monitoring.
 
-**USAGE PREPARATION:** The expensive build is finished and protected by the
-pre-build and completion checkpoints. Current five-hour usage is in the
-project's 15–30% remaining stop band, so do not begin C3 in this session.
-Before substantial C3 implementation, save a small design/source checkpoint.
+**USAGE PREPARATION:** Push C3.1 before source implementation. C3.2 and C3.3
+must each be independently tested/checkpointed before browser screenshot work.
 
-**CONTINUE OR STOP + REASON:** **STOP after C2b-2c**, as requested. C3 is a
-separate atomic task and is not authorized here.
+**CONTINUE OR STOP + REASON:** Continue to C3.2 only after this design commit is
+pushed; C3 is authorized, but no later phase is.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot,
 modification, or flash was performed or authorized.

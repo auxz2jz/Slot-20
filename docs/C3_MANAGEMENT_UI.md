@@ -1,7 +1,9 @@
 # C3 host-only management UI
 
-**Status:** C3.1 DESIGN CHECKPOINT. No server or UI implementation exists at
-this checkpoint.
+**Status:** C3.2 COMPLETE. The loopback server, bounded demonstration
+authentication/session/CSRF boundary, static dashboard shell and authenticated
+status API are implemented and covered by focused tests. Bundle/update actions
+remain disabled until C3.3.
 
 ## Scope and evidence boundary
 
@@ -102,16 +104,43 @@ Browser screenshots are demonstration evidence only. They do not satisfy any
 hardware, Ethernet, boot, backup, flash, update, rollback or rescue gate in
 `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`.
 
-## C3.1 checkpoint recommendation
+## C3.2 implementation result
 
-- **Completed:** C3 is decomposed into four bounded outputs and its host-only
-  API, authentication, upload, state and evidence boundaries are defined.
-- **Checkpoint:** commit and push this design before server implementation.
-- **Next task:** C3.2 — implement the loopback server, authentication/status
-  shell and focused boundary tests.
+`tools/management_demo.py` binds `ThreadingHTTPServer` only to `127.0.0.1` and
+serves three explicit assets from `tools/management_demo_assets/`. Its status
+response contains the bounded simulator snapshot and fixed false capability
+flags for camera contact, flash writing and verified hardware recovery. It has
+no outbound request, subprocess, device path or generic file-serving API.
+
+The login uses the intentionally public `admin` / `slot20-demo` credential by
+default and visibly labels it non-production. A random in-memory salt, PBKDF2
+digest, maximum eight expiring sessions, HttpOnly/SameSite cookie and separate
+CSRF token demonstrate the control boundary. The password may be overridden
+through `SLOT20_DEMO_PASSWORD`; it is never saved by the application.
+
+Focused C3.2 verification under Python 3.12.14 ran seven tests successfully:
+
+```text
+python -m unittest tests.test_management_demo -v
+Ran 7 tests in 4.090s — OK
+```
+
+The tests prove loopback binding, explicit route handling, security headers,
+unauthenticated status rejection, generic invalid-credential rejection,
+sanitized authenticated status, CSRF rejection and logout invalidation. They
+use a temporary simulator record and contact no external address or camera.
+
+## C3.2 checkpoint recommendation
+
+- **Completed:** the C3.1 design is pushed and C3.2 implements/tests the
+  loopback authentication/status shell without update controls.
+- **Checkpoint:** commit and push C3.2 source, assets, tests and this result
+  before enabling verification/state actions.
+- **Next task:** C3.3 — connect temporary synthetic bundle uploads to B2 and
+  expose only the fixed B3 simulation action enum.
 - **Recommended model and reasoning:** Medium.
-- **Why:** C3.2 is routine Python/HTML implementation with explicit boundaries.
+- **Why:** C3.3 is bounded integration of two existing tested Python APIs.
 - **When to switch:** High is appropriate only if verifier/simulator integration
   exposes a non-routine security or state-consistency problem.
-- **Usage preparation:** this design checkpoint precedes all substantial source
-  changes; checkpoint C3.2 again before adding full workflows/screenshots.
+- **Usage preparation:** C3.2 is a recoverable source checkpoint. Refresh usage
+  before screenshot/browser work and checkpoint C3.3 first.

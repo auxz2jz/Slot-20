@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slot-20 Offline Management Demo</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">SLOT-20 / IPC_523128M8MP</p>
+      <h1>Maintenance console</h1>
+    </div>
+    <span class="mode-pill">Offline host simulation</span>
+  </header>
+  <main>
+    <section class="warning" aria-label="simulation warning">
+      <strong>Demonstration only.</strong>
+      No camera is connected. No firmware is installed. Rollback and independent
+      hardware recovery remain unproven.
+    </section>
+
+    <section id="login-panel" class="panel login-panel">
+      <div>
+        <p class="eyebrow">Authenticated demo boundary</p>
+        <h2>Sign in locally</h2>
+        <p class="muted">These public demo credentials are not suitable for production.</p>
+      </div>
+      <form id="login-form">
+        <label>Username <input id="username" value="admin" autocomplete="username"></label>
+        <label>Password <input id="password" type="password" value="slot20-demo" autocomplete="current-password"></label>
+        <button type="submit">Enter offline console</button>
+      </form>
+      <p id="login-error" class="error" role="alert"></p>
+    </section>
+
+    <section id="dashboard" class="hidden" aria-live="polite">
+      <div class="dashboard-heading">
+        <div>
+          <p class="eyebrow">Local status</p>
+          <h2>System overview</h2>
+        </div>
+        <button id="logout" class="secondary">Sign out</button>
+      </div>
+      <div class="status-grid">
+        <article class="metric">
+          <span>Hardware profile</span>
+          <strong id="hardware-profile">—</strong>
+        </article>
+        <article class="metric">
+          <span>Simulator state</span>
+          <strong id="simulator-state">—</strong>
+        </article>
+        <article class="metric">
+          <span>Known-good release</span>
+          <strong id="known-good">—</strong>
+        </article>
+        <article class="metric danger-metric">
+          <span>Hardware recovery</span>
+          <strong>Not demonstrated</strong>
+        </article>
+      </div>
+      <section class="panel placeholder">
+        <p class="eyebrow">C3.2 boundary</p>
+        <h3>Update workflow not enabled yet</h3>
+        <p>Bundle validation and simulated update controls are added only after
+          this authentication and status shell passes its focused tests.</p>
+      </section>
+    </section>
+  </main>
+  <footer>PC-hosted demonstration · localhost only · zero camera access</footer>
+</body>
+</html>

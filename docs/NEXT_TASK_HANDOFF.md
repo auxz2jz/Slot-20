@@ -1,12 +1,12 @@
 # Slot-20 — Current task handoff
 
-**Status:** C3.1 DESIGN CHECKPOINT — C3 is decomposed into four bounded
-host-only deliverables. The localhost API, authentication/CSRF boundary,
-bounded upload path, B2/B3 integration, test flows and screenshot evidence
-rules are defined. No server implementation exists at this checkpoint.
+**Status:** C3.2 COMPLETE — the localhost-only server, bounded demonstration
+authentication/session/CSRF boundary, static dashboard shell and authenticated
+simulator status API are implemented and tested. Update controls remain
+disabled pending C3.3.
 
-**LAST TASK ID / STATUS:** C3.1 management UI design — **COMPLETE; IMPLEMENTATION
-NOT STARTED**.
+**LAST TASK ID / STATUS:** C3.2 authentication/status shell — **COMPLETE; 7
+FOCUSED TESTS PASS**.
 
 **EVIDENCE AND TESTS:**
 
@@ -14,6 +14,9 @@ NOT STARTED**.
   bounded authentication/session/CSRF controls, temporary-file B2 validation,
   B3 action mapping, synthetic-only keys/bundles, browser flows and focused
   tests. It explicitly excludes camera/device/flash access and hardware claims.
+- `tools/management_demo.py` binds only `127.0.0.1`; static routes are explicit,
+  authenticated status is sanitized, and no outbound/device/subprocess API
+  exists. Seven C3.2 HTTP tests pass under Python 3.12.14.
 - Git began clean at pushed `d63c138`; pre-build input checkpoint `1ad67c4`
   is pushed.
 - The clean output `.config` is byte-identical to the original at SHA-256
@@ -39,9 +42,9 @@ NOT STARTED**.
   `docs/C2B2C_ROOTFS_REPRODUCIBILITY.md` and
   `configs/c2b2c_rootfs_reproducibility_result.json`.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; C3 began from clean pushed
-`f13c850`. The commit containing this handoff is the C3.1 design checkpoint and
-must match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; C3.1 checkpoint `88d3d2a` is pushed.
+The commit containing this handoff is the C3.2 source checkpoint and must match
+`origin/main` after push.
 
 **LOCAL UNTRACKED OR PRIVATE WORK:** Preserve both
 `/home/firmware-analysis/slot20_private/c2b2b_20261018/` and
@@ -50,14 +53,14 @@ rootfs artifacts, Buildroot outputs, legal-info, source cache, compatibility
 patches and full logs. Do not clean or publish these directories. Preserve the
 separate completed kernel tree unchanged.
 
-**NEXT SINGLE TASK ID + INPUT:** **C3.2.** Implement the loopback-only Python
-server, bounded demonstration authentication/session/CSRF controls, fixed
-static assets and authenticated status API described in
-`docs/C3_MANAGEMENT_UI.md`. Do not yet add the complete workflow or screenshots.
+**NEXT SINGLE TASK ID + INPUT:** **C3.3.** Add ephemeral-key synthetic demo
+bundles, bounded temporary upload validation through B2, and only the fixed B3
+simulation action enum described in `docs/C3_MANAGEMENT_UI.md`.
 
-**PASS CRITERION FOR NEXT TASK:** Focused tests prove unauthenticated API denial,
-authenticated status access, CSRF enforcement for state changes, explicit
-static-file routing and loopback-only binding. No camera/device/installer API.
+**PASS CRITERION FOR NEXT TASK:** Focused tests prove valid and corrupt bundle
+results, verification/authorization separation, success/commit, boot
+failure/rollback, recovery-required and invalid-transition rejection while
+preserving known-good. No camera/device/installer API.
 
 **RECOMMENDED REASONING + WHY:** **Medium**. C3 is routine host-only UI and
 integration work against already tested Python components.
@@ -72,11 +75,11 @@ on 2026-10-18 showed 0% used in the five-hour window (100% remaining) and 37%
 used in the weekly window (63% remaining). This is a snapshot, not continuous
 monitoring.
 
-**USAGE PREPARATION:** Push C3.1 before source implementation. C3.2 and C3.3
-must each be independently tested/checkpointed before browser screenshot work.
+**USAGE PREPARATION:** Push this tested C3.2 checkpoint before C3.3. Refresh
+usage after C3.3 and before browser screenshot work.
 
-**CONTINUE OR STOP + REASON:** Continue to C3.2 only after this design commit is
-pushed; C3 is authorized, but no later phase is.
+**CONTINUE OR STOP + REASON:** Continue to C3.3 only after this tested source
+checkpoint is pushed; no work beyond C3 is authorized.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, connection, reboot,
 modification, or flash was performed or authorized.

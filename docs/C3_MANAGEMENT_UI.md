@@ -1,9 +1,10 @@
 # C3 host-only management UI
 
-**Status:** C3.2 COMPLETE. The loopback server, bounded demonstration
-authentication/session/CSRF boundary, static dashboard shell and authenticated
-status API are implemented and covered by focused tests. Bundle/update actions
-remain disabled until C3.3.
+**Status:** C3.3 COMPLETE. The loopback server now passes synthetic bundles
+through the existing B2 verifier and exposes only the fixed B3 host-simulation
+actions. Valid, corrupt, success, invalid-transition, rollback and
+recovery-required paths are covered by focused tests. Browser screenshots
+remain for C3.4.
 
 ## Scope and evidence boundary
 
@@ -130,17 +131,57 @@ unauthenticated status rejection, generic invalid-credential rejection,
 sanitized authenticated status, CSRF rejection and logout invalidation. They
 use a temporary simulator record and contact no external address or camera.
 
-## C3.2 checkpoint recommendation
+## C3.3 verifier and simulator integration
 
-- **Completed:** the C3.1 design is pushed and C3.2 implements/tests the
-  loopback authentication/status shell without update controls.
-- **Checkpoint:** commit and push C3.2 source, assets, tests and this result
-  before enabling verification/state actions.
-- **Next task:** C3.3 — connect temporary synthetic bundle uploads to B2 and
-  expose only the fixed B3 simulation action enum.
+At server startup, an Ed25519 private key is generated only in memory. It signs
+one small two-component synthetic release and populates the matching in-memory
+B2 trust record and supported-release catalog. The UI can fetch that bundle or
+a copy with one changed payload byte. No key, bundle or component is retained
+after the process exits.
+
+Authenticated uploads require `application/octet-stream`, CSRF and an exact
+`Content-Length` within B2's existing cap. The request body is streamed in 1
+MiB chunks to a private temporary regular file, verified through
+`verify_bundle`, and deleted in `finally`. Components are never extracted.
+A passing result advances B3 through receive/verify only; the B2 result still
+reports `installation_authorized=false`. The user must invoke the separate
+`host-simulation-only` authorization action before staging.
+
+The fixed action enum maps directly to existing B3 methods: authorize, stage,
+symbolic candidate write, pending boot, healthy, commit, boot failure, logical
+rollback and recovery-required. A reset creates a fresh bounded simulator
+record and atomically replaces only the local demo record. UI button
+availability follows the validated state. Rejected actions do not change the
+record.
+
+Focused C3.3 verification under Python 3.12.14 ran 13 tests successfully:
+
+```text
+python -m unittest tests.test_management_demo -v
+Ran 13 tests in 8.027s — OK
+```
+
+The six added tests cover authentication/CSRF on bundle endpoints, all four B2
+checks on a valid bundle, corrupt-payload rejection with unchanged state,
+separate authorization and successful commit with retained previous
+known-good, invalid-transition preservation, and both logical rollback and
+recovery-required outcomes with known-good preserved. An early-CSRF negative
+test also exposed and verified the fix for unread POST bodies on keep-alive
+connections: rejected POSTs now close instead of reinterpreting bundle bytes
+as another request.
+
+## C3.3 checkpoint recommendation
+
+- **Completed:** C3.3 integrates bounded synthetic uploads with B2 and the
+  fixed B3 simulation actions; all 13 focused tests pass.
+- **Checkpoint:** commit and push C3.3 source, assets, tests and this result
+  before browser automation or screenshot generation.
+- **Next task:** C3.4 — exercise the actual localhost UI in a browser, capture
+  clearly labeled screenshots, run regression tests and finalize the handoff.
 - **Recommended model and reasoning:** Medium.
-- **Why:** C3.3 is bounded integration of two existing tested Python APIs.
+- **Why:** C3.4 is routine browser demonstration, visual verification and test
+  documentation; no new firmware or hardware logic is required.
 - **When to switch:** High is appropriate only if verifier/simulator integration
   exposes a non-routine security or state-consistency problem.
-- **Usage preparation:** C3.2 is a recoverable source checkpoint. Refresh usage
-  before screenshot/browser work and checkpoint C3.3 first.
+- **Usage preparation:** C3.3 is a recoverable source checkpoint. Refresh usage
+  before launching the browser demonstration.

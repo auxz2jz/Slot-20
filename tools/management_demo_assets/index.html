@@ -62,11 +62,61 @@
           <strong>Not demonstrated</strong>
         </article>
       </div>
-      <section class="panel placeholder">
-        <p class="eyebrow">C3.2 boundary</p>
-        <h3>Update workflow not enabled yet</h3>
-        <p>Bundle validation and simulated update controls are added only after
-          this authentication and status shell passes its focused tests.</p>
+      <div class="workflow-grid">
+        <section class="panel workflow-panel">
+          <p class="eyebrow">1 / Host verification</p>
+          <h3>Validate a synthetic bundle</h3>
+          <p class="muted">The B2 verifier reads a bounded temporary file. It
+            never extracts components or authorizes installation.</p>
+          <label class="file-label">Choose a local <code>.s20b</code> file
+            <input id="bundle-file" type="file" accept=".s20b,application/octet-stream">
+          </label>
+          <div class="button-row">
+            <button id="validate-file" class="secondary">Validate selected file</button>
+            <button id="validate-demo">Validate demo bundle</button>
+            <button id="validate-corrupt" class="danger-button">Test corrupted bundle</button>
+          </div>
+          <div id="verification-result" class="verification empty">
+            No bundle has been checked in this session.
+          </div>
+        </section>
+
+        <section class="panel workflow-panel">
+          <p class="eyebrow">2 / Simulated management</p>
+          <h3>Advance the host-only state machine</h3>
+          <p class="muted">Controls enable only when B3 permits the next logical
+            transition. “Write” changes a small JSON simulator record—not flash.</p>
+          <div id="actions" class="action-grid">
+            <button data-action="authorize">Authorize simulation</button>
+            <button data-action="stage">Stage candidate</button>
+            <button data-action="begin_write">Simulate candidate write</button>
+            <button data-action="pending_boot">Mark pending boot</button>
+            <button data-action="healthy">Confirm healthy</button>
+            <button data-action="commit">Commit candidate</button>
+            <button data-action="boot_failure" class="danger-button">Simulate boot failure</button>
+            <button data-action="rollback">Select known-good</button>
+            <button data-action="recovery_required" class="danger-button">Require external recovery</button>
+            <button data-action="reset" class="secondary">Reset offline demo</button>
+          </div>
+          <p id="action-error" class="error" role="alert"></p>
+        </section>
+      </div>
+
+      <section class="panel recovery-panel">
+        <p class="eyebrow">Recovery evidence boundary</p>
+        <h3>What this demonstration cannot recover</h3>
+        <p id="recovery-explanation">Rollback here selects only a logical
+          known-good identity. No physical rescue method is implemented or
+          independently demonstrated on matching hardware.</p>
+        <div class="recovery-tags">
+          <span>No verified A/B slots</span><span>No flash backup</span>
+          <span>No UART/TFTP proof</span><span>No camera write</span>
+        </div>
+      </section>
+
+      <section class="panel event-panel">
+        <div class="event-heading"><h3>Session events</h3><span>Synthetic, bounded</span></div>
+        <ol id="events"><li>Authenticated offline session started.</li></ol>
       </section>
     </section>
   </main>

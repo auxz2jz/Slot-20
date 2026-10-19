@@ -2,6 +2,8 @@
 
 **Last milestone:** 2026-10-19 — D2a completed a dated, non-contact spare-camera sourcing survey. Three affordable returnable RLC-811A offers were found, but none exposes the required `IPC_523128M8MP` hardware number; zero matching recovery spares are therefore confirmed.
 
+**Latest recovery audit:** 2026-10-19 — after an unexpected computer restart, the repository was clean at `0b3720bb6f48f599a31cc56c99f5610398326eef`, cached and live `origin/main` matched it, and there were no local-only commits, changes, untracked files or stashes. The preserved GCC 6.5.0 ARM toolchain, generic kernel and both rootfs artifacts remain present and match their recorded SHA-256 values. No on-disk evidence of an interrupted post-D2a task was found. See `docs/POST_RESTART_RECOVERY_2026-10-19.md`.
+
 ## Goal
 Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preserving camera hardware functionality. **Current overriding priority:** safe boot, authenticated web management, upgrade/downgrade workflow and proven recovery of the first installed image. Sensor/video and later zones/tripwires, tracking, and ALPR follow only after the maintenance baseline is established. The installed stock firmware remains operational throughout the research phase.
 
@@ -127,6 +129,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - C3: design/server/integration checkpoints are `88d3d2a`, `cb3023d` and `ecab661`. The final browser run produced six sanitized PNGs with zero console errors; exact dimensions, sizes and SHA-256 values are in `configs/c3_management_demo_result.json`. Python 3.12.14 ran 77 tests with 75 passing and two privilege-dependent skips. The server was stopped and TCP 8765 had no listener.
 - D1: design checkpoint `0ba4303` is pushed. `docs/D1_BACKUP_RECOVERY_PLAN.md` (SHA-256 `ced25d5e8640fb3f9294de8c75c8a3bdb304b7f15ae212f26ded9a2aa4a692a4`) contains the complete plan; `configs/d1_recovery_plan.json` (SHA-256 `d2dc379a41add8057e022538c38a4cc5148391f49c7a2b8e25a935b5dc816383`) encodes its fixed target, backup acceptance, recovery priority, approval gates and all-false hardware-operation state. The completion commit is the final D1 checkpoint after push.
 - D2a: content checkpoint `5970221` is pushed. `docs/D2A_SPARE_CAMERA_RESEARCH.md` (SHA-256 `96c44f18ead8a739f7f7f2898e091aa9e8e1edbc9c2610149ef47583ba3c19c4`) and `configs/d2a_spare_candidates.json` (SHA-256 `86b5bb416d46fb665b7300c76dea07623cc51901c249620f675553c96e895fed`) contain the dated candidate/rejection snapshot, exact evidence checklist and all-false seller-contact/purchase/hardware state. Marketplace availability must be rechecked before outreach.
+- Post-restart recovery audit: the pre-report tree was clean at `0b3720b`, live GitHub matched it, and the private toolchain/kernel/rootfs integrity checks matched the recorded hashes. No subsequent task or recoverable partial on-disk work was found. The sanitized audit is `docs/POST_RESTART_RECOVERY_2026-10-19.md` (SHA-256 `843fea981b1dd87287b1ea83d852f34dd87632a9a127b59acb407693c6fd0906`); its completion commit is the next pushed checkpoint.
 - Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux boot on matching hardware, independent recovery and all hardware behavior.
 
 ## Recovery/checkpoint rule
@@ -134,10 +137,10 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 
 ## Next-stage recommendation
 
-- **Completed:** D2a surveyed current offers, classified three returnable model-only candidates and three rejected/poor-fit offers, and drafted a privacy-safe seller request. No listing proved the required revision.
-- **Checkpoint:** content checkpoint `5970221` is pushed; commit and push the finalized handoff as the D2a closeout. No private build, firmware or hardware artifact changed; unfinished work is seller evidence that was deliberately not requested.
+- **Completed:** The post-restart audit verified that D2a remains complete, Git was clean and synchronized at `0b3720b`, and the preserved private toolchain, kernel and rootfs artifacts match their recorded hashes. No follow-on work was found.
+- **Checkpoint:** commit and push the sanitized recovery report, state and handoff as the recovery closeout. No private build, firmware or hardware artifact changed, and no unfinished on-disk work needs separate backup.
 - **Next task:** **D2a-1 seller-evidence collection only**, after explicit user authorization — recheck the selected listing, send the approved draft, and validate a redacted exact-unit Device Info response. Do not purchase.
 - **Recommended model and reasoning:** **Medium**.
 - **Why:** D2a-1 is routine evidence collection and comparison against the fixed D1 checklist, not electrical work or reverse engineering.
 - **When to switch:** High is appropriate before G1–G5 acceptance/electrical/backup planning. Consider Ultra only for one narrowly scoped persistent BootROM or recovery-architecture uncertainty after a checkpoint and explicit selection.
-- **Usage preparation:** D2a is a safe documentation checkpoint. Reliable closeout telemetry showed 18% five-hour usage (82% remaining) and 51% weekly usage (49% remaining). Refresh before outreach and checkpoint again before purchase or every separately approved physical gate.
+- **Usage preparation:** The recovery report is the safe checkpoint. Reliable closeout telemetry showed 38% five-hour usage (62% remaining) and 54% weekly usage (46% remaining). Treat this as a point-in-time reading, refresh before outreach and checkpoint again before purchase or every separately approved physical gate.

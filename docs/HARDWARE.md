@@ -2,6 +2,18 @@
 
 Source: user-provided Reolink app device-info screenshot and offline inspection of the matching firmware. Camera has not been accessed.
 
+## Development role and safety status
+
+This owner-confirmed unit is the project's **primary development reference**.
+It is an older camera but remains in active security service, so it is not a
+sacrificial test or independent-recovery platform. Previously supplied
+screenshots may be used for the offline H0 evidence baseline. Any new live
+query, connection, diagnostic, reboot, configuration change, actuation,
+opening, electrical work or storage operation still requires separate explicit
+approval. Firmware installation and destructive testing remain prohibited
+until the device-specific full-backup gate and independent recovery proof on a
+matching spare are satisfied. See `HARDWARE_DEVELOPMENT_PLAN.md`.
+
 ## Confirmed identification
 - Model: RLC-811A
 - Hardware: **IPC_523128M8MP**

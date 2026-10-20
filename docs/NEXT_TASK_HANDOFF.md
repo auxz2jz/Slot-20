@@ -1,82 +1,77 @@
 # Slot-20 — Current task handoff
 
-**Status:** POST-RESTART RECOVERY VERIFIED — D2a remains the last completed
-development task. No seller was contacted, no purchase occurred, and no camera
-was accessed or modified.
+**Status:** HARDWARE DEVELOPMENT PLAN UPDATED — the owner's existing,
+screenshot-confirmed RLC-811A `IPC_523128M8MP` is the primary in-service
+development reference. No live camera action occurred.
 
-**LAST TASK ID / STATUS:** Post-restart recovery check — **COMPLETE; NO
-INTERRUPTED ON-DISK WORK FOUND**.
+**LAST TASK ID / STATUS:** Hardware-development planning update — **COMPLETE;
+DOCUMENTATION AND ARCHITECTURE PLAN ONLY**.
 
-**RECOVERY EVIDENCE:**
+**COMPLETED AND VERIFIED:**
 
-- Before the recovery report was created, `main` was clean at full commit
-  `0b3720bb6f48f599a31cc56c99f5610398326eef`.
-- Local `HEAD`, cached `origin/main`, and live GitHub `refs/heads/main` all
-  matched. Ahead/behind was `0/0`; staged, unstaged, untracked and stashed work
-  were absent. GitHub was checked without pull, merge, reset or overwrite.
-- No post-D2a local commit or later repository-file modification was found. The
-  previous commits remain D2a content `5970221` and final handoff `0b3720b`.
-- The private workspace `/home/firmware-analysis/slot20_private/` still contains
-  the completed kernel, GCC 6.5.0 ARM toolchain, original rootfs and reproduced
-  rootfs workspaces.
-- Read-only SHA-256 checks match the recorded GCC wrapper, real compiler and
-  linker hashes, generic `zImage` hash
-  `21cb120f49a2028ffef04e3fdf43a0cc9b91a45c86f03807545f6c24b515231b`,
-  original rootfs hash
-  `df413f6a805fb7c860b1ae1043416f225ffe18bfd32f5ffdf09be491e650e06a`,
-  and reproduced rootfs hash
-  `b039fa2476051258dce8e4fb0977925be64d3ef84e19c591a1cbfe4ccd1cf635`.
-- The complete sanitized evidence is in
-  `docs/POST_RESTART_RECOVERY_2026-10-19.md`. No private artifact was modified or
-  copied into Git.
+- The primary reference identity remains `RLC-811A / IPC_523128M8MP`, with
+  installed firmware `v3.1.0.1643_2402219117` previously confirmed through
+  owner-provided screenshots.
+- Because this camera remains in active security service, it is not a
+  sacrificial recovery surrogate and must retain its working stock firmware.
+- D2a research remains intact. D2a-1 seller evidence collection is **on hold**;
+  no seller contact or purchase is authorized.
+- `docs/HARDWARE_DEVELOPMENT_PLAN.md` defines three lanes: bounded primary-unit
+  observations, modular software architecture, and separate matching-spare
+  recovery proof. Its H0–H6 stages begin offline and require a fresh,
+  action-specific approval before any live observation.
+- The plan identifies portable security/update/management/build/evidence
+  functions and isolates exact SoC, DTS, bootloader, NAND/OOB/ECC, network,
+  sensor/ISP, drivers, calibration and recovery behavior behind strict hardware
+  profiles and narrow adapters. No refactor was performed.
+- `docs/ROADMAP.md`, `docs/HARDWARE.md`, `docs/ATOMIC_TASK_PLAN.md` and
+  `docs/STATE.md` reflect the new target role and small-task sequence.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; the verified pre-report checkpoint
-is `0b3720b`. The recovery-report completion commit containing this handoff must
-match `origin/main` after push.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `f8673f3` was
+clean. The planning-completion commit containing this handoff must match
+`origin/main` after push.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** No repository-local untracked work exists.
-Preserve all private analysis and completed build directories under
-`/home/firmware-analysis/slot20_private/`. No partial post-D2a file needing a
-separate backup was found.
+**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve every existing private firmware,
+analysis, compiler, kernel and rootfs artifact under
+`/home/firmware-analysis/slot20_private/` and the previously supplied camera
+screenshots in their protected location. Do not commit device identifiers or
+screenshots without redaction review.
 
-**LAST COMPLETED DEVELOPMENT TASK:** D2a matching-spare sourcing research —
-complete with zero confirmed `IPC_523128M8MP` offers. Its source records remain
-`docs/D2A_SPARE_CAMERA_RESEARCH.md` and
-`configs/d2a_spare_candidates.json`.
+**NEXT SINGLE TASK ID + INPUT:** **H0 — existing-evidence primary-target
+baseline only.** Inputs are the previously supplied screenshots or their
+already verified fields, `docs/HARDWARE.md`, the matching package hash and the
+evidence classifications in `docs/HARDWARE_DEVELOPMENT_PLAN.md`. Do not request
+or perform a new camera session.
 
-**NEXT SINGLE TASK ID + INPUT:** **D2a-1 seller-evidence collection only,
-BLOCKED until the user explicitly authorizes sending messages.** Recheck the
-selected listing, send the approved privacy-safe draft to one seller, and
-privately validate/redact the exact-unit response. Do not purchase.
+**PASS CRITERION FOR NEXT TASK:** Produce a concise public human-readable record
+and machine-readable manifest stating model, exact hardware revision, installed
+firmware, evidence source/class and capture-date/unknown status. UID, serial,
+MAC, IP, QR/account data and credentials must be absent. Processor, NAND, RAM,
+PCB, sensor and driver facts must remain static leads or unknown unless the
+existing evidence proves them. Verify no live access occurred.
 
-**PASS CRITERION FOR NEXT TASK:** Exact-unit evidence visibly proves
-`Model = RLC-811A` and `Hardware No. = IPC_523128M8MP`, exposes firmware/build,
-has all UID/serial/MAC/IP/QR/account data redacted, is tied to the unit that
-would ship, and includes acceptable mismatch-return terms. Otherwise reject or
-remain unverified. Seller proof advances only the pre-purchase identity gate,
-not D1 Class A status.
+**RECOMMENDED REASONING + WHY:** **Medium.** H0 is bounded evidence
+normalization, provenance classification and privacy review; it requires no
+hardware interaction, build or reverse engineering.
 
-**RECOMMENDED REASONING + WHY:** **Medium.** D2a-1 is bounded communication and
-evidence comparison against the fixed D1 checklist.
-
-**WHEN TO SWITCH:** High is required before any separately approved G1–G5
-physical acceptance, electrical or backup work. Ultra/highest capability is
-reserved for one narrow persistent BootROM or recovery-architecture question
-after a safe checkpoint and explicit selection.
+**WHEN TO SWITCH:** High is appropriate for H2's first separately approved
+live-device observation and for M1/M2 profile/adapter implementation. Use Ultra
+only for one narrowly scoped persistent BootROM or recovery-architecture
+uncertainty after a safe checkpoint and explicit selection.
 
 **USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
-on 2026-10-19 showed 38% of the five-hour window used (62% remaining) and 54%
-of the weekly window used (46% remaining). This is a point-in-time snapshot,
+on 2026-10-19 showed 50% of the five-hour window used (50% remaining) and 56%
+of the weekly window used (44% remaining). This is a point-in-time snapshot,
 not continuous monitoring.
 
-**USAGE PREPARATION:** This recovery report is the safe checkpoint. Recheck
-usage and listing availability before outreach. Checkpoint again before any
-purchase or separately approved physical operation.
+**USAGE PREPARATION:** This planning commit is the safe checkpoint before H0.
+H0 requires no expensive operation. Checkpoint again before requesting H2
+approval or any live-device session.
 
-**CONTINUE OR STOP + REASON:** STOP after the recovery checkpoint. Seller
-messages, purchasing, D2b acceptance and every physical gate require new
-explicit authorization.
+**CONTINUE OR STOP + REASON:** STOP after this planning task. H0 is the next
+atomic task. H1 planning and every H2/live, seller, purchase or physical action
+remain separate future tasks.
 
-**CAMERA CONTACT/FLASH:** NONE. No discovery, authentication, network contact,
-power, reboot, opening, probing, UART, NAND read/write, firmware assembly or
-flash was performed or authorized.
+**CAMERA CONTACT/FLASH:** NONE. No discovery, scan, authentication, query,
+network contact, power change, reboot, reset, configuration, actuation, opening,
+UART, NAND read/write, firmware assembly or flash was performed or authorized.

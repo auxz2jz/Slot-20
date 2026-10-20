@@ -1,69 +1,72 @@
 # Slot-20 — Current task handoff
 
-**Status:** H0 COMPLETE — privacy-safe primary hardware baseline created from
-existing verified records only. No new camera session or live action occurred.
+**Status:** H1 COMPLETE — exact read-only observation protocol prepared
+offline. H2 is blocked pending fresh explicit owner approval.
 
-**LAST TASK ID / STATUS:** H0 existing-evidence primary-target baseline —
-**COMPLETE; OFFLINE ONLY**.
+**LAST TASK ID / STATUS:** H1 live-observation protocol planning — **COMPLETE;
+NO CAMERA CONTACT**.
 
 **COMPLETED AND VERIFIED:**
 
-- `docs/H0_PRIMARY_HARDWARE_BASELINE.md` and
-  `configs/h0_primary_hardware_baseline.json` record the confirmed public
-  identity: Reolink `RLC-811A`, hardware `IPC_523128M8MP`, installed firmware
-  `v3.1.0.1643_2402219117`.
-- The evidence source is the previously owner-provided Device Info screenshot as
-  normalized in existing project records. The screenshot is not tracked in Git
-  and was not newly requested. Its actual capture date is absent from the
-  accessible record and is correctly recorded as unknown.
-- Processor/architecture, DRAM, NAND, PCB, sensor and driver entries distinguish
-  matching-package/FDT/BSP leads from physical or live verification. No hardware
-  detail was promoted beyond its evidence.
-- The JSON record contains explicit all-false live-action and installation-gate
-  states. It contains no UID, serial, MAC/IP address, QR/account data,
-  credentials/key, recording, camera image or unredacted screenshot.
-- D2a-1 seller outreach remains on hold. The in-service camera remains a
-  reference, not a sacrificial recovery surrogate.
+- `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md` specifies the sole proposed H2
+  interface: the owner's already installed/configured Reolink mobile app.
+- The allowlisted path is existing device Settings gear → Device Info, with
+  `System Information` as the only exact-label alternate. If neither is present,
+  H2 must abort rather than search other menus.
+- The five permitted values are observation date/time, allowed screen label,
+  model, hardware version and complete firmware version. No other nearby field
+  is collected.
+- The owner is the sole operator. The session is limited to one attempt and five
+  minutes, with before/after zero-change checks and text-only public evidence
+  preferred over an image.
+- Credentials, addresses, discovery/scanning, new clients, live view, controls,
+  configuration, update, reboot/reset, diagnostics, physical access and storage
+  operations are expressly prohibited.
+- Immediate aborts cover login/setup/permission prompts, live view, update or
+  reset prompts, ambiguous menus, uncontainable private data, identity mismatch,
+  unexpected device behavior, security impact and time overrun.
+- The document includes narrowly scoped H2 approval text. Its presence is not
+  approval. H1 made no connection, query, authentication or device change.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `7e8ab29` was
-clean. The H0 completion commit containing this handoff must match
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `4e11f5b` was
+clean. The H1 completion commit containing this handoff must match
 `origin/main` after push.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve the private original screenshot
-or prior evidence wherever the owner stored it, plus every existing firmware,
-analysis, toolchain, kernel and rootfs artifact. H0 created no private copy and
-commits no device-instance information.
+**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve all prior screenshot/evidence,
+firmware, analysis, toolchain, kernel and rootfs artifacts in their existing
+private locations. H1 created no private device data.
 
-**NEXT SINGLE TASK ID + INPUT:** **H1 — live-observation protocol planning only.**
-Inputs are the H0 baseline, the interface the owner may later choose, the
-minimal public fields needed, permanent live-device prohibitions and redaction
-rules. H1 must not request credentials, addresses or a live session.
+**NEXT SINGLE TASK ID + INPUT:** **H2 — approved identification observation
+only, BLOCKED.** Required input is a fresh explicit user approval substantially
+matching the template in `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md`. No
+credential, camera address or private identifier is an input to Codex.
 
-**PASS CRITERION FOR NEXT TASK:** Produce one exact proposed protocol naming the
-interface/screens, operator actions, public fields, forbidden actions, bounded
-duration, before/after zero-change checks, privacy/redaction handling and abort
-conditions. It must explicitly say that H1 does not authorize H2 and must make
-no connection to the camera.
+**PASS CRITERION FOR NEXT TASK:** The owner completes the exact one-attempt,
+five-minute procedure and supplies only observation time, allowed screen label,
+exact model/hardware/firmware text and the complete zero-change attestation. No
+abort condition or prohibited action occurs, and public output contains no
+private device-instance data. A mismatch or abort is recorded and ends H2.
 
-**RECOMMENDED REASONING + WHY:** **Medium.** H1 is bounded safety, procedure and
-privacy planning with no reverse engineering or live hardware work.
+**RECOMMENDED REASONING + WHY:** **High.** H2 is tiny but would be the first
+deliberate live-device observation; strict procedural scope and evidence
+handling matter.
 
-**WHEN TO SWITCH:** High is appropriate for H2 only after the owner explicitly
-approves the exact proposed live actions, and for M1/M2 profile/adapter
-implementation. Use Ultra only for a narrowly scoped persistent recovery
-uncertainty after a checkpoint and explicit selection.
+**WHEN TO SWITCH:** Return to Medium for H3 offline reconciliation after a
+clean H2. Stay at High and stop if H2 aborts or the evidence differs; do not
+broaden live scope. Ultra is unnecessary for H2.
 
 **USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
-on 2026-10-19 showed 63% of the five-hour window used (37% remaining) and 58%
-of the weekly window used (42% remaining). This is a point-in-time snapshot,
+on 2026-10-19 showed 73% of the five-hour window used (27% remaining) and 59%
+of the weekly window used (41% remaining). This is a point-in-time snapshot,
 not continuous monitoring.
 
-**USAGE PREPARATION:** H0 is the safe checkpoint before H1. H1 is inexpensive
-planning, but it must be committed before any H2 approval request or live
-device session.
+**USAGE PREPARATION:** H1 is the required safe checkpoint. With five-hour usage
+currently in the project's 15–30% remaining band, do not begin H2 now. Refresh
+usage again before any approved H2 session and do not start without enough
+attention to finish, sanitize and checkpoint the evidence.
 
-**CONTINUE OR STOP + REASON:** STOP after H0. H1 is the next atomic task. Do
-not request or perform H2, seller contact, purchase or any physical operation.
+**CONTINUE OR STOP + REASON:** STOP after H1. H2 remains blocked until the
+owner provides a new explicit approval matching the prepared scope.
 
 **CAMERA CONTACT/FLASH:** NONE. No discovery, scan, authentication, query,
 network contact, power change, reboot, reset, configuration, actuation, opening,

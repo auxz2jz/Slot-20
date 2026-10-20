@@ -1,6 +1,6 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-19 — H0 created privacy-safe human-readable and machine-readable baselines for the owner's in-service RLC-811A using existing verified records only. Model `RLC-811A`, hardware `IPC_523128M8MP` and firmware `v3.1.0.1643_2402219117` are recorded; screenshot capture date is explicitly unknown, and processor/memory/NAND/PCB/sensor/driver details remain classified as static leads or unverified. No camera was contacted.
+**Last milestone:** 2026-10-19 — H1 defined a five-minute, owner-operated, read-only Reolink-app observation protocol limited to Settings → Device Info/System Information and five allowlisted values. It specifies privacy handling, zero-change checks, prohibited actions, immediate aborts and explicit H2 approval text. H1 performed no camera contact and grants no H2 authority.
 
 **Latest recovery audit:** 2026-10-19 — after an unexpected computer restart, the repository was clean at `0b3720bb6f48f599a31cc56c99f5610398326eef`, cached and live `origin/main` matched it, and there were no local-only commits, changes, untracked files or stashes. The preserved GCC 6.5.0 ARM toolchain, generic kernel and both rootfs artifacts remain present and match their recorded SHA-256 values. No on-disk evidence of an interrupted post-D2a task was found. See `docs/POST_RESTART_RECOVERY_2026-10-19.md`.
 
@@ -83,10 +83,10 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - D2a prices, stock and return policies are a 2026-10-19 web snapshot and are volatile. Zero exact-revision matches are confirmed. Even seller proof of `RLC-811A / IPC_523128M8MP` establishes only the pre-purchase identity gate, not matching PCB, NAND, DRAM, boot chain or Class A status.
 
 ## Next Codex task
-1. **H1 — live-observation protocol planning only:** draft one exact, read-only Device Info/status observation proposal for later owner review. Do not connect to the camera.
-2. Specify the proposed owner-selected interface/screens, public fields, precise operator actions, forbidden actions, time boundary, before/after zero-change checks, redaction process and abort conditions.
-3. State clearly that H1 grants no H2 permission and requires no credential, IP address or new camera session.
-4. Preserve D2a research on hold and all software/private builds unchanged. Stop before requesting or performing H2 live access.
+1. **H2 — approved identification observation only, blocked pending fresh explicit approval:** use only the exact owner-operated, five-minute mobile-app procedure in `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md`.
+2. Collect only observation time, allowed screen label, model, hardware version and firmware version plus the zero-change attestation. Do not request credentials or a camera address.
+3. Abort on any login/setup/update prompt, live view, ambiguity, mismatch, private-data exposure, unexpected device behavior or time overrun. Do not troubleshoot or broaden scope.
+4. Preserve original evidence privately and publish text-only sanitized results by default. Stop after H2; H3 reconciliation is a separate task.
 
 ## Current reproducibility checkpoint
 
@@ -130,8 +130,9 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - D1: design checkpoint `0ba4303` is pushed. `docs/D1_BACKUP_RECOVERY_PLAN.md` (SHA-256 `ced25d5e8640fb3f9294de8c75c8a3bdb304b7f15ae212f26ded9a2aa4a692a4`) contains the complete plan; `configs/d1_recovery_plan.json` (SHA-256 `d2dc379a41add8057e022538c38a4cc5148391f49c7a2b8e25a935b5dc816383`) encodes its fixed target, backup acceptance, recovery priority, approval gates and all-false hardware-operation state. The completion commit is the final D1 checkpoint after push.
 - D2a: content checkpoint `5970221` is pushed. `docs/D2A_SPARE_CAMERA_RESEARCH.md` (SHA-256 `96c44f18ead8a739f7f7f2898e091aa9e8e1edbc9c2610149ef47583ba3c19c4`) and `configs/d2a_spare_candidates.json` (SHA-256 `86b5bb416d46fb665b7300c76dea07623cc51901c249620f675553c96e895fed`) contain the dated candidate/rejection snapshot, exact evidence checklist and all-false seller-contact/purchase/hardware state. Marketplace availability must be rechecked before outreach.
 - Post-restart recovery audit: the pre-report tree was clean at `0b3720b`, live GitHub matched it, and the private toolchain/kernel/rootfs integrity checks matched the recorded hashes. No subsequent task or recoverable partial on-disk work was found. The sanitized audit is `docs/POST_RESTART_RECOVERY_2026-10-19.md` (SHA-256 `843fea981b1dd87287b1ea83d852f34dd87632a9a127b59acb407693c6fd0906`); its completion commit is the next pushed checkpoint.
-- Hardware-development planning now treats the owner's previously screenshot-confirmed RLC-811A `IPC_523128M8MP` running `v3.1.0.1643_2402219117` as the primary development reference. Because it remains in active security service, it is not a sacrificial recovery surrogate. `docs/HARDWARE_DEVELOPMENT_PLAN.md` (current SHA-256 `849ea535e7dd2e79d8431df091c7d82d13fe535878e8073807f9d1a78bc81420`) defines the H0–H6 non-destructive observation sequence, preserves D1's separate matching-spare gates, and maps reusable core functions versus hardware-specific profiles/adapters. D2a-1 is retained on hold; no seller or camera contact occurred.
+- Hardware-development planning now treats the owner's previously screenshot-confirmed RLC-811A `IPC_523128M8MP` running `v3.1.0.1643_2402219117` as the primary development reference. Because it remains in active security service, it is not a sacrificial recovery surrogate. `docs/HARDWARE_DEVELOPMENT_PLAN.md` (current SHA-256 `b2a806ddfc4f2048d1eae42d6c6dc1e9a73e97a4d63a0bd4e65ab42cdb8db479`) defines the H0–H6 non-destructive observation sequence, preserves D1's separate matching-spare gates, and maps reusable core functions versus hardware-specific profiles/adapters. D2a-1 is retained on hold; no seller or camera contact occurred.
 - H0 added `docs/H0_PRIMARY_HARDWARE_BASELINE.md` (SHA-256 `0a287f8a4cf4feca5a9b95a62f96093f4755da2890a3dbe3bcf270a286929e59`) and `configs/h0_primary_hardware_baseline.json` (SHA-256 `ec6fecd1450c26110c569a48b0a2a6ccdea5f2fe2bbf62e3e3b577819cea5932`). The records use the prior owner-screenshot-derived identity already normalized in project documentation, state the unavailable capture date as unknown, enumerate unverified physical/component details, and contain no device-instance identifiers, credentials, addresses, screenshots or live-action claims.
+- H1 added `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md` (SHA-256 `449a2375542896e0e25a68691dedf77c33c341ca420ae47c6bec01fae947db58`). The proposed H2 path is limited to the owner-operated, already configured mobile app's Settings gear and Device Info/System Information screen, five public values and one five-minute attempt. H2 remains blocked pending explicit approval matching the prepared scope.
 - Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux boot on matching hardware, independent recovery and all hardware behavior.
 
 ## Recovery/checkpoint rule
@@ -139,10 +140,10 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 
 ## Next-stage recommendation
 
-- **Completed:** H0 produced verified human and JSON baselines from existing records, recorded the unknown screenshot date, separated confirmed identity from unverified physical/static leads and passed privacy/safety validation. No code, private build or device changed.
-- **Checkpoint:** commit and push the two sanitized H0 records plus updated plan, state and handoff. The private screenshot and all existing builds/research remain outside Git and unchanged.
-- **Next task:** **H1 live-observation protocol planning only** — prepare an exact read-only observation proposal without connecting to the camera.
-- **Recommended model and reasoning:** **Medium**.
-- **Why:** H1 is bounded procedure, safety and privacy planning; it requires neither hardware access nor reverse engineering.
-- **When to switch:** High is appropriate for H2 only after explicit approval of the exact live-device actions, and for M1/M2 architecture implementation. Consider Ultra only for one narrowly scoped persistent recovery blocker after a checkpoint and explicit selection.
-- **Usage preparation:** H0 is the safe checkpoint before H1. Reliable closeout telemetry showed 63% five-hour usage (37% remaining) and 58% weekly usage (42% remaining). This is a point-in-time reading; H1 is routine planning, but checkpoint it before requesting any H2 approval.
+- **Completed:** H1 defined the exact app path, five-value allowlist, owner actions, five-minute bound, privacy handling, zero-change attestation, prohibitions, abort conditions and scoped H2 approval template. No code, private build or device changed.
+- **Checkpoint:** commit and push the sanitized H1 protocol plus updated plan, state and handoff. H0 records and all private artifacts remain unchanged.
+- **Next task:** **H2 approved identification observation only**, blocked until the owner explicitly approves the prepared scope.
+- **Recommended model and reasoning:** **High**.
+- **Why:** H2 is small but would be the project's first deliberate live-device observation; strict scope control and accurate evidence handling are safety-critical.
+- **When to switch:** Return to Medium for H3 offline reconciliation after a clean H2. Stay at High and stop on an abort/discrepancy; do not expand scope. Ultra is unnecessary for H2.
+- **Usage preparation:** H1 is the required checkpoint before asking for H2 approval. Reliable closeout telemetry showed 73% five-hour usage (27% remaining) and 59% weekly usage (41% remaining). This is a point-in-time reading; the five-hour window is currently in the project's 15–30% remaining band, so do not begin H2 now. Refresh usage before any later approved live session.

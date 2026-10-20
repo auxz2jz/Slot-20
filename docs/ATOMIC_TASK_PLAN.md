@@ -51,8 +51,8 @@ One task should have a specific input, one main output, and a verification crite
 | D2a (COMPLETE; NO CONFIRMED MATCH) | Research returnable RLC-811A offers and prepare a redacted-evidence request | Dated candidate/rejection matrix; zero listings claimed as `IPC_523128M8MP`; no seller contact or purchase | Medium |
 | D2a-1 (ON HOLD) | Request and validate exact-unit seller evidence | Existing research remains preserved; resume only if the owner removes the hold and explicitly authorizes the prepared questions; no purchase | Medium |
 | H0 (COMPLETE; OFFLINE) | Normalize the existing owner-confirmed primary-camera evidence | Sanitized identity/capability baseline from previously supplied screenshots and verified project facts; no live query or camera contact | Medium |
-| H1 (NEXT; PLANNING) | Define one exact read-only live-observation protocol | Screen/command-level actions, non-actions, privacy handling and aborts reviewed; no connection made | Medium |
-| H2 (BLOCKED) | Perform one approved identification observation on the primary reference | Fresh action-specific approval; redacted identity evidence with no setting, reboot, update, motor or storage change | High |
+| H1 (COMPLETE; PLANNING) | Define one exact read-only live-observation protocol | Screen/command-level actions, non-actions, privacy handling and aborts reviewed; no connection made | Medium |
+| H2 (NEXT; BLOCKED) | Perform one approved identification observation on the primary reference | Fresh action-specific approval; redacted identity evidence with no setting, reboot, update, motor or storage change | High |
 | H3 | Reconcile approved live identity evidence with package/FDT/U-Boot/BSP findings | Small provenance table marking confirmed, contradicted and unresolved items; offline only | Medium–High |
 | M1 | Define the versioned multi-camera hardware-profile schema | Synthetic fixtures prove exact-revision matching, public/private data separation and ambiguous-profile rejection | High |
 | M2 | Define and test narrow identity/artifact/storage/boot/network/health/recovery/media adapter contracts | No-op and synthetic adapters fail closed; no real camera/device path | High |
@@ -63,7 +63,7 @@ One task should have a specific input, one main output, and a verification crite
 primary in-service development reference. It may support only separately
 approved, bounded observations. It is not the matching sacrificial spare
 required for destructive recovery proof. D2a-1 research is retained on hold;
-H0 is complete and H1 planning is the next task.
+H0 and H1 are complete, and H2 is blocked pending explicit approval.
 
 **Not yet authorized / not eligible for a persistent camera image:** video/ISP/zoom/ALPR features; connecting to or modifying the in-service camera; altering bootloader/calibration/factory data; claiming A/B, TFTP or factory fallback as proven. All live and physical work remains behind documented consent and recovery gates.
 

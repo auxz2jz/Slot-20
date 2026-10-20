@@ -67,8 +67,8 @@ automatically authorizes the next.
 | Stage | Bounded objective | Pass evidence | Approval / abort boundary |
 | --- | --- | --- | --- |
 | **H0 — existing-evidence baseline (complete)** | Create a sanitized identity/capability record solely from existing screenshots and verified offline findings | Exact model, hardware revision, firmware, evidence source, known/unknown fields and redaction check recorded with no live contact | Completed offline; source capture date remains explicitly unknown |
-| **H1 — live-observation protocol (next)** | Define one proposed read-only session: exact interface, screens/fields, operator, duration, privacy handling and zero-change checklist | Owner reviews a command/screen-level plan and explicit aborts; no connection made | Planning does not grant approval; stop until the owner explicitly approves the exact H2 actions |
-| **H2 — approved identification observation** | Through only the already approved interface, view and record Device Info and immutable/read-only status fields | Redacted evidence matches `RLC-811A / IPC_523128M8MP`; before/after checklist shows no setting, update, reboot or motor action | Abort on login/setup prompts, update prompts, mismatch or any required setting change |
+| **H1 — live-observation protocol (complete)** | Define one proposed read-only session: exact interface, screens/fields, operator, duration, privacy handling and zero-change checklist | Owner reviews a command/screen-level plan and explicit aborts; no connection made | Completed offline; protocol grants no H2 authority |
+| **H2 — approved identification observation (next; blocked)** | Through only the already approved interface, view and record Device Info and immutable/read-only status fields | Redacted evidence matches `RLC-811A / IPC_523128M8MP`; before/after checklist shows no setting, update, reboot or motor action | Requires fresh approval matching H1; abort on login/setup prompts, update prompts, mismatch or any required setting change |
 | **H3 — offline reconciliation** | Compare H2 observations with the matching package, FDT, U-Boot and BSP records | Discrepancy table classifies confirmed live facts, static leads and unresolved items | Offline only; discrepancies do not authorize deeper probing |
 | **H4 — approved ordinary diagnostics** | One separately reviewed, non-disruptive health/status observation using an existing owner-approved path | Bounded status evidence and no security-coverage interruption | Discovery/scanning, new services, stream capture, motor/IR/light/audio actuation and reboot each remain separately prohibited unless explicitly approved |
 | **H5 — external physical inventory** | During owner-approved maintenance downtime, photograph accessible exterior label, connectors, power/PoE arrangement and installation constraints without opening | Redacted exterior record and safe-access assessment | No depowering, removal, seal breaking or opening without a new approval |
@@ -165,8 +165,8 @@ weaken exact-match checks or duplicate the security/update core.
 | ID | Single output | Completion criterion | Reasoning |
 | --- | --- | --- | --- |
 | **H0 (COMPLETE)** | Sanitized primary-target evidence baseline from already supplied material | Required/unknown fields and source class recorded; private fields excluded; no live contact | Medium |
-| **H1 (NEXT)** | Proposed read-only live-observation protocol | Exact actions, non-actions, privacy handling, aborts and approval prompt reviewed; no connection | Medium |
-| H2 | One approved identification observation record | Redacted exact identity captured with no setting/reboot/update/motor change | High because it is the first live-device action |
+| **H1 (COMPLETE)** | Proposed read-only live-observation protocol | Exact actions, non-actions, privacy handling, aborts and approval prompt reviewed; no connection | Medium |
+| **H2 (NEXT; BLOCKED)** | One approved identification observation record | Redacted exact identity captured with no setting/reboot/update/motor change | High because it is the first live-device action |
 | H3 | Offline live-vs-static reconciliation table | Every item marked confirmed, contradicted or unresolved with provenance | Medium–High |
 | M1 | Versioned hardware-profile schema and synthetic fixtures | Schema separates public board data from private instance data and rejects ambiguous revisions | High |
 | M2 | Adapter interface design plus no-op/synthetic reference adapters | Contract tests prove fail-closed behavior; no camera/device path | High |
@@ -176,22 +176,22 @@ weaken exact-match checks or duplicate the security/update core.
 
 ## Smallest next task specification
 
-**H1 — live-observation protocol planning only**
+**H2 — approved identification observation only (blocked)**
 
-- **Objective:** prepare one exact, read-only Device Info/status observation
-  proposal for later owner review, without connecting to the camera.
-- **Required inputs:** the H0 baseline, the interface the owner may choose to
-  use, desired public fields, private-field redaction rules and the permanent
-  live-device prohibitions. No credential, address or camera session is an H1
-  input.
-- **Completion criteria:** the proposed interface/screens, fields, operator
-  actions, forbidden actions, duration, before/after zero-change checks, privacy
-  handling and abort conditions are explicit; the document states that it does
-  not authorize H2.
-- **Recommended model and reasoning:** Medium. H1 is bounded safety and privacy
-  planning, not live hardware work.
-- **When to switch:** High for H2 only after the owner explicitly approves the
-  exact actions. Ultra is unnecessary unless a later, narrowly scoped
-  recovery-architecture blocker persists after High reasoning.
-- **Usage preparation:** H0 is the safe checkpoint before H1. Commit H1 before
-  requesting any H2 approval or starting a live-device session.
+- **Objective:** after fresh explicit approval, have the owner perform exactly
+  the five-minute, owner-operated Reolink-app observation in
+  `H1_READ_ONLY_OBSERVATION_PROTOCOL.md` and return only sanitized evidence.
+- **Required inputs:** explicit user approval substantially matching H1's
+  prepared text, the owner-operated already configured app, H0 baseline and a
+  private redaction path. Codex receives no credential or camera address.
+- **Completion criteria:** actual observation time, allowed screen label, exact
+  model/hardware/firmware text and complete zero-change attestation are recorded;
+  no abort condition, prohibited action or private-field publication occurs.
+- **Recommended model and reasoning:** High. H2 is deliberately tiny but is the
+  first planned live-device observation and requires strict scope control.
+- **When to switch:** Return to Medium for H3 offline reconciliation after a
+  clean H2. Stop at High on an abort or discrepancy; do not escalate the live
+  scope. Ultra is unnecessary for this task.
+- **Usage preparation:** H1 is the required checkpoint. Refresh reliable usage
+  immediately before any approved H2 session and do not start without enough
+  attention to finish, sanitize and checkpoint the evidence.

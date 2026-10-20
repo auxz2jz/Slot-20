@@ -1,0 +1,121 @@
+{
+  "schema": "slot20.primary-hardware-baseline.v1",
+  "task": "H0",
+  "status": "verified_from_existing_records",
+  "target_role": "primary_in_service_development_reference",
+  "identity": {
+    "manufacturer": "Reolink",
+    "model": "RLC-811A",
+    "hardware_revision": "IPC_523128M8MP",
+    "installed_firmware": "v3.1.0.1643_2402219117"
+  },
+  "identity_evidence": {
+    "original_source_type": "owner_provided_device_info_screenshot",
+    "h0_review_basis": "existing_verified_project_records",
+    "public_source_reference": "docs/HARDWARE.md",
+    "original_screenshot_in_repository": false,
+    "capture_date": null,
+    "capture_date_status": "unknown"
+  },
+  "matching_offline_package": {
+    "filename": "IPC_523128M8MP.1643_2402219117.RLC-811A.IMX415.8MP.AF.REOLINK.pak",
+    "size_bytes": 46376279,
+    "sha256": "f62a68d21397da9bb2aadefc66edfdbe91f35270b2cc64857a9082ed17e6a2e9",
+    "evidence_scope": "offline_compatibility_corroboration_not_physical_component_identity"
+  },
+  "hardware_details": {
+    "processor": {
+      "lead": "Novatek NA51055; 32-bit little-endian ARM/ARMv7 EABI5 hard-float",
+      "status": "static_firmware_lead_not_live_verified",
+      "unverified": [
+        "physical_marking_and_id",
+        "silicon_revision",
+        "fuse_and_security_state",
+        "board_wiring"
+      ]
+    },
+    "memory": {
+      "lead": "matching package FDT declares 112 MiB Linux-visible memory",
+      "status": "static_firmware_lead_not_physical_measurement",
+      "unverified": [
+        "manufacturer_and_part",
+        "total_installed_capacity",
+        "bus_geometry",
+        "reserved_regions"
+      ]
+    },
+    "nand": {
+      "lead": "matching package FDT declares 128 MiB address space; offline UBI geometry is 2048-byte minimum I/O, 131072-byte PEB, 126976-byte LEB",
+      "status": "static_firmware_and_offline_image_lead_not_device_measurement",
+      "unverified": [
+        "manufacturer_and_part",
+        "physical_capacity",
+        "page_and_oob_layout",
+        "ecc_algorithm_and_strength",
+        "controller_behavior",
+        "bad_and_reserved_block_maps",
+        "bbt_policy",
+        "actual_partition_contents"
+      ]
+    },
+    "pcb": {
+      "lead": null,
+      "status": "unverified",
+      "unverified": [
+        "revision",
+        "layout",
+        "test_pads",
+        "uart_voltage_and_pinout",
+        "power_and_poe_design",
+        "component_population"
+      ]
+    },
+    "image_sensor": {
+      "lead": "Sony IMX415 suggested by matching package filename and static driver evidence",
+      "status": "static_firmware_lead_not_live_verified",
+      "unverified": [
+        "physical_marking",
+        "module_revision",
+        "bus_and_address",
+        "clocks",
+        "calibration",
+        "live_operation"
+      ]
+    },
+    "drivers": {
+      "lead": "matching package and generic BSP contain Novatek platform, media, lens and AI-related driver candidates",
+      "status": "compiled_or_source_presence_not_hardware_functionality",
+      "unverified": [
+        "exact_enabled_kernel_configuration",
+        "ethernet_phy_and_wiring",
+        "sensor_isp_and_encoder_abi",
+        "lens_motor_population_and_calibration",
+        "ai_accelerator_revision_and_usable_features"
+      ]
+    }
+  },
+  "privacy": {
+    "contains_uid": false,
+    "contains_serial_number": false,
+    "contains_mac_address": false,
+    "contains_ip_address": false,
+    "contains_qr_or_account_data": false,
+    "contains_credentials_or_keys": false,
+    "contains_camera_recordings_or_images": false,
+    "contains_unredacted_device_screenshot": false
+  },
+  "task_actions": {
+    "live_camera_contact": false,
+    "new_camera_session_requested": false,
+    "camera_query_or_authentication": false,
+    "camera_setting_or_power_change": false,
+    "seller_contact_or_purchase": false,
+    "firmware_build_or_installation": false,
+    "nand_operation": false
+  },
+  "installation_gates": {
+    "full_device_backup_verified": false,
+    "matching_spare_recovery_demonstrated": false,
+    "firmware_installation_eligible": false
+  }
+}

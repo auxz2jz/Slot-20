@@ -66,8 +66,8 @@ automatically authorizes the next.
 
 | Stage | Bounded objective | Pass evidence | Approval / abort boundary |
 | --- | --- | --- | --- |
-| **H0 — existing-evidence baseline** | Create a sanitized identity/capability record solely from existing screenshots and verified offline findings | Exact model, hardware revision, firmware, evidence source, known/unknown fields and redaction check recorded with no live contact | Current next task; stop if source evidence is unavailable or exposes private fields |
-| **H1 — live-observation protocol** | Define one proposed read-only session: exact interface, screens/fields, operator, duration, privacy handling and zero-change checklist | Owner reviews a command/screen-level plan and explicit aborts; no connection made | Planning does not grant approval; stop until the owner explicitly approves the exact H2 actions |
+| **H0 — existing-evidence baseline (complete)** | Create a sanitized identity/capability record solely from existing screenshots and verified offline findings | Exact model, hardware revision, firmware, evidence source, known/unknown fields and redaction check recorded with no live contact | Completed offline; source capture date remains explicitly unknown |
+| **H1 — live-observation protocol (next)** | Define one proposed read-only session: exact interface, screens/fields, operator, duration, privacy handling and zero-change checklist | Owner reviews a command/screen-level plan and explicit aborts; no connection made | Planning does not grant approval; stop until the owner explicitly approves the exact H2 actions |
 | **H2 — approved identification observation** | Through only the already approved interface, view and record Device Info and immutable/read-only status fields | Redacted evidence matches `RLC-811A / IPC_523128M8MP`; before/after checklist shows no setting, update, reboot or motor action | Abort on login/setup prompts, update prompts, mismatch or any required setting change |
 | **H3 — offline reconciliation** | Compare H2 observations with the matching package, FDT, U-Boot and BSP records | Discrepancy table classifies confirmed live facts, static leads and unresolved items | Offline only; discrepancies do not authorize deeper probing |
 | **H4 — approved ordinary diagnostics** | One separately reviewed, non-disruptive health/status observation using an existing owner-approved path | Bounded status evidence and no security-coverage interruption | Discovery/scanning, new services, stream capture, motor/IR/light/audio actuation and reboot each remain separately prohibited unless explicitly approved |
@@ -164,8 +164,8 @@ weaken exact-match checks or duplicate the security/update core.
 
 | ID | Single output | Completion criterion | Reasoning |
 | --- | --- | --- | --- |
-| **H0 (NEXT)** | Sanitized primary-target evidence baseline from already supplied material | Required/unknown fields and source class recorded; private fields excluded; no live contact | Medium |
-| H1 | Proposed read-only live-observation protocol | Exact actions, non-actions, privacy handling, aborts and approval prompt reviewed; no connection | Medium |
+| **H0 (COMPLETE)** | Sanitized primary-target evidence baseline from already supplied material | Required/unknown fields and source class recorded; private fields excluded; no live contact | Medium |
+| **H1 (NEXT)** | Proposed read-only live-observation protocol | Exact actions, non-actions, privacy handling, aborts and approval prompt reviewed; no connection | Medium |
 | H2 | One approved identification observation record | Redacted exact identity captured with no setting/reboot/update/motor change | High because it is the first live-device action |
 | H3 | Offline live-vs-static reconciliation table | Every item marked confirmed, contradicted or unresolved with provenance | Medium–High |
 | M1 | Versioned hardware-profile schema and synthetic fixtures | Schema separates public board data from private instance data and rejects ambiguous revisions | High |
@@ -176,24 +176,22 @@ weaken exact-match checks or duplicate the security/update core.
 
 ## Smallest next task specification
 
-**H0 — existing-evidence primary-target baseline**
+**H1 — live-observation protocol planning only**
 
-- **Objective:** create a redacted, machine-readable and human-readable record
-  of the owner-confirmed RLC-811A using only screenshots already supplied and
-  verified offline project evidence.
-- **Required inputs:** the existing private screenshots or their already
-  verified fields, `docs/HARDWARE.md`, matching package hash and the current
-  safety/evidence classifications. Do not request a new camera session.
-- **Completion criteria:** model, exact hardware revision, installed firmware,
-  source/evidence class and capture date/unknown status are explicit; UID,
-  serial, MAC, IP, QR/account and credentials are absent from public output;
-  a review confirms no live access occurred.
-- **Recommended model and reasoning:** Medium. This is bounded evidence
-  normalization and privacy review, not hardware interaction or reverse
-  engineering.
-- **When to switch:** High for H2 because it would be a specifically approved
-  live-device action. Ultra is unnecessary unless a later, narrowly scoped
+- **Objective:** prepare one exact, read-only Device Info/status observation
+  proposal for later owner review, without connecting to the camera.
+- **Required inputs:** the H0 baseline, the interface the owner may choose to
+  use, desired public fields, private-field redaction rules and the permanent
+  live-device prohibitions. No credential, address or camera session is an H1
+  input.
+- **Completion criteria:** the proposed interface/screens, fields, operator
+  actions, forbidden actions, duration, before/after zero-change checks, privacy
+  handling and abort conditions are explicit; the document states that it does
+  not authorize H2.
+- **Recommended model and reasoning:** Medium. H1 is bounded safety and privacy
+  planning, not live hardware work.
+- **When to switch:** High for H2 only after the owner explicitly approves the
+  exact actions. Ultra is unnecessary unless a later, narrowly scoped
   recovery-architecture blocker persists after High reasoning.
-- **Usage preparation:** this planning commit is the safe checkpoint before H0.
-  H0 needs no expensive operation; checkpoint again before requesting H2
-  approval or starting any live-device session.
+- **Usage preparation:** H0 is the safe checkpoint before H1. Commit H1 before
+  requesting any H2 approval or starting a live-device session.

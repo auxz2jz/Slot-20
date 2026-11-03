@@ -46,6 +46,10 @@ public Git history.
   2-by-2 small-pad footprint lies below it. The area could instead be another
   factory-test or rework interface; no subset is selected, no pad has been
   labeled TX, RX, GND or supply, and no voltage is known.
+- Cross-side alignment maps that cluster immediately right/below the left-hand
+  upper mounting hole on the memory/coin-cell side, largely under or along the
+  factory-label edge. No corresponding exposed pad cluster is visible, and the
+  intact label/inner layers block further photo-only tracing.
 
 See `PCB_HARDWARE_INVENTORY_AND_UART.md` for the evidence classes, candidate
 map, firmware/BSP comparison, Boot ROM research boundary and required next

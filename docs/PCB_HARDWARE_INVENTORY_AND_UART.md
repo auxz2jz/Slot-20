@@ -1,6 +1,6 @@
 # RLC-811A PCB inventory and UART candidate map
 
-**Task:** P1/P1.1/P1.2a — offline PCB-photo inventory and UART-pad review
+**Task:** P1 through P1.2b — offline PCB-photo inventory and UART-pad review
 
 **Status:** complete as a preliminary, read-only evidence record
 
@@ -92,9 +92,16 @@ into candidate C or promoted to UART without trace or electrical evidence. The
 previous red-circle annotation identifies the general area only; it must not be
 read as selecting a verified four-pad subset.
 
-Candidate C remains the first area to correlate across both PCB sides. Other
-isolated solder points, mounting holes and component-style footprints are not
-promoted merely because they are exposed. None of A, B or C has been probed.
+Cross-side alignment uses the two upper mounting holes. When the board is
+flipped to the memory/coin-cell side, the processor-side right-hand hole becomes
+the left-hand hole. Candidate C maps immediately right/below that hole, largely
+under or along the left edge of the white factory label. No corresponding
+exposed six-pad cluster is visible. The label and multilayer routing prevent
+photo-only trace correlation; the label must not be removed for this task.
+
+Other isolated solder points, mounting holes and component-style footprints
+are not promoted merely because they are exposed. None of A, B or C has been
+probed.
 
 ## UART and Boot ROM recovery finding
 
@@ -117,11 +124,12 @@ located during this task. Therefore:
 
 ## Evidence needed next
 
-The straight-down and oblique same-side macros are complete. The only useful
-next photograph is the exact corresponding area on the memory/coin-cell side,
-framed with the same right-hand upper mounting hole for alignment. Do not clean,
-scrape or remove solder. Candidates A and B need no further attention until the
-cross-side location of candidate C is resolved.
+The straight-down and oblique same-side macros and reverse-side alignment are
+complete. The two reverse-side uploads supplied for P1.2b are byte-identical to
+earlier private evidence, so the unique-photo count remains fifteen. No
+additional photograph is expected to confirm UART while the mapped area remains
+under the intact factory label and inner-layer routes are invisible. Do not
+clean, scrape, remove solder or lift the label.
 
 No further disassembly, cleaning, scraping, soldering or powering is implied.
 If a later, separately approved task uses a matching spare, the passive
@@ -161,15 +169,16 @@ facility exists.
 
 ## Checkpoint and next safe task
 
-- **Completed:** P1.2a reviewed five close macros and corrected candidate C from
-  a supposed four-pad row to an irregular approximately six-pad tinned cluster.
-  The nearby 2-by-2 footprint is separate. No UART subset is identified.
+- **Completed:** P1.2b correlated candidate C to the reverse side. The mapped
+  region is largely under/adjacent to the factory label and has no visible
+  matching pad cluster; photo-only UART confirmation is exhausted.
 - **Checkpoint:** sanitized documentation only; original photographs and
   proprietary firmware remain outside public Git history.
-- **Next task:** **P1.2b — review the exact reverse-side location of candidate C
-  only**, aligned by the mounting hole and without probing or starting H2.
-- **Recommended reasoning:** Medium for photo transcription and documentation;
-  High only if new readable markings require focused datasheet/pinmux tracing.
+- **Next task:** none automatically. Any UART electrical-identification plan is
+  a new, separately approved task and should preferably use a matching spare;
+  no probing is authorized here.
+- **Recommended reasoning:** Medium for a future passive-measurement plan; High
+  only for a separately approved, safety-reviewed hardware investigation.
 - **When to switch:** use High for a specific conflicting component identity or
   trace-routing question; Ultra is unnecessary without a narrowly scoped hard
   recovery question and a prior checkpoint.

@@ -175,7 +175,8 @@ weaken exact-match checks or duplicate the security/update core.
 | **P1 (COMPLETE; OFFLINE)** | Preliminary PCB inventory and UART candidate map from five private photographs plus bounded source research | Sanitized component/evidence table; no UART pins assigned; NAND and Boot ROM recovery remain unverified | Medium–High |
 | **P1.1 (COMPLETE; OFFLINE)** | Review the second five-photo PCB set | Identify the leading visual pad group without probing, powering, opening or beginning H2 | Medium |
 | **P1.2a (COMPLETE; OFFLINE)** | Review same-side close macros of candidate C | Corrected the area to an irregular approximately six-pad tinned cluster plus a separate 2-by-2 footprint; no UART subset assigned | Medium |
-| **P1.2b (NEXT SAFE OFFLINE)** | Review candidate C's exact reverse-side location | Correlate visible trace fan-out across sides; no electrical pin assignment | Medium |
+| **P1.2b (COMPLETE; OFFLINE)** | Review candidate C's exact reverse-side location | Mapped area is label-covered/inner-layer routed with no exposed matching cluster; photo-only confirmation exhausted | Medium |
+| **P1.3 (BLOCKED; NOT AUTHORIZED)** | Plan passive electrical identification, preferably on a matching spare | Separate task and explicit approval required; no measurement or pin assignment follows from P1.2b | Medium–High |
 | H3 | Offline live-vs-static reconciliation table | Every item marked confirmed, contradicted or unresolved with provenance | Medium–High |
 | M1 | Versioned hardware-profile schema and synthetic fixtures | Schema separates public board data from private instance data and rejects ambiguous revisions | High |
 | M2 | Adapter interface design plus no-op/synthetic reference adapters | Contract tests prove fail-closed behavior; no camera/device path | High |
@@ -185,16 +186,17 @@ weaken exact-match checks or duplicate the security/update core.
 
 ## Smallest next task specification
 
-**P1.2b — candidate-C reverse-side photo review only (safe offline continuation)**
+**P1.3 — passive UART-identification plan (blocked; not authorized)**
 
-- **Objective:** review the exact corresponding memory/coin-cell-side area,
-  aligned using the right-hand upper mounting hole.
+- **Objective:** only if separately requested, write a safety-reviewed plan for
+  later unpowered continuity and high-impedance observation, preferably on a
+  matching spare. This section does not authorize execution.
 - **Completion criteria:** each new fact is labeled photo-observed,
-  owner-confirmed, inferred or unknown; no TX/RX/GND/supply assignment is made
-  without evidence; original images remain private.
+  inferred or electrically observed; aborts and voltage limits are explicit;
+  no TX/RX/GND/supply assignment is made without evidence.
 - **Recommended model and reasoning:** Medium for focused visual transcription;
   High only for a specific conflicting component/datasheet question.
-- **Boundary:** no camera connection, new disassembly, measurement, UART,
+- **Boundary:** no camera connection, label removal, disassembly, measurement, UART,
   reboot, NAND action or H2 execution is authorized.
 
 The staged live-device roadmap remains unchanged:

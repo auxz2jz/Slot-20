@@ -173,7 +173,8 @@ weaken exact-match checks or duplicate the security/update core.
 | **H1 (COMPLETE)** | Proposed read-only live-observation protocol | Exact actions, non-actions, privacy handling, aborts and approval prompt reviewed; no connection | Medium |
 | **H2 (NEXT; BLOCKED)** | One approved identification observation record | Redacted exact identity captured with no setting/reboot/update/motor change | High because it is the first live-device action |
 | **P1 (COMPLETE; OFFLINE)** | Preliminary PCB inventory and UART candidate map from five private photographs plus bounded source research | Sanitized component/evidence table; no UART pins assigned; NAND and Boot ROM recovery remain unverified | Medium–High |
-| **P1.1 (NEXT SAFE OFFLINE)** | Review additional owner-supplied PCB photographs only | Refine markings and candidate map without probing, powering, opening or beginning H2 | Medium |
+| **P1.1 (COMPLETE; OFFLINE)** | Review the second five-photo PCB set | Identify the leading visual pad group without probing, powering, opening or beginning H2 | Medium |
+| **P1.2 (NEXT SAFE OFFLINE)** | Review a close macro of leading UART candidate C and its reverse-side location | Determine visible pad count and trace fan-out; no electrical pin assignment | Medium |
 | H3 | Offline live-vs-static reconciliation table | Every item marked confirmed, contradicted or unresolved with provenance | Medium–High |
 | M1 | Versioned hardware-profile schema and synthetic fixtures | Schema separates public board data from private instance data and rejects ambiguous revisions | High |
 | M2 | Adapter interface design plus no-op/synthetic reference adapters | Contract tests prove fail-closed behavior; no camera/device path | High |
@@ -183,10 +184,10 @@ weaken exact-match checks or duplicate the security/update core.
 
 ## Smallest next task specification
 
-**P1.1 — additional private-photo review only (safe offline continuation)**
+**P1.2 — candidate-C macro review only (safe offline continuation)**
 
-- **Objective:** review additional existing photographs for board markings,
-  flash/memory top marks, underside traces and the two UART candidate groups.
+- **Objective:** review straight-down and oblique-light macros of candidate C
+  plus the exact corresponding reverse-side area.
 - **Completion criteria:** each new fact is labeled photo-observed,
   owner-confirmed, inferred or unknown; no TX/RX/GND/supply assignment is made
   without evidence; original images remain private.

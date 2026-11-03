@@ -54,7 +54,8 @@ One task should have a specific input, one main output, and a verification crite
 | H1 (COMPLETE; PLANNING) | Define one exact read-only live-observation protocol | Screen/command-level actions, non-actions, privacy handling and aborts reviewed; no connection made | Medium |
 | H2 (NEXT; BLOCKED) | Perform one approved identification observation on the primary reference | Fresh action-specific approval; redacted identity evidence with no setting, reboot, update, motor or storage change | High |
 | P1 (COMPLETE; OFFLINE) | Inventory five private PCB photographs and research UART/Boot ROM evidence | Sanitized board inventory and UART candidate map; no pin assignment, probe or camera action | Medium–High |
-| P1.1 (NEXT SAFE OFFLINE) | Review additional existing PCB photographs | Refine readable markings and candidate locations; originals remain private and unknowns stay explicit | Medium |
+| P1.1 (COMPLETE; OFFLINE) | Review the second five-photo PCB set | Leading UART candidate identified visually; no probing or pin assignment | Medium |
+| P1.2 (NEXT SAFE OFFLINE) | Review close macros of candidate C and its exact reverse-side location | Visible pad count/trace fan-out refined; electrical identities remain unknown | Medium |
 | H3 | Reconcile approved live identity evidence with package/FDT/U-Boot/BSP findings | Small provenance table marking confirmed, contradicted and unresolved items; offline only | Medium–High |
 | M1 | Define the versioned multi-camera hardware-profile schema | Synthetic fixtures prove exact-revision matching, public/private data separation and ambiguous-profile rejection | High |
 | M2 | Define and test narrow identity/artifact/storage/boot/network/health/recovery/media adapter contracts | No-op and synthetic adapters fail closed; no real camera/device path | High |
@@ -66,8 +67,9 @@ primary in-service development reference. It may support only separately
 approved, bounded observations. It is not the matching sacrificial spare
 required for destructive recovery proof. D2a-1 research is retained on hold;
 H0 and H1 are complete, and H2 is blocked pending explicit approval. P1 is a
-separate offline photo-evidence task; P1.1 may review more already supplied
-images but grants no physical or live-device authority.
+separate offline photo-evidence task; P1.1 reviewed the second photo set and
+P1.2 may inspect only candidate-C macros. Neither grants physical or live-device
+authority.
 
 **Not yet authorized / not eligible for a persistent camera image:** video/ISP/zoom/ALPR features; connecting to or modifying the in-service camera; altering bootloader/calibration/factory data; claiming A/B, TFTP or factory fallback as proven. All live and physical work remains behind documented consent and recovery gates.
 

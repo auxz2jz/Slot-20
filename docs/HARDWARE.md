@@ -25,6 +25,30 @@ matching spare are satisfied. See `HARDWARE_DEVELOPMENT_PLAN.md`.
 - Device Tree declares 112 MiB Linux-visible memory and 128 MiB NAND address space. **Not independent physical chip measurements.**
 - Sony IMX415: suggested by firmware filename and sensor driver; **not live-confirmed**.
 
+## Preliminary physical PCB evidence
+
+Five owner-supplied private component-side photographs now add a preliminary
+physical inventory. The source images remain ignored and outside public Git
+history.
+
+- Main processor marking: **`NT98523MBG`** (photo-observed and
+  owner-confirmed).
+- PCB marking **`N25C06 V100`** and date **`2020-08-13`** are owner-confirmed;
+  those exact strings are not independently legible in the current five-photo
+  subset.
+- DRAM marking appears to be Nanya **`NT5CC128M16JR-EK`**, a 2-Gbit x16 DDR3L
+  part according to Nanya; the full suffix still needs a sharper macro.
+- A `JWT 12.000C22` can is consistent with a 12 MHz reference oscillator.
+- The physical NAND chip is **not identified**. The Device Tree's 128 MiB NAND
+  address space is not a chip identity or physical measurement.
+- Two unpopulated footprints are retained only as UART candidates; no pad has
+  been labeled TX, RX, GND or supply and no voltage is known.
+
+See `PCB_HARDWARE_INVENTORY_AND_UART.md` for the evidence classes, candidate
+map, firmware/BSP comparison, Boot ROM research boundary and required next
+photographs. No camera connection, probing, UART activity, reboot or NAND
+operation occurred.
+
 ## Device Tree flash partitions (static; never use as blind write offsets)
 
 | Partition | Start | Declared size | In update payload? |

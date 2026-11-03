@@ -28,6 +28,11 @@ Evidence classes must remain distinct:
 4. **Production installation evidence:** eligible only after the full backup,
    independent recovery, update and owner-review gates are satisfied.
 
+The owner has also supplied private PCB photographs from an already opened
+target board. Their sanitized, offline interpretation is a separate evidence
+lane, recorded in `PCB_HARDWARE_INVENTORY_AND_UART.md`. Accepting photographs
+does not authorize new opening, electrical probing or any H2 live observation.
+
 ## Permanent safety boundary
 
 - Preserve the in-service camera's stock firmware and availability. A planned
@@ -167,6 +172,8 @@ weaken exact-match checks or duplicate the security/update core.
 | **H0 (COMPLETE)** | Sanitized primary-target evidence baseline from already supplied material | Required/unknown fields and source class recorded; private fields excluded; no live contact | Medium |
 | **H1 (COMPLETE)** | Proposed read-only live-observation protocol | Exact actions, non-actions, privacy handling, aborts and approval prompt reviewed; no connection | Medium |
 | **H2 (NEXT; BLOCKED)** | One approved identification observation record | Redacted exact identity captured with no setting/reboot/update/motor change | High because it is the first live-device action |
+| **P1 (COMPLETE; OFFLINE)** | Preliminary PCB inventory and UART candidate map from five private photographs plus bounded source research | Sanitized component/evidence table; no UART pins assigned; NAND and Boot ROM recovery remain unverified | Medium–High |
+| **P1.1 (NEXT SAFE OFFLINE)** | Review additional owner-supplied PCB photographs only | Refine markings and candidate map without probing, powering, opening or beginning H2 | Medium |
 | H3 | Offline live-vs-static reconciliation table | Every item marked confirmed, contradicted or unresolved with provenance | Medium–High |
 | M1 | Versioned hardware-profile schema and synthetic fixtures | Schema separates public board data from private instance data and rejects ambiguous revisions | High |
 | M2 | Adapter interface design plus no-op/synthetic reference adapters | Contract tests prove fail-closed behavior; no camera/device path | High |
@@ -175,6 +182,20 @@ weaken exact-match checks or duplicate the security/update core.
 | R1+ | Continue D1 G0–G9 on an acquired exact-match spare | One separately approved gate and evidence package per task | High; Ultra only for a narrow persistent recovery uncertainty |
 
 ## Smallest next task specification
+
+**P1.1 — additional private-photo review only (safe offline continuation)**
+
+- **Objective:** review additional existing photographs for board markings,
+  flash/memory top marks, underside traces and the two UART candidate groups.
+- **Completion criteria:** each new fact is labeled photo-observed,
+  owner-confirmed, inferred or unknown; no TX/RX/GND/supply assignment is made
+  without evidence; original images remain private.
+- **Recommended model and reasoning:** Medium for focused visual transcription;
+  High only for a specific conflicting component/datasheet question.
+- **Boundary:** no camera connection, new disassembly, measurement, UART,
+  reboot, NAND action or H2 execution is authorized.
+
+The staged live-device roadmap remains unchanged:
 
 **H2 — approved identification observation only (blocked)**
 

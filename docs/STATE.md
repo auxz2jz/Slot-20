@@ -1,6 +1,6 @@
 # Project state and handoff
 
-**Last milestone:** 2026-10-19 — H1 defined a five-minute, owner-operated, read-only Reolink-app observation protocol limited to Settings → Device Info/System Information and five allowlisted values. It specifies privacy handling, zero-change checks, prohibited actions, immediate aborts and explicit H2 approval text. H1 performed no camera contact and grants no H2 authority.
+**Last milestone:** 2026-11-02 — P1 produced a sanitized preliminary PCB inventory and UART candidate map from five owner-supplied private photographs, the matching package and pinned official Novatek sources. The processor marking is `NT98523MBG`; PCB marking `N25C06 V100` and date `2020-08-13` are owner-confirmed. Two footprints remain unassigned UART candidates, the physical NAND is unknown, and Boot ROM UART recovery is unverified. No camera connection, probing, UART activity, reboot, NAND operation or firmware installation occurred. H1 is unchanged and H2 remains blocked.
 
 **Latest recovery audit:** 2026-10-19 — after an unexpected computer restart, the repository was clean at `0b3720bb6f48f599a31cc56c99f5610398326eef`, cached and live `origin/main` matched it, and there were no local-only commits, changes, untracked files or stashes. The preserved GCC 6.5.0 ARM toolchain, generic kernel and both rootfs artifacts remain present and match their recorded SHA-256 values. No on-disk evidence of an interrupted post-D2a task was found. See `docs/POST_RESTART_RECOVERY_2026-10-19.md`.
 
@@ -12,6 +12,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 **2026-10-11 priority update:** The user explicitly requires every *permanently installed* custom firmware to retain browser-accessible management, firmware update capability, and a proven independent rescue/rollback method. Details and evidence gates: `docs/BOOT_UPDATE_RECOVERY_REQUIREMENTS.md`. No assumption is made that A/B partitions or restoring Reolink firmware are supported.
 
 ## Completed
+- P1 added `docs/PCB_HARDWARE_INVENTORY_AND_UART.md`. It records the photo-observed `NT98523MBG`, owner-confirmed `N25C06 V100` / `2020-08-13`, probable Nanya `NT5CC128M16JR-EK` DRAM marking, a 12 MHz oscillator marking, two unassigned UART candidate footprints, and the exact evidence needed from additional photographs. Matching-package UART/U-Boot facts are separated from generic official BSP capabilities and from unverified Boot ROM recovery. Original photographs remain private/ignored.
 - User confirmed hardware and current version from Reolink app.
 - Matching `.pak` SHA-256 verified and static Device Tree / partition inventory documented.
 - Offline extraction of rootfs and app identified 1,035 paths and CRC-validated 21,220 UBIFS records; 10 file reconstructions incomplete.
@@ -67,7 +68,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - The 64-file cross-check is a deterministic sample, not a claim that every reconstructed byte or UBIFS journal state was independently validated. Neither parser replays the journal as a mounted kernel UBIFS would.
 - The original proprietary firmware, extracted sections/manifests and raw prior report ZIP remain private/off-repository; sanitized findings are summarized under `docs/HARDWARE.md`.
 - Vendor executable ABI / callbacks and AI formats are not yet mapped.
-- Exact sensor, flash chip, physical RAM, UART recovery and live AI support unverified.
+- Exact sensor, physical NAND chip, complete DRAM suffix/capacity, UART pad functions/voltage, Boot ROM recovery and live AI support remain unverified.
 - BootROM/loader authentication, OTP/fuse state, actual UART pads/timing, Ethernet/TFTP/MMC readiness, NAND OOB/ECC/bad-block handling, GPIO 43's physical mapping, staged-update completeness/power-loss behavior, and recovery from a damaged loader/U-Boot remain unverified. Command presence is not proof that a recovery route works.
 - A1–A5 now normalize artifact/layout, command/string, normal-boot, environment/partition ownership and independent-recovery candidate evidence. Preserve and reuse the existing artifact/helper output; do not repeat broad extraction or disassembly.
 - B2 verifies host files against caller-supplied in-memory trust/policy objects only, and B3/B4 persist and fault-test only a host simulation record. No production bundle builder/key, signed trust-policy format, durable device trust store/release catalog/anti-rollback anchor, component installation mapping, real boot selector or camera-side integration has been implemented or validated. Host `fsync`/replacement behavior is not a NAND or camera power-loss guarantee; missing or corrupt single-record state still requires an external trusted copy/recovery process.
@@ -83,10 +84,10 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - D2a prices, stock and return policies are a 2026-10-19 web snapshot and are volatile. Zero exact-revision matches are confirmed. Even seller proof of `RLC-811A / IPC_523128M8MP` establishes only the pre-purchase identity gate, not matching PCB, NAND, DRAM, boot chain or Class A status.
 
 ## Next Codex task
-1. **H2 — approved identification observation only, blocked pending fresh explicit approval:** use only the exact owner-operated, five-minute mobile-app procedure in `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md`.
-2. Collect only observation time, allowed screen label, model, hardware version and firmware version plus the zero-change attestation. Do not request credentials or a camera address.
-3. Abort on any login/setup/update prompt, live view, ambiguity, mismatch, private-data exposure, unexpected device behavior or time overrun. Do not troubleshoot or broaden scope.
-4. Preserve original evidence privately and publish text-only sanitized results by default. Stop after H2; H3 reconciliation is a separate task.
+1. **P1.1 — additional private-photo review only:** accept the owner's remaining existing PCB photographs and inspect only their visual content.
+2. Prioritize full underside coverage; perpendicular macros of UART candidates A/B; complete flash, DRAM, PCB/date and small-IC top markings; and visible trace fan-out.
+3. Keep originals private and assign no TX, RX, GND, supply, voltage or NAND identity without sufficient evidence.
+4. Stop after updating the sanitized inventory. No connection, opening, electrical measurement, UART, reboot, NAND operation or H2 observation is authorized. H2 remains separately blocked by its existing approval protocol.
 
 ## Current reproducibility checkpoint
 
@@ -133,6 +134,7 @@ Completely independent firmware for Reolink RLC-811A `IPC_523128M8MP`, preservin
 - Hardware-development planning now treats the owner's previously screenshot-confirmed RLC-811A `IPC_523128M8MP` running `v3.1.0.1643_2402219117` as the primary development reference. Because it remains in active security service, it is not a sacrificial recovery surrogate. `docs/HARDWARE_DEVELOPMENT_PLAN.md` (current SHA-256 `b2a806ddfc4f2048d1eae42d6c6dc1e9a73e97a4d63a0bd4e65ab42cdb8db479`) defines the H0–H6 non-destructive observation sequence, preserves D1's separate matching-spare gates, and maps reusable core functions versus hardware-specific profiles/adapters. D2a-1 is retained on hold; no seller or camera contact occurred.
 - H0 added `docs/H0_PRIMARY_HARDWARE_BASELINE.md` (SHA-256 `0a287f8a4cf4feca5a9b95a62f96093f4755da2890a3dbe3bcf270a286929e59`) and `configs/h0_primary_hardware_baseline.json` (SHA-256 `ec6fecd1450c26110c569a48b0a2a6ccdea5f2fe2bbf62e3e3b577819cea5932`). The records use the prior owner-screenshot-derived identity already normalized in project documentation, state the unavailable capture date as unknown, enumerate unverified physical/component details, and contain no device-instance identifiers, credentials, addresses, screenshots or live-action claims.
 - H1 added `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md` (SHA-256 `449a2375542896e0e25a68691dedf77c33c341ca420ae47c6bec01fae947db58`). The proposed H2 path is limited to the owner-operated, already configured mobile app's Settings gear and Device Info/System Information screen, five public values and one five-minute attempt. H2 remains blocked pending explicit approval matching the prepared scope.
+- P1 added `docs/PCB_HARDWARE_INVENTORY_AND_UART.md` and updated the hardware plan without changing H1. The original five JPEGs remain under the private attachment area and are ignored by `*.jpg`; no image was copied into the public repository. The public record contains only sanitized board-level findings and source links.
 - Untested here: installed-camera byte identity, full all-file independent hash comparison, live Reolink U-Boot behavior, Linux boot on matching hardware, independent recovery and all hardware behavior.
 
 ## Recovery/checkpoint rule
@@ -140,10 +142,10 @@ Keep last successful commit; after two repeated failures with the same hypothesi
 
 ## Next-stage recommendation
 
-- **Completed:** H1 defined the exact app path, five-value allowlist, owner actions, five-minute bound, privacy handling, zero-change attestation, prohibitions, abort conditions and scoped H2 approval template. No code, private build or device changed.
-- **Checkpoint:** commit and push the sanitized H1 protocol plus updated plan, state and handoff. H0 records and all private artifacts remain unchanged.
-- **Next task:** **H2 approved identification observation only**, blocked until the owner explicitly approves the prepared scope.
-- **Recommended model and reasoning:** **High**.
-- **Why:** H2 is small but would be the project's first deliberate live-device observation; strict scope control and accurate evidence handling are safety-critical.
-- **When to switch:** Return to Medium for H3 offline reconciliation after a clean H2. Stay at High and stop on an abort/discrepancy; do not expand scope. Ultra is unnecessary for H2.
-- **Usage preparation:** H1 is the required checkpoint before asking for H2 approval. Reliable closeout telemetry showed 73% five-hour usage (27% remaining) and 59% weekly usage (41% remaining). This is a point-in-time reading; the five-hour window is currently in the project's 15–30% remaining band, so do not begin H2 now. Refresh usage before any later approved live session.
+- **Completed:** P1 documented the physical SoC marking, owner-supplied PCB/date markings, preliminary component inventory, two unassigned UART candidates, matching-package/BSP comparison and the absence of verified public Boot ROM recovery documentation. No hardware action occurred.
+- **Checkpoint:** commit and push sanitized documentation only. Original photographs, firmware and extracted artifacts stay outside public Git history; no separate private-photo backup was created because no protected destination was authorized.
+- **Next task:** **P1.1 additional private-photo review only** after the owner supplies the remaining existing photographs. H2 remains blocked and is not the continuation of P1.
+- **Recommended model and reasoning:** **Medium** for visual transcription, provenance labeling and documentation.
+- **Why:** the next work is bounded photo comparison rather than hard control-flow analysis.
+- **When to switch:** use High only for a specific conflicting chip identity, datasheet or trace-routing question. Ultra is unnecessary unless a later, checkpointed recovery question is narrowly defined.
+- **Usage preparation:** stop at this P1 checkpoint. Reliable current usage is unavailable; do not guess or launch another substantial investigation automatically.

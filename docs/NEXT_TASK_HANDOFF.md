@@ -1,74 +1,59 @@
 # Slot-20 — Current task handoff
 
-**Status:** H1 COMPLETE — exact read-only observation protocol prepared
-offline. H2 is blocked pending fresh explicit owner approval.
+**LAST TASK ID / STATUS:** P1 PCB photo inventory and UART research —
+**COMPLETE; OFFLINE ONLY**. H1 is unchanged and H2 remains blocked.
 
-**LAST TASK ID / STATUS:** H1 live-observation protocol planning — **COMPLETE;
-NO CAMERA CONTACT**.
+**EVIDENCE AND TESTS:**
 
-**COMPLETED AND VERIFIED:**
+- `docs/PCB_HARDWARE_INVENTORY_AND_UART.md` separates photo-observed,
+  owner-confirmed, matching-package, generic official-source, secondary and
+  unknown evidence.
+- Recorded SoC marking `NT98523MBG`; owner-confirmed PCB `N25C06 V100` and date
+  `2020-08-13`; probable Nanya `NT5CC128M16JR-EK` DRAM; 12 MHz oscillator
+  marking; and unknown NAND.
+- Candidate A is the unpopulated upper-edge footprint right of the cream/yellow
+  connector. Candidate B is the narrow vertical unpopulated group left of the
+  tall black component. Neither has any pin-function or voltage assignment.
+- Matching-package FDT/U-Boot evidence supports a plausible 115200-baud UART
+  console lead. Generic official Novatek source confirms NA51055 UART
+  controllers and selectable pinmux routes. No authoritative public NT98523
+  Boot ROM UART recovery protocol, strap table, ballout or security policy was
+  found; Boot ROM recovery remains unverified.
+- `git diff --check` passed apart from expected Windows line-ending notices;
+  H1 has no diff, the photo extension remains ignored, and a privacy/path scan
+  found no attachment filename or path in the sanitized inventory. The staged
+  set contains only the six intended documentation files and no private image
+  or firmware; push verification is the remaining checkpoint operation.
 
-- `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md` specifies the sole proposed H2
-  interface: the owner's already installed/configured Reolink mobile app.
-- The allowlisted path is existing device Settings gear → Device Info, with
-  `System Information` as the only exact-label alternate. If neither is present,
-  H2 must abort rather than search other menus.
-- The five permitted values are observation date/time, allowed screen label,
-  model, hardware version and complete firmware version. No other nearby field
-  is collected.
-- The owner is the sole operator. The session is limited to one attempt and five
-  minutes, with before/after zero-change checks and text-only public evidence
-  preferred over an image.
-- Credentials, addresses, discovery/scanning, new clients, live view, controls,
-  configuration, update, reboot/reset, diagnostics, physical access and storage
-  operations are expressly prohibited.
-- Immediate aborts cover login/setup/permission prompts, live view, update or
-  reset prompts, ambiguous menus, uncontainable private data, identity mismatch,
-  unexpected device behavior, security impact and time overrun.
-- The document includes narrowly scoped H2 approval text. Its presence is not
-  approval. H1 made no connection, query, authentication or device change.
+**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `6974ed0` was
+clean and matched `origin/main`. The P1 completion commit containing this
+handoff must match `origin/main` after push.
 
-**GIT BRANCH / COMMIT / PUSHED?:** `main`; starting checkpoint `4e11f5b` was
-clean. The H1 completion commit containing this handoff must match
-`origin/main` after push.
+**LOCAL UNTRACKED OR PRIVATE WORK (NO SECRETS):** Five original JPEGs remain in
+the private remote-attachment area and are ignored by `*.jpg`. Proprietary
+firmware/extractions remain in their existing private locations. No protected
+private-photo backup was created because no destination was authorized.
 
-**LOCAL UNTRACKED OR PRIVATE WORK:** Preserve all prior screenshot/evidence,
-firmware, analysis, toolchain, kernel and rootfs artifacts in their existing
-private locations. H1 created no private device data.
+**NEXT SINGLE TASK ID + INPUT:** **P1.1 — review additional existing private
+PCB photographs only.** Input: the owner's remaining photographs, preferably
+full underside, UART-candidate macros, complete memory/flash top markings,
+PCB/date marking and trace fan-out.
 
-**NEXT SINGLE TASK ID + INPUT:** **H2 — approved identification observation
-only, BLOCKED.** Required input is a fresh explicit user approval substantially
-matching the template in `docs/H1_READ_ONLY_OBSERVATION_PROTOCOL.md`. No
-credential, camera address or private identifier is an input to Codex.
+**PASS CRITERION FOR NEXT TASK:** Update the sanitized inventory with every new
+claim explicitly sourced and uncertain identities left unknown. Originals stay
+private. No probing, powering, disassembly, pin assignment or H2 activity.
 
-**PASS CRITERION FOR NEXT TASK:** The owner completes the exact one-attempt,
-five-minute procedure and supplies only observation time, allowed screen label,
-exact model/hardware/firmware text and the complete zero-change attestation. No
-abort condition or prohibited action occurs, and public output contains no
-private device-instance data. A mismatch or abort is recorded and ends H2.
+**RECOMMENDED REASONING + WHY:** **Medium.** P1.1 is focused visual
+transcription and evidence classification. Use High only for one specific
+conflicting component/datasheet or trace-routing question.
 
-**RECOMMENDED REASONING + WHY:** **High.** H2 is tiny but would be the first
-deliberate live-device observation; strict procedural scope and evidence
-handling matter.
+**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** UNKNOWN; no reliable current
+account-usage telemetry is available.
 
-**WHEN TO SWITCH:** Return to Medium for H3 offline reconciliation after a
-clean H2. Stay at High and stop if H2 aborts or the evidence differs; do not
-broaden live scope. Ultra is unnecessary for H2.
+**CONTINUE OR STOP + REASON:** STOP after the verified P1 checkpoint, as the
+owner requested. Continue only when additional photos are supplied or a new
+task is explicitly selected.
 
-**USAGE VISIBLE? CURRENT VALUE/TIME OR UNKNOWN:** Reliable closeout telemetry
-on 2026-10-19 showed 73% of the five-hour window used (27% remaining) and 59%
-of the weekly window used (41% remaining). This is a point-in-time snapshot,
-not continuous monitoring.
-
-**USAGE PREPARATION:** H1 is the required safe checkpoint. With five-hour usage
-currently in the project's 15–30% remaining band, do not begin H2 now. Refresh
-usage again before any approved H2 session and do not start without enough
-attention to finish, sanitize and checkpoint the evidence.
-
-**CONTINUE OR STOP + REASON:** STOP after H1. H2 remains blocked until the
-owner provides a new explicit approval matching the prepared scope.
-
-**CAMERA CONTACT/FLASH:** NONE. No discovery, scan, authentication, query,
-network contact, power change, reboot, reset, configuration, actuation, opening,
-UART, NAND read/write, firmware build/assembly or flash was performed or
-authorized.
+**CAMERA CONTACT/FLASH:** NONE. No discovery, scan, authentication, network
+contact, electrical measurement, UART transmission, reboot, NAND operation,
+firmware build/assembly or flash was performed or authorized.

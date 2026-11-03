@@ -27,7 +27,7 @@ matching spare are satisfied. See `HARDWARE_DEVELOPMENT_PLAN.md`.
 
 ## Preliminary physical PCB evidence
 
-Ten owner-supplied private photographs across both PCB sides now add a
+Fifteen owner-supplied private photographs across both PCB sides now add a
 preliminary physical inventory. The source images remain ignored and outside
 public Git history.
 
@@ -40,11 +40,12 @@ public Git history.
 - A `JWT 12.000C22` can is consistent with a 12 MHz reference oscillator.
 - The physical NAND chip is **not identified**. The Device Tree's 128 MiB NAND
   address space is not a chip identity or physical measurement.
-- The leading UART candidate is a row of approximately four exposed round pads
-  immediately right of the right-hand upper mounting hole and above-right of
-  the SoC on the processor/Ethernet side. It could instead be another factory
-  test interface. No pad has been labeled TX, RX, GND or supply and no voltage
-  is known.
+- The leading UART **area** candidate is an irregular L-shaped cluster of
+  approximately six large tinned pads between the right-hand upper mounting
+  hole and the SoC corner on the processor/Ethernet side. A separate compact
+  2-by-2 small-pad footprint lies below it. The area could instead be another
+  factory-test or rework interface; no subset is selected, no pad has been
+  labeled TX, RX, GND or supply, and no voltage is known.
 
 See `PCB_HARDWARE_INVENTORY_AND_UART.md` for the evidence classes, candidate
 map, firmware/BSP comparison, Boot ROM research boundary and required next

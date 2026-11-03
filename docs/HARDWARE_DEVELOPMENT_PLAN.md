@@ -174,7 +174,8 @@ weaken exact-match checks or duplicate the security/update core.
 | **H2 (NEXT; BLOCKED)** | One approved identification observation record | Redacted exact identity captured with no setting/reboot/update/motor change | High because it is the first live-device action |
 | **P1 (COMPLETE; OFFLINE)** | Preliminary PCB inventory and UART candidate map from five private photographs plus bounded source research | Sanitized component/evidence table; no UART pins assigned; NAND and Boot ROM recovery remain unverified | Medium–High |
 | **P1.1 (COMPLETE; OFFLINE)** | Review the second five-photo PCB set | Identify the leading visual pad group without probing, powering, opening or beginning H2 | Medium |
-| **P1.2 (NEXT SAFE OFFLINE)** | Review a close macro of leading UART candidate C and its reverse-side location | Determine visible pad count and trace fan-out; no electrical pin assignment | Medium |
+| **P1.2a (COMPLETE; OFFLINE)** | Review same-side close macros of candidate C | Corrected the area to an irregular approximately six-pad tinned cluster plus a separate 2-by-2 footprint; no UART subset assigned | Medium |
+| **P1.2b (NEXT SAFE OFFLINE)** | Review candidate C's exact reverse-side location | Correlate visible trace fan-out across sides; no electrical pin assignment | Medium |
 | H3 | Offline live-vs-static reconciliation table | Every item marked confirmed, contradicted or unresolved with provenance | Medium–High |
 | M1 | Versioned hardware-profile schema and synthetic fixtures | Schema separates public board data from private instance data and rejects ambiguous revisions | High |
 | M2 | Adapter interface design plus no-op/synthetic reference adapters | Contract tests prove fail-closed behavior; no camera/device path | High |
@@ -184,10 +185,10 @@ weaken exact-match checks or duplicate the security/update core.
 
 ## Smallest next task specification
 
-**P1.2 — candidate-C macro review only (safe offline continuation)**
+**P1.2b — candidate-C reverse-side photo review only (safe offline continuation)**
 
-- **Objective:** review straight-down and oblique-light macros of candidate C
-  plus the exact corresponding reverse-side area.
+- **Objective:** review the exact corresponding memory/coin-cell-side area,
+  aligned using the right-hand upper mounting hole.
 - **Completion criteria:** each new fact is labeled photo-observed,
   owner-confirmed, inferred or unknown; no TX/RX/GND/supply assignment is made
   without evidence; original images remain private.

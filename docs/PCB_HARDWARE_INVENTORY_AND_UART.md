@@ -1,14 +1,14 @@
 # RLC-811A PCB inventory and UART candidate map
 
-**Task:** P1/P1.1 — offline PCB-photo inventory and UART-pad review
+**Task:** P1/P1.1/P1.2a — offline PCB-photo inventory and UART-pad review
 
 **Status:** complete as a preliminary, read-only evidence record
 
 **Target:** owner-confirmed Reolink RLC-811A, hardware `IPC_523128M8MP`
 
 No camera connection, electrical measurement, UART transmission, reboot,
-NAND operation or firmware installation was performed. Ten source photographs
-across two private sets remain ignored by Git; this document contains only
+NAND operation or firmware installation was performed. Fifteen source
+photographs across three private sets remain ignored by Git; this document contains only
 sanitized observations. H1 is unchanged and H2 remains blocked.
 
 ## Evidence labels
@@ -83,12 +83,18 @@ at left and a wide FFC connector along the upper edge.
 | --- | --- | --- | --- |
 | **A** | Unpopulated board-edge footprint immediately right of the cream/yellow connector; several small inline pads with larger end/anchor pads inside a silkscreen outline | Plausible factory/test or optional connector footprint; **low-to-moderate UART-candidate confidence** | No pad is assigned TX, RX, GND or supply; it may be unrelated |
 | **B** | Narrow vertical unpopulated pad group inside a white silkscreen rectangle, left of the tall black component in the close views | Approximately three small exposed pads; **low UART-candidate confidence** because it may be an ordinary component footprint | No electrical role or pin order is assigned |
-| **C — leading candidate** | Processor/Ethernet side: short row of approximately four small round exposed pads immediately right of the right-hand upper mounting hole and directly above-right of the `NT98523MBG` SoC | **Moderate UART-candidate confidence.** The ordered, exposed pogo-test style and approximate four-pad count fit a factory debug interface better than A/B | It could instead be SWD/JTAG or another production-test interface; no pad is assigned TX, RX, GND or supply |
+| **C — leading test-area candidate** | Processor/Ethernet side: an irregular L-shaped cluster of approximately six large, heavily tinned round pads between the SoC corner and the right-hand upper mounting hole | **Low-to-moderate UART-area confidence.** Several traces appear to run toward the SoC, making factory debug/test use plausible, but the cluster is not a clean four-pin header and the solder obscures pad geometry | It could be SWD/JTAG, production test, rework or another circuit; no subset or pad is assigned TX, RX, GND or supply |
 
-Candidate C is now the first location to photograph in detail. Other isolated
-solder points, mounting holes and two-terminal/component-style footprints are
-not promoted merely because they are exposed. None of A, B or C has been
-probed.
+The close macros correct the earlier four-pad-row interpretation. A separate
+compact 2-by-2 group of four small pads in white silkscreen sits directly below
+the large tinned cluster. It is visually a distinct footprint and is not merged
+into candidate C or promoted to UART without trace or electrical evidence. The
+previous red-circle annotation identifies the general area only; it must not be
+read as selecting a verified four-pad subset.
+
+Candidate C remains the first area to correlate across both PCB sides. Other
+isolated solder points, mounting holes and component-style footprints are not
+promoted merely because they are exposed. None of A, B or C has been probed.
 
 ## UART and Boot ROM recovery finding
 
@@ -111,18 +117,11 @@ located during this task. Therefore:
 
 ## Evidence needed next
 
-The next authorized task can remain photography-only and narrowly focused on
-candidate C:
-
-1. Place the board flat and photograph the candidate-C pad row straight down at
-   the camera's highest close-focus resolution, including the right-hand upper
-   mounting hole, the complete pad row and the nearby small footprint.
-2. Take a second oblique-light macro of the same area so copper traces and pad
-   edges are visible without glare.
-3. Photograph the exact corresponding area on the memory/coin-cell side, using
-   the two mounting holes to align the location.
-
-Candidates A and B need no further attention until candidate C is resolved.
+The straight-down and oblique same-side macros are complete. The only useful
+next photograph is the exact corresponding area on the memory/coin-cell side,
+framed with the same right-hand upper mounting hole for alignment. Do not clean,
+scrape or remove solder. Candidates A and B need no further attention until the
+cross-side location of candidate C is resolved.
 
 No further disassembly, cleaning, scraping, soldering or powering is implied.
 If a later, separately approved task uses a matching spare, the passive
@@ -162,12 +161,13 @@ facility exists.
 
 ## Checkpoint and next safe task
 
-- **Completed:** P1.1 reviewed the second five-photo set and promoted candidate
-  C as the leading visual UART candidate; it remains electrically unverified.
+- **Completed:** P1.2a reviewed five close macros and corrected candidate C from
+  a supposed four-pad row to an irregular approximately six-pad tinned cluster.
+  The nearby 2-by-2 footprint is separate. No UART subset is identified.
 - **Checkpoint:** sanitized documentation only; original photographs and
   proprietary firmware remain outside public Git history.
-- **Next task:** **P1.2 — review a close macro of candidate C and its reverse-side
-  location only**, without probing or starting H2.
+- **Next task:** **P1.2b — review the exact reverse-side location of candidate C
+  only**, aligned by the mounting hole and without probing or starting H2.
 - **Recommended reasoning:** Medium for photo transcription and documentation;
   High only if new readable markings require focused datasheet/pinmux tracing.
 - **When to switch:** use High for a specific conflicting component identity or
